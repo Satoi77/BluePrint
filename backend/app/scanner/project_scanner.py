@@ -28,7 +28,11 @@ def scan_python_files(root: Path) -> tuple[list[FileMeta], int, list[str]]:
     warnings: list[str] = []
 
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in IGNORE_DIRS]
+        dirnames[:] = [
+            d
+            for d in dirnames
+            if d not in IGNORE_DIRS and not d.startswith(".")
+        ]
         for filename in filenames:
             if not filename.endswith(".py"):
                 continue

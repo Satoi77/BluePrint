@@ -1,7 +1,11 @@
 import { create } from "zustand";
 
 import {
+  deleteProject as apiDeleteProject,
+  getProjectBlueprint,
+  listProjects,
   scanProject,
+  type Project,
   type RawEdge,
   type ScanResponse,
 } from "../services/api";
@@ -14,30 +18,68 @@ export interface Highlight {
   edges: Set<string>;
 }
 
+const ACTIVE_KEY = "blueprint.activeProjectId";
+
 interface BlueprintState {
+  projects: Project[];
+  activeProjectId: number | null;
   raw: ScanResponse | null;
   status: LoadStatus;
   error: string | null;
   selectedId: string | null;
   searchQuery: string;
-  scan: (path: string) => Promise<void>;
+  init: () => Promise<void>;
+  scan: (path: string, name?: string) => Promise<void>;
+  openProject: (id: number) => Promise<void>;
+  removeProject: (id: number) => Promise<void>;
   select: (id: string | null) => void;
   setSearch: (query: string) => void;
   clearError: () => void;
 }
 
-export const useBlueprintStore = create<BlueprintState>((set) => ({
+export const useBlueprintStore = create<BlueprintState>((set, get) => ({
+  projects: [],
+  activeProjectId: null,
   raw: null,
   status: "idle",
   error: null,
   selectedId: null,
   searchQuery: "",
-  scan: async (path: string) => {
+
+  init: async () => {
+    try {
+      const projects = await listProjects();
+      set({ projects });
+      const stored = Number(localStorage.getItem(ACTIVE_KEY));
+      const target = projects.find((item) => item.id === stored) ?? projects[0];
+      if (target) {
+        await get().openProject(target.id);
+      } else {
+        set({ status: "idle" });
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      set({ status: "error", error: message });
+      log("error", "store.blueprint", "加载项目列表失败", { message });
+    }
+  },
+
+  scan: async (path, name) => {
     set({ status: "loading", error: null });
     log("info", "store.blueprint", "开始扫描", { path });
     try {
-      const data = await scanProject(path);
-      set({ raw: data, status: "success", selectedId: null, searchQuery: "" });
+      const data = await scanProject(path, name);
+      set({
+        raw: data,
+        status: "success",
+        selectedId: null,
+        searchQuery: "",
+        activeProjectId: data.project_id,
+      });
+      if (data.project_id) {
+        localStorage.setItem(ACTIVE_KEY, String(data.project_id));
+      }
+      set({ projects: await listProjects() });
       log("info", "store.blueprint", "扫描成功", data.stats);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -45,6 +87,46 @@ export const useBlueprintStore = create<BlueprintState>((set) => ({
       log("error", "store.blueprint", "扫描失败", { message });
     }
   },
+
+  openProject: async (id) => {
+    set({ status: "loading", error: null, selectedId: null, searchQuery: "" });
+    try {
+      const data = await getProjectBlueprint(id);
+      set({ raw: data, status: "success", activeProjectId: id });
+      localStorage.setItem(ACTIVE_KEY, String(id));
+      log("info", "store.blueprint", "打开项目", {
+        id,
+        name: data.project_name,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      set({ status: "error", error: message });
+      log("error", "store.blueprint", "打开项目失败", { id, message });
+    }
+  },
+
+  removeProject: async (id) => {
+    try {
+      await apiDeleteProject(id);
+      const projects = await listProjects();
+      set({ projects });
+      if (get().activeProjectId === id) {
+        const next = projects[0];
+        if (next) {
+          await get().openProject(next.id);
+        } else {
+          localStorage.removeItem(ACTIVE_KEY);
+          set({ raw: null, activeProjectId: null, status: "idle" });
+        }
+      }
+      log("info", "store.blueprint", "删除项目", { id });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      set({ error: message });
+      log("error", "store.blueprint", "删除项目失败", { id, message });
+    }
+  },
+
   select: (id) => set({ selectedId: id }),
   setSearch: (query) => set({ searchQuery: query }),
   clearError: () => set({ error: null }),

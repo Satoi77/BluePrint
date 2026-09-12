@@ -1,8 +1,14 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
 
 client = TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def _isolated(isolated_db):
+    return isolated_db
 
 
 def test_health():
@@ -62,6 +68,27 @@ def test_scan_happy_path(repo, git):
     assert node_a["status"] == "recent"
     assert node_a["last_commit_message"] == "init"
     assert node_a["functions"] == []
+
+
+def test_scan_persists_and_lists_project(repo, git):
+    (repo / "a.py").write_text("x = 1\n", encoding="utf-8")
+    git("add", ".")
+    git("commit", "-m", "init")
+
+    scan = client.post("/api/blueprint/scan", json={"project_path": str(repo)})
+    assert scan.status_code == 200
+    project_id = scan.json()["project_id"]
+    assert project_id
+
+    projects = client.get("/api/projects").json()
+    assert any(p["id"] == project_id for p in projects)
+
+    loaded = client.get(f"/api/projects/{project_id}/blueprint")
+    assert loaded.status_code == 200
+    assert loaded.json()["project_id"] == project_id
+
+    assert client.delete(f"/api/projects/{project_id}").status_code == 200
+    assert client.get(f"/api/projects/{project_id}/blueprint").status_code == 404
 
 
 def test_bad_file_does_not_abort(repo, git):

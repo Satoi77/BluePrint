@@ -12,6 +12,7 @@ export interface RawNode {
   module_name: string;
   functions: string[];
   is_isolated: boolean;
+  group: string;
 }
 
 export interface RawEdge {
@@ -34,6 +35,18 @@ export interface ScanResponse {
   edges: RawEdge[];
   stats: ScanStats;
   warnings: string[];
+  project_id: number | null;
+  project_name: string | null;
+}
+
+export interface Project {
+  id: number;
+  name: string;
+  root_path: string;
+  created_at: string;
+  last_scanned_at: string;
+  node_count: number;
+  edge_count: number;
 }
 
 export interface LogEntry {
@@ -85,11 +98,28 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
 }
 
-export function scanProject(projectPath: string): Promise<ScanResponse> {
+export function scanProject(
+  projectPath: string,
+  name?: string,
+): Promise<ScanResponse> {
   return request<ScanResponse>("/api/blueprint/scan", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ project_path: projectPath }),
+    body: JSON.stringify({ project_path: projectPath, name }),
+  });
+}
+
+export function listProjects(): Promise<Project[]> {
+  return request<Project[]>("/api/projects");
+}
+
+export function getProjectBlueprint(projectId: number): Promise<ScanResponse> {
+  return request<ScanResponse>(`/api/projects/${projectId}/blueprint`);
+}
+
+export function deleteProject(projectId: number): Promise<{ deleted: number }> {
+  return request<{ deleted: number }>(`/api/projects/${projectId}`, {
+    method: "DELETE",
   });
 }
 

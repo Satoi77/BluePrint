@@ -32,6 +32,17 @@ class CommitInfo:
 
 class ScanRequest(BaseModel):
     project_path: str
+    name: Optional[str] = None
+
+
+class ProjectModel(BaseModel):
+    id: int
+    name: str
+    root_path: str
+    created_at: str
+    last_scanned_at: str
+    node_count: int
+    edge_count: int
 
 
 class NodeModel(BaseModel):
@@ -46,6 +57,7 @@ class NodeModel(BaseModel):
     module_name: str
     functions: list[str] = []
     is_isolated: bool = False
+    group: str = ""
 
 
 class EdgeModel(BaseModel):
@@ -68,6 +80,8 @@ class ScanResponse(BaseModel):
     edges: list[EdgeModel]
     stats: ScanStats
     warnings: list[str] = []
+    project_id: Optional[int] = None
+    project_name: Optional[str] = None
 
 
 class LogExportRequest(BaseModel):

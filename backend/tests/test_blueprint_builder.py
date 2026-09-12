@@ -120,3 +120,11 @@ def test_single_segment_import_not_suffix_matched():
         [owner, target], {}, 7, datetime.now(timezone.utc)
     )
     assert edges == []
+
+
+def test_group_is_parent_directory():
+    files = [make("pkg/services/a.py"), make("root.py")]
+    nodes, _ = build_blueprint(files, {}, 7, datetime.now(timezone.utc))
+    groups = {node.file_path: node.group for node in nodes}
+    assert groups["pkg/services/a.py"] == "services"
+    assert groups["root.py"] == "(root)"

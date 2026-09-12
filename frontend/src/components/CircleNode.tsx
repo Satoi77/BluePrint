@@ -9,6 +9,7 @@ export interface CircleNodeData {
   highlighted: boolean;
   searchHit: boolean;
   selected: boolean;
+  lod: "L0" | "L1" | "L2";
   [key: string]: unknown;
 }
 
@@ -19,27 +20,26 @@ function truncate(label: string): string {
 }
 
 export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
-  const color = STATUS_COLOR[data.raw.status];
   const dim = data.dimmed && !data.highlighted && !data.selected;
+  const showLabel = data.lod === "L2";
   const ring = data.selected
-    ? `0 0 0 3px ${color}55, 0 0 20px ${color}66`
+    ? "0 0 0 3px rgba(255,255,255,0.55), 0 0 22px rgba(255,255,255,0.55)"
     : data.highlighted
-      ? "0 0 0 3px #2F5D8C44"
+      ? "0 0 0 3px rgba(255,255,255,0.35)"
       : data.searchHit
-        ? "0 0 0 3px #2F5D8C66"
+        ? "0 0 0 3px rgba(79,195,247,0.6)"
         : "none";
 
   return (
     <div
       className="flex flex-col items-center"
-      style={{ opacity: dim ? 0.2 : 1, transition: "opacity 180ms ease" }}
+      style={{ opacity: dim ? 0.15 : 1, transition: "opacity 180ms ease" }}
     >
       <div
-        className="relative flex items-center justify-center rounded-full border-2 bg-panel"
+        className="relative flex items-center justify-center rounded-full border-2 border-white bg-panel"
         style={{
-          width: 56,
-          height: 56,
-          borderColor: color,
+          width: 54,
+          height: 54,
           boxShadow: ring,
           transition: "box-shadow 180ms ease",
         }}
@@ -47,21 +47,27 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
         <Handle
           type="target"
           position={Position.Top}
-          className="!h-1.5 !w-1.5 !border-0 !bg-line"
+          className="!h-1.5 !w-1.5 !border-0 !bg-muted"
         />
-        <span className="h-2 w-2 rounded-full" style={{ background: color }} />
+        <span
+          className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border border-black/40"
+          style={{ background: STATUS_COLOR[data.raw.status] }}
+          title={data.raw.status}
+        />
         <Handle
           type="source"
           position={Position.Bottom}
-          className="!h-1.5 !w-1.5 !border-0 !bg-line"
+          className="!h-1.5 !w-1.5 !border-0 !bg-muted"
         />
       </div>
-      <div
-        className="mt-1 max-w-[128px] truncate font-mono text-[0.66rem] leading-tight text-ink"
-        title={data.raw.file_path}
-      >
-        {truncate(data.raw.label)}
-      </div>
+      {showLabel && (
+        <div
+          className="mt-1 max-w-[128px] truncate font-mono text-[0.66rem] leading-tight text-white"
+          title={data.raw.file_path}
+        >
+          {truncate(data.raw.label)}
+        </div>
+      )}
     </div>
   );
 }

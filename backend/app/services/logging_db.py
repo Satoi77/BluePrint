@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS logs (
 
 
 def _connect() -> sqlite3.Connection:
-    config.LOG_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    return sqlite3.connect(str(config.LOG_DB_PATH), check_same_thread=False)
+    config.DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    return sqlite3.connect(str(config.DB_PATH), check_same_thread=False)
 
 
 def init_db() -> None:

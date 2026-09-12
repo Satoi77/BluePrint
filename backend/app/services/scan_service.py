@@ -1,6 +1,7 @@
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 from app.config import RECENT_DAYS
 from app.models.schemas import ScanResponse, ScanStats
@@ -8,6 +9,7 @@ from app.scanner.blueprint_builder import build_blueprint
 from app.scanner.git_reader import GitError, read_git_history
 from app.scanner.project_scanner import scan_python_files
 from app.services.logging_db import log
+from app.services.project_store import save_project
 
 
 class ScanError(Exception):
@@ -28,7 +30,7 @@ def validate_project_path(project_path: str) -> Path:
     return path.resolve()
 
 
-def scan_project(project_path: str) -> ScanResponse:
+def scan_project(project_path: str, name: Optional[str] = None) -> ScanResponse:
     started = time.time()
     log("info", "services.scan_service", "开始扫描", {"project_path": project_path})
 
@@ -78,6 +80,11 @@ def scan_project(project_path: str) -> ScanResponse:
         ),
         warnings=warnings,
     )
+
+    project = save_project(root, response, name)
+    response.project_id = project["id"]
+    response.project_name = project["name"]
+
     log(
         "info",
         "services.scan_service",

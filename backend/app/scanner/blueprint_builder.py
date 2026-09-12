@@ -4,6 +4,14 @@ from typing import Optional
 from app.models.schemas import CommitInfo, EdgeModel, FileMeta, ImportRef, NodeModel
 
 
+def _compute_group(rel_path: str) -> str:
+    """按"大功能"分组：取文件所在目录名；顶层文件归入 (root)。"""
+    if "/" not in rel_path:
+        return "(root)"
+    parent = rel_path.rsplit("/", 1)[0]
+    return parent.rsplit("/", 1)[-1] or "(root)"
+
+
 def _build_module_index(files: list[FileMeta]) -> dict[str, list[str]]:
     index: dict[str, list[str]] = {}
     for file in files:
@@ -152,6 +160,7 @@ def build_blueprint(
                 module_name=file.module_dotted,
                 functions=file.functions,
                 is_isolated=is_isolated,
+                group=_compute_group(file.rel_path),
             )
         )
 

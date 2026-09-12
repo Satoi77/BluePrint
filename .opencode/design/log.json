@@ -5,6 +5,14 @@
     "fonts": "system-sans + mono (JetBrains Mono/Cascadia 回退)",
     "layout": "top-bar + infinite blueprint canvas",
     "signature": "制图纸网格画布 + 状态色描边圆圈节点",
-    "brief": "机器人大脑项目蓝图可视化 MVP"
+    "brief": "机器人大脑项目蓝图可视化 MVP（初版亮色）"
+  },
+  {
+    "date": "2026-09-13",
+    "palette": "near-black + white nodes + 16-color group palette (#06070A)",
+    "fonts": "system-sans + mono",
+    "layout": "top-bar(项目切换+扫描+搜索) + 深色画布",
+    "signature": "夜间蓝图：白圈白字 + 分组色连线 + 点击链路高亮",
+    "brief": "第二轮：持久化多项目 + 分组着色 + 链路高亮 + LOD（轮换自 warm-paper 亮色，改冷色深底）"
   }
 ]

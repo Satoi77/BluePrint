@@ -19,7 +19,14 @@ function gridFallback(rawNodes: RawNode[]): CircleNode[] {
       x: (index % columns) * 150,
       y: Math.floor(index / columns) * 150,
     },
-    data: { raw, dimmed: false, highlighted: false, searchHit: false, selected: false },
+    data: {
+      raw,
+      dimmed: false,
+      highlighted: false,
+      searchHit: false,
+      selected: false,
+      lod: "L2",
+    },
   }));
 }
 
@@ -45,7 +52,14 @@ export function layoutGraph(rawNodes: RawNode[], rawEdges: RawEdge[]): CircleNod
           x: point.x - NODE_WIDTH / 2,
           y: point.y - NODE_HEIGHT / 2,
         },
-        data: { raw, dimmed: false, highlighted: false, searchHit: false, selected: false },
+        data: {
+          raw,
+          dimmed: false,
+          highlighted: false,
+          searchHit: false,
+          selected: false,
+          lod: "L2",
+        },
       };
     });
   } catch {
@@ -59,6 +73,6 @@ export function buildEdges(rawEdges: RawEdge[]): Edge[] {
     source: edge.source,
     target: edge.target,
     type: "smoothstep",
-    style: { stroke: "#B9C2CE", strokeWidth: 1.4 },
+    style: { stroke: "#3A4354", strokeWidth: 1.4 },
   }));
 }

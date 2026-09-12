@@ -4,16 +4,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        paper: "#F5F3EE",
-        panel: "#FBFAF7",
-        ink: "#23252B",
-        muted: "#6B6F76",
-        line: "#D9D5CC",
-        blueprint: "#2F5D8C",
-        "blueprint-soft": "#E3EAF2",
-        recent: "#22c55e",
-        old: "#64748b",
-        uncommitted: "#3b82f6",
+        paper: "#06070A",
+        panel: "#0E1116",
+        ink: "#E6EAF0",
+        muted: "#8A93A3",
+        line: "#232833",
+        blueprint: "#4FC3F7",
+        "blueprint-soft": "#0F1E2A",
+        recent: "#34D399",
+        old: "#64748B",
+        uncommitted: "#60A5FA",
       },
       fontFamily: {
         sans: [

@@ -18,7 +18,7 @@ IGNORE_DIRS = {
 RECENT_DAYS = 7
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
-LOG_DB_PATH = BACKEND_DIR / "data" / "blueprint_logs.db"
+DB_PATH = BACKEND_DIR / "data" / "blueprint.db"
 
 CORS_ORIGINS = [
     "http://localhost:5173",

@@ -3,8 +3,18 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
 
-from app.models.schemas import LogExportRequest, ScanRequest, ScanResponse
+from app.models.schemas import (
+    LogExportRequest,
+    ProjectModel,
+    ScanRequest,
+    ScanResponse,
+)
 from app.services.logging_db import export_csv, log, query_logs
+from app.services.project_store import (
+    delete_project,
+    get_blueprint,
+    list_projects,
+)
 from app.services.scan_service import ScanError, scan_project
 
 router = APIRouter(prefix="/api")
@@ -18,9 +28,33 @@ def health() -> dict:
 @router.post("/blueprint/scan", response_model=ScanResponse)
 def scan(request: ScanRequest) -> ScanResponse:
     try:
-        return scan_project(request.project_path)
+        return scan_project(request.project_path, request.name)
     except ScanError as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.message)
+
+
+@router.get("/projects", response_model=list[ProjectModel])
+def get_projects() -> list[ProjectModel]:
+    return [ProjectModel(**item) for item in list_projects()]
+
+
+@router.get("/projects/{project_id}/blueprint")
+def get_project_blueprint(project_id: int) -> dict:
+    payload = get_blueprint(project_id)
+    if payload is None:
+        raise HTTPException(
+            status_code=404, detail=f"项目不存在或尚未扫描: {project_id}"
+        )
+    payload["project_id"] = project_id
+    return payload
+
+
+@router.delete("/projects/{project_id}")
+def remove_project(project_id: int) -> dict:
+    if not delete_project(project_id):
+        raise HTTPException(status_code=404, detail=f"项目不存在: {project_id}")
+    log("info", "api.routes", "删除项目", {"project_id": project_id})
+    return {"deleted": project_id}
 
 
 @router.post("/logs/export")

@@ -12,8 +12,17 @@ import { computeHighlight, useBlueprintStore } from "../store/blueprintStore";
 import { buildEdges, layoutGraph } from "../layout/dagreLayout";
 import CircleNode, { type CircleNodeData } from "./CircleNode";
 import NodeTooltip from "./NodeTooltip";
+import { colorForGroup, buildGroupColorMap, HIGHLIGHT_COLOR } from "../utils/groupColor";
 
 const nodeTypes = { circle: CircleNode } as NodeTypes;
+
+type Lod = "L0" | "L1" | "L2";
+
+function lodForZoom(zoom: number): Lod {
+  if (zoom < 0.28) return "L0";
+  if (zoom < 0.5) return "L1";
+  return "L2";
+}
 
 interface HoverState {
   node: RawNode;
@@ -28,6 +37,7 @@ export default function BlueprintCanvas() {
   const searchQuery = useBlueprintStore((state) => state.searchQuery);
   const select = useBlueprintStore((state) => state.select);
   const [hover, setHover] = useState<HoverState | null>(null);
+  const [lod, setLod] = useState<Lod>("L2");
 
   const baseNodes = useMemo(
     () => (raw ? layoutGraph(raw.nodes, raw.edges) : []),
@@ -37,6 +47,15 @@ export default function BlueprintCanvas() {
   const highlight = useMemo(
     () => computeHighlight(raw?.edges ?? [], selectedId),
     [raw, selectedId],
+  );
+  const groupById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const node of raw?.nodes ?? []) map.set(node.id, node.group);
+    return map;
+  }, [raw]);
+  const groupColors = useMemo(
+    () => buildGroupColorMap((raw?.nodes ?? []).map((node) => node.group)),
+    [raw],
   );
   const query = searchQuery.trim().toLowerCase();
 
@@ -58,29 +77,39 @@ export default function BlueprintCanvas() {
             highlighted: selectedId !== null && related && node.id !== selectedId,
             searchHit: hit,
             selected: node.id === selectedId,
+            lod,
           },
         };
       }),
-    [baseNodes, highlight, selectedId, query],
+    [baseNodes, highlight, selectedId, query, lod],
   );
 
-  const displayEdges = useMemo(
-    () =>
-      baseEdges.map((edge) => {
-        const isHighlighted = highlight.edges.has(edge.id);
-        const dimmed = selectedId !== null && !isHighlighted;
-        return {
-          ...edge,
-          animated: isHighlighted,
-          style: {
-            stroke: isHighlighted ? "#2F5D8C" : "#B9C2CE",
-            strokeWidth: isHighlighted ? 2 : 1.4,
-            opacity: dimmed ? 0.12 : 1,
-          },
-        };
-      }),
-    [baseEdges, highlight, selectedId],
-  );
+  const displayEdges = useMemo(() => {
+    if (lod === "L0") return [];
+    return baseEdges.map((edge) => {
+      const isHighlighted = highlight.edges.has(edge.id);
+      const groupColor = colorForGroup(
+        groupColors,
+        groupById.get(edge.source) ?? "",
+      );
+      const stroke =
+        selectedId !== null
+          ? isHighlighted
+            ? HIGHLIGHT_COLOR
+            : groupColor
+          : groupColor;
+      const opacity = selectedId !== null ? (isHighlighted ? 1 : 0.05) : 0.5;
+      return {
+        ...edge,
+        animated: isHighlighted,
+        style: {
+          stroke,
+          strokeWidth: isHighlighted ? 2.5 : 1.4,
+          opacity,
+        },
+      };
+    });
+  }, [baseEdges, highlight, selectedId, groupColors, groupById, lod]);
 
   return (
     <div className="relative h-full w-full">
@@ -93,6 +122,10 @@ export default function BlueprintCanvas() {
         maxZoom={2}
         fitView
         fitViewOptions={{ padding: 0.2, minZoom: 0.5, maxZoom: 1 }}
+        onMove={(_, viewport) => {
+          const next = lodForZoom(viewport.zoom);
+          setLod((current) => (current === next ? current : next));
+        }}
         onNodeClick={(_, node) => select(node.id)}
         onPaneClick={() => select(null)}
         onNodeMouseEnter={(event, node) =>
@@ -109,10 +142,14 @@ export default function BlueprintCanvas() {
           variant={BackgroundVariant.Lines}
           gap={28}
           lineWidth={1}
-          color="#DCE3EC"
+          color="#151B26"
         />
         <Controls position="bottom-right" showInteractive={false} />
       </ReactFlow>
+
+      <div className="pointer-events-none absolute bottom-4 right-16 z-30 rounded border border-line bg-panel/80 px-2 py-0.5 font-mono text-[0.6rem] text-muted">
+        LOD {lod}
+      </div>
 
       {status === "idle" && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -150,9 +187,7 @@ export default function BlueprintCanvas() {
         </div>
       )}
 
-      {hover && (
-        <NodeTooltip node={hover.node} x={hover.x} y={hover.y} />
-      )}
+      {hover && <NodeTooltip node={hover.node} x={hover.x} y={hover.y} />}
     </div>
   );
 }

@@ -36,3 +36,17 @@ def git(repo: Path):
         return run_git(repo, *args, env=env)
 
     return _run
+
+
+@pytest.fixture
+def isolated_db(tmp_path, monkeypatch):
+    """把应用数据库指向临时文件，避免测试污染真实 DB。"""
+    from app import config
+    from app.services import logging_db, project_store
+
+    monkeypatch.setattr(config, "DB_PATH", tmp_path / "blueprint_test.db")
+    logging_db._initialized = False
+    project_store._initialized = False
+    yield
+    logging_db._initialized = False
+    project_store._initialized = False
