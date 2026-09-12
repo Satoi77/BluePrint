@@ -81,3 +81,23 @@ description: BluePrint（机器人大脑项目蓝图可视化）的架构设计�
 2. 只沉淀项目特定知识，不重复全局 skill
 3. 追加到相应章节并更新修订历史
 4. 避免重复，合并相似内容
+
+## 六、项目本地知识沉淀（实际记录）
+
+### 扫描根 = 模块命名空间
+后端解析 import 时，模块名以**扫描根**为基准。若扫描仓库根（含 `backend/`），文件模块名是 `backend.app.x`，而代码写 `app.x` → 全部解析落空、`edge_count=0`（界面仍正常显示孤立节点）。要正确连线，应扫描**包根**（如 `backend/`）；但 MVP 要求扫描目录内含 `.git`，二者在 BluePrint 自身不一致。后续可增强：同一入口内分别识别仓库根与包根。
+**来源**：2026-09-13 端到端验证（commit f06a8cd）。
+
+### 前端构建：单 tsconfig + `tsc --noEmit`
+不要用 `tsc -b` + composite 引用（会把 `vite.config.js/.d.ts` 写回源码目录，且 `noEmit` 触发 TS6310）。本项目 `build` = `tsc --noEmit && vite build`，`tsconfig.json` 的 `include` 含 `vite.config.ts`，无 `tsconfig.node.json`。
+**来源**：2026-09-13 构建修复（commit f06a8cd）。
+
+### 端到端测试用原生 Edge + CDP
+Tabbit 在本机报 `Target.createTarget` CDP 错误不可用。可用原生 Edge headless：`msedge --headless=new --remote-debugging-port=9222 --user-data-dir=<temp>`，再用 Node 内置 `WebSocket` 走 CDP（`/json/new` → `Runtime.evaluate` 填 React 受控输入 + 点击 → `Page.captureScreenshot`）。
+**来源**：2026-09-13 前端验证（用户指定改用 Edge）。
+
+## 修订历史（追加）
+
+| 日期 | 变更内容 |
+|------|----------|
+| 2026-09-13 | MVP 全量交付；沉淀扫描根/构建/Edge 测试三条项目知识 |
