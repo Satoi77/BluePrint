@@ -5,7 +5,7 @@ from typing import Optional
 
 from app.config import RECENT_DAYS
 from app.models.schemas import ScanResponse, ScanStats
-from app.scanner.blueprint_builder import build_blueprint
+from app.scanner.blueprint_builder import aggregate_by_function, build_blueprint
 from app.scanner.git_reader import GitError, read_git_history
 from app.scanner.project_scanner import scan_python_files
 from app.services.logging_db import log
@@ -30,7 +30,11 @@ def validate_project_path(project_path: str) -> Path:
     return path.resolve()
 
 
-def scan_project(project_path: str, name: Optional[str] = None) -> ScanResponse:
+def scan_project(
+    project_path: str,
+    name: Optional[str] = None,
+    granularity: str = "function",
+) -> ScanResponse:
     started = time.time()
     log("info", "services.scan_service", "开始扫描", {"project_path": project_path})
 
@@ -61,6 +65,8 @@ def scan_project(project_path: str, name: Optional[str] = None) -> ScanResponse:
     git_elapsed = time.time() - git_started
 
     nodes, edges = build_blueprint(files, history, RECENT_DAYS)
+    if granularity == "function":
+        nodes, edges = aggregate_by_function(nodes, edges)
 
     if not files:
         warnings.append("未发现可解析的 Python 文件")

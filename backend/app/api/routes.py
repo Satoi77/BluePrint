@@ -28,7 +28,9 @@ def health() -> dict:
 @router.post("/blueprint/scan", response_model=ScanResponse)
 def scan(request: ScanRequest) -> ScanResponse:
     try:
-        return scan_project(request.project_path, request.name)
+        return scan_project(
+            request.project_path, request.name, request.granularity
+        )
     except ScanError as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.message)
 

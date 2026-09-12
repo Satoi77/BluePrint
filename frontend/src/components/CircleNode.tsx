@@ -15,8 +15,10 @@ export interface CircleNodeData {
 
 export type CircleNodeType = Node<CircleNodeData, "circle">;
 
-function truncate(label: string): string {
-  return label.length > 24 ? `${label.slice(0, 22)}…` : label;
+function shortLabel(label: string): string {
+  const parts = label.split("/");
+  const short = parts.length > 2 ? parts.slice(-2).join("/") : label;
+  return short.length > 24 ? `${short.slice(0, 22)}…` : short;
 }
 
 export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
@@ -63,9 +65,9 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
       {showLabel && (
         <div
           className="mt-1 max-w-[128px] truncate font-mono text-[0.66rem] leading-tight text-white"
-          title={data.raw.file_path}
+          title={`${data.raw.label}（${data.raw.files.length} 个文件）`}
         >
-          {truncate(data.raw.label)}
+          {shortLabel(data.raw.label)}
         </div>
       )}
     </div>

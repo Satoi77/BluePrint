@@ -21,7 +21,10 @@ function Legend() {
     if (!raw) return [];
     const counts = new Map<string, number>();
     for (const node of raw.nodes) {
-      counts.set(node.group, (counts.get(node.group) ?? 0) + 1);
+      counts.set(
+        node.group,
+        (counts.get(node.group) ?? 0) + (node.files?.length ?? 0),
+      );
     }
     const colors = buildGroupColorMap([...counts.keys()]);
     return [...counts.entries()]
@@ -45,7 +48,7 @@ function Legend() {
       {groups.length > 0 && (
         <>
           <div className="mb-1.5 mt-3 border-t border-line pt-2 text-ink">
-            功能分组
+            功能模块（文件数）
           </div>
           {groups.map((item) => (
             <div key={item.group} className="flex items-center gap-2 py-0.5">

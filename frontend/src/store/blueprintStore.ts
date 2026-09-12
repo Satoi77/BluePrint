@@ -20,6 +20,18 @@ export interface Highlight {
 
 const ACTIVE_KEY = "blueprint.activeProjectId";
 
+function normalize(data: ScanResponse): ScanResponse {
+  return {
+    ...data,
+    nodes: data.nodes.map((node) => ({
+      ...node,
+      files: node.files ?? [],
+      functions: node.functions ?? [],
+      group: node.group ?? "",
+    })),
+  };
+}
+
 interface BlueprintState {
   projects: Project[];
   activeProjectId: number | null;
@@ -68,7 +80,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => ({
     set({ status: "loading", error: null });
     log("info", "store.blueprint", "开始扫描", { path });
     try {
-      const data = await scanProject(path, name);
+      const data = normalize(await scanProject(path, name));
       set({
         raw: data,
         status: "success",
@@ -91,7 +103,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => ({
   openProject: async (id) => {
     set({ status: "loading", error: null, selectedId: null, searchQuery: "" });
     try {
-      const data = await getProjectBlueprint(id);
+      const data = normalize(await getProjectBlueprint(id));
       set({ raw: data, status: "success", activeProjectId: id });
       localStorage.setItem(ACTIVE_KEY, String(id));
       log("info", "store.blueprint", "打开项目", {

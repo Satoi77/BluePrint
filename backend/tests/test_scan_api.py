@@ -55,7 +55,8 @@ def test_scan_happy_path(repo, git):
     git("commit", "-m", "init")
 
     response = client.post(
-        "/api/blueprint/scan", json={"project_path": str(repo)}
+        "/api/blueprint/scan",
+        json={"project_path": str(repo), "granularity": "file"},
     )
     assert response.status_code == 200
     data = response.json()
@@ -68,6 +69,34 @@ def test_scan_happy_path(repo, git):
     assert node_a["status"] == "recent"
     assert node_a["last_commit_message"] == "init"
     assert node_a["functions"] == []
+
+
+def test_scan_function_granularity(repo, git):
+    (repo / "pkg1").mkdir()
+    (repo / "pkg1" / "a.py").write_text(
+        "from pkg2.b import helper\n", encoding="utf-8"
+    )
+    (repo / "pkg2").mkdir()
+    (repo / "pkg2" / "b.py").write_text(
+        "def helper():\n    pass\n", encoding="utf-8"
+    )
+    git("add", ".")
+    git("commit", "-m", "init")
+
+    response = client.post(
+        "/api/blueprint/scan", json={"project_path": str(repo)}
+    )
+    assert response.status_code == 200
+    data = response.json()
+    ids = {node["id"] for node in data["nodes"]}
+    assert ids == {"pkg1", "pkg2"}
+    assert any(
+        edge["source"] == "pkg1" and edge["target"] == "pkg2"
+        for edge in data["edges"]
+    )
+    pkg1 = next(node for node in data["nodes"] if node["id"] == "pkg1")
+    assert pkg1["files"] == ["pkg1/a.py"]
+    assert pkg1["functions"] == []
 
 
 def test_scan_persists_and_lists_project(repo, git):

@@ -13,6 +13,7 @@ export interface RawNode {
   functions: string[];
   is_isolated: boolean;
   group: string;
+  files: string[];
 }
 
 export interface RawEdge {

@@ -33,6 +33,7 @@ class CommitInfo:
 class ScanRequest(BaseModel):
     project_path: str
     name: Optional[str] = None
+    granularity: Literal["function", "file"] = "function"
 
 
 class ProjectModel(BaseModel):
@@ -58,6 +59,7 @@ class NodeModel(BaseModel):
     functions: list[str] = []
     is_isolated: bool = False
     group: str = ""
+    files: list[str] = []
 
 
 class EdgeModel(BaseModel):
