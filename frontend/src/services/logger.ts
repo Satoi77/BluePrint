@@ -80,6 +80,22 @@ export async function queryLogs(
     .sort((a, b) => a.ts_utc.localeCompare(b.ts_utc));
 }
 
+export function downloadText(
+  filename: string,
+  text: string,
+  mime = "text/markdown;charset=utf-8",
+): void {
+  const blob = new Blob([text], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+  URL.revokeObjectURL(url);
+}
+
 export function downloadJson(filename: string, data: unknown): void {
   const blob = new Blob([JSON.stringify(data, null, 2)], {
     type: "application/json;charset=utf-8",

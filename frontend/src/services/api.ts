@@ -46,6 +46,33 @@ export interface ScanResponse {
   project_name: string | null;
 }
 
+export interface BpFunction {
+  id: string;
+  name: string;
+  level: number;
+  parent: string | null;
+  kind: string;
+  description?: string;
+  files: string[];
+  symbols?: string[];
+  isolated?: boolean;
+}
+
+export interface BpEdge {
+  source: string;
+  target: string;
+  type?: string;
+  label?: string;
+}
+
+export interface AgentBlueprint {
+  version?: number;
+  project_name?: string;
+  functions: BpFunction[];
+  edges: BpEdge[];
+  ignored?: string[];
+}
+
 export interface Project {
   id: number;
   name: string;
@@ -139,6 +166,84 @@ export function deleteProject(projectId: number): Promise<{ deleted: number }> {
   return request<{ deleted: number }>(`/api/projects/${projectId}`, {
     method: "DELETE",
   });
+}
+
+export function getBlueprintSource(projectId: number): Promise<AgentBlueprint> {
+  return request<AgentBlueprint>(`/api/projects/${projectId}/blueprint/source`);
+}
+
+export function addBlueprintFunction(
+  projectId: number,
+  fn: BpFunction,
+): Promise<ScanResponse> {
+  return request<ScanResponse>(`/api/projects/${projectId}/blueprint/functions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(fn),
+  });
+}
+
+export function updateBlueprintFunction(
+  projectId: number,
+  fn: BpFunction,
+): Promise<ScanResponse> {
+  return request<ScanResponse>(
+    `/api/projects/${projectId}/blueprint/functions/update`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(fn),
+    },
+  );
+}
+
+export function deleteBlueprintFunction(
+  projectId: number,
+  id: string,
+): Promise<ScanResponse> {
+  return request<ScanResponse>(
+    `/api/projects/${projectId}/blueprint/functions/delete`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    },
+  );
+}
+
+export function addBlueprintEdge(
+  projectId: number,
+  edge: BpEdge,
+): Promise<ScanResponse> {
+  return request<ScanResponse>(`/api/projects/${projectId}/blueprint/edges/add`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(edge),
+  });
+}
+
+export function deleteBlueprintEdge(
+  projectId: number,
+  edge: BpEdge,
+): Promise<ScanResponse> {
+  return request<ScanResponse>(
+    `/api/projects/${projectId}/blueprint/edges/delete`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(edge),
+    },
+  );
+}
+
+export async function fetchBlueprintSpec(projectId: number): Promise<string> {
+  const response = await fetch(
+    `${API_BASE}/api/projects/${projectId}/blueprint/export`,
+  );
+  if (!response.ok) {
+    throw new Error(`导出失败: HTTP ${response.status}`);
+  }
+  return response.text();
 }
 
 export function exportBackendLogs(

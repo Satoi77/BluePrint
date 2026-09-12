@@ -1,15 +1,25 @@
 import { create } from "zustand";
 
 import {
+  addBlueprintEdge,
+  addBlueprintFunction,
+  deleteBlueprintEdge,
+  deleteBlueprintFunction,
   deleteProject as apiDeleteProject,
+  fetchBlueprintSpec,
+  getBlueprintSource,
   getProjectBlueprint,
   listProjects,
   scanProject,
+  updateBlueprintFunction,
+  type AgentBlueprint,
+  type BpEdge,
+  type BpFunction,
   type Project,
   type RawEdge,
   type ScanResponse,
 } from "../services/api";
-import { log } from "../services/logger";
+import { downloadText, log } from "../services/logger";
 
 export type LoadStatus = "idle" | "loading" | "success" | "error";
 
@@ -50,6 +60,7 @@ interface BlueprintState {
   selectedId: string | null;
   searchQuery: string;
   visibleLevel: number;
+  blueprintSource: AgentBlueprint | null;
   setVisibleLevel: (level: number) => void;
   init: () => Promise<void>;
   scan: (path: string, name?: string) => Promise<void>;
@@ -58,9 +69,37 @@ interface BlueprintState {
   select: (id: string | null) => void;
   setSearch: (query: string) => void;
   clearError: () => void;
+  loadSource: () => Promise<void>;
+  addFunction: (fn: BpFunction) => Promise<void>;
+  updateFunction: (fn: BpFunction) => Promise<void>;
+  removeFunction: (id: string) => Promise<void>;
+  addEdge: (edge: BpEdge) => Promise<void>;
+  removeEdge: (edge: BpEdge) => Promise<void>;
+  exportSpec: () => Promise<void>;
 }
 
-export const useBlueprintStore = create<BlueprintState>((set, get) => ({
+export const useBlueprintStore = create<BlueprintState>((set, get) => {
+  const msg = (error: unknown) =>
+    error instanceof Error ? error.message : String(error);
+
+  const refreshSource = async (id: number | null) => {
+    if (!id) {
+      set({ blueprintSource: null });
+      return;
+    }
+    try {
+      set({ blueprintSource: await getBlueprintSource(id) });
+    } catch {
+      set({ blueprintSource: null });
+    }
+  };
+
+  const applyEdit = async (data: ScanResponse) => {
+    set({ raw: normalize(data), status: "success" });
+    await refreshSource(get().activeProjectId);
+  };
+
+  return {
   projects: [],
   activeProjectId: null,
   raw: null,
@@ -69,6 +108,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => ({
   selectedId: null,
   searchQuery: "",
   visibleLevel: 0,
+  blueprintSource: null,
 
   setVisibleLevel: (level) => set({ visibleLevel: level }),
 
@@ -106,6 +146,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => ({
         localStorage.setItem(ACTIVE_KEY, String(data.project_id));
       }
       set({ projects: await listProjects() });
+      await refreshSource(data.project_id);
       log("info", "store.blueprint", "扫描成功", data.stats);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -120,6 +161,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => ({
       const data = normalize(await getProjectBlueprint(id));
       set({ raw: data, status: "success", activeProjectId: id });
       localStorage.setItem(ACTIVE_KEY, String(id));
+      await refreshSource(id);
       log("info", "store.blueprint", "打开项目", {
         id,
         name: data.project_name,
@@ -156,7 +198,81 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => ({
   select: (id) => set({ selectedId: id }),
   setSearch: (query) => set({ searchQuery: query }),
   clearError: () => set({ error: null }),
-}));
+
+  loadSource: async () => {
+    await refreshSource(get().activeProjectId);
+  },
+
+  addFunction: async (fn) => {
+    const id = get().activeProjectId;
+    if (!id) return;
+    try {
+      await applyEdit(await addBlueprintFunction(id, fn));
+      set({ selectedId: fn.id });
+    } catch (error) {
+      set({ error: msg(error) });
+      log("error", "store.blueprint", "新增功能失败", { message: msg(error) });
+    }
+  },
+
+  updateFunction: async (fn) => {
+    const id = get().activeProjectId;
+    if (!id) return;
+    try {
+      await applyEdit(await updateBlueprintFunction(id, fn));
+    } catch (error) {
+      set({ error: msg(error) });
+      log("error", "store.blueprint", "更新功能失败", { message: msg(error) });
+    }
+  },
+
+  removeFunction: async (functionId) => {
+    const id = get().activeProjectId;
+    if (!id) return;
+    try {
+      await applyEdit(await deleteBlueprintFunction(id, functionId));
+      set({ selectedId: null });
+    } catch (error) {
+      set({ error: msg(error) });
+      log("error", "store.blueprint", "删除功能失败", { message: msg(error) });
+    }
+  },
+
+  addEdge: async (edge) => {
+    const id = get().activeProjectId;
+    if (!id) return;
+    try {
+      await applyEdit(await addBlueprintEdge(id, edge));
+    } catch (error) {
+      set({ error: msg(error) });
+      log("error", "store.blueprint", "新增连线失败", { message: msg(error) });
+    }
+  },
+
+  removeEdge: async (edge) => {
+    const id = get().activeProjectId;
+    if (!id) return;
+    try {
+      await applyEdit(await deleteBlueprintEdge(id, edge));
+    } catch (error) {
+      set({ error: msg(error) });
+      log("error", "store.blueprint", "删除连线失败", { message: msg(error) });
+    }
+  },
+
+  exportSpec: async () => {
+    const id = get().activeProjectId;
+    if (!id) return;
+    try {
+      const text = await fetchBlueprintSpec(id);
+      downloadText(`blueprint_spec_${id}.md`, text);
+      log("info", "store.blueprint", "导出功能说明", { projectId: id });
+    } catch (error) {
+      set({ error: msg(error) });
+    }
+  },
+};
+});
 
 export function computeHighlight(edges: RawEdge[], id: string | null): Highlight {
   const nodes = new Set<string>();

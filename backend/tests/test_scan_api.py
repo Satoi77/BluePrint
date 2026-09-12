@@ -131,6 +131,92 @@ def test_scan_persists_and_lists_project(repo, git):
     assert client.get(f"/api/projects/{project_id}/blueprint").status_code == 404
 
 
+def test_blueprint_edit_and_export(repo, git):
+    (repo / "pkg").mkdir()
+    (repo / "pkg" / "a.py").write_text("def f():\n    pass\n", encoding="utf-8")
+    git("add", ".")
+    git("commit", "-m", "init")
+
+    project_id = client.post(
+        "/api/blueprint/scan", json={"project_path": str(repo)}
+    ).json()["project_id"]
+
+    blueprint = {
+        "functions": [
+            {
+                "id": "main",
+                "name": "主功能",
+                "level": 0,
+                "parent": None,
+                "kind": "block",
+                "files": ["pkg/a.py"],
+            },
+            {
+                "id": "main.sub",
+                "name": "子功能",
+                "level": 1,
+                "parent": "main",
+                "kind": "group",
+                "files": ["pkg/a.py"],
+            },
+        ],
+        "edges": [],
+    }
+    assert (
+        client.post(
+            f"/api/projects/{project_id}/blueprint", json=blueprint
+        ).status_code
+        == 200
+    )
+
+    source = client.get(
+        f"/api/projects/{project_id}/blueprint/source"
+    ).json()
+    assert any(item["id"] == "main" for item in source["functions"])
+
+    added = client.post(
+        f"/api/projects/{project_id}/blueprint/functions",
+        json={
+            "id": "main.sub.atomic",
+            "name": "原子",
+            "level": 2,
+            "parent": "main.sub",
+            "kind": "atomic",
+            "files": ["pkg/a.py"],
+        },
+    )
+    assert added.status_code == 200
+
+    updated = client.post(
+        f"/api/projects/{project_id}/blueprint/functions/update",
+        json={
+            "id": "main.sub.atomic",
+            "name": "原子2",
+            "level": 2,
+            "parent": "main.sub",
+            "kind": "atomic",
+            "files": ["pkg/a.py"],
+        },
+    )
+    assert updated.status_code == 200
+
+    edge = client.post(
+        f"/api/projects/{project_id}/blueprint/edges/add",
+        json={"source": "main", "target": "main.sub", "type": "call"},
+    )
+    assert edge.status_code == 200
+
+    deleted = client.post(
+        f"/api/projects/{project_id}/blueprint/functions/delete",
+        json={"id": "main.sub.atomic"},
+    )
+    assert deleted.status_code == 200
+
+    exported = client.get(f"/api/projects/{project_id}/blueprint/export")
+    assert exported.status_code == 200
+    assert "功能结构化说明" in exported.text
+
+
 def test_bad_file_does_not_abort(repo, git):
     (repo / "good.py").write_text("x = 1\n", encoding="utf-8")
     (repo / "bad.py").write_text("def (:\n", encoding="utf-8")

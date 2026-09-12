@@ -41,6 +41,8 @@ export default function BlueprintCanvas() {
   const searchQuery = useBlueprintStore((state) => state.searchQuery);
   const select = useBlueprintStore((state) => state.select);
   const visibleLevel = useBlueprintStore((state) => state.visibleLevel);
+  const addEdge = useBlueprintStore((state) => state.addEdge);
+  const removeEdge = useBlueprintStore((state) => state.removeEdge);
   const [hover, setHover] = useState<HoverState | null>(null);
   const instanceRef = useRef<ReactFlowInstance<CircleNodeType, Edge> | null>(
     null,
@@ -126,6 +128,9 @@ export default function BlueprintCanvas() {
     [levelEdges, highlight, selectedId, groupColors, groupById],
   );
 
+  const fitKey = `${raw?.project_id ?? 0}:${visibleLevel}:${
+    raw?.stats.node_count ?? 0
+  }`;
   useEffect(() => {
     instanceRef.current?.fitView({
       padding: 0.25,
@@ -133,12 +138,11 @@ export default function BlueprintCanvas() {
       minZoom: 0.2,
       maxZoom: 1,
     });
-  }, [visibleLevel, raw]);
+  }, [fitKey]);
 
   return (
     <div className="relative h-full w-full">
       <ReactFlow
-        key={raw?.generated_at ?? "empty"}
         nodes={displayNodes}
         edges={displayEdges}
         nodeTypes={nodeTypes}
@@ -151,6 +155,20 @@ export default function BlueprintCanvas() {
         }}
         onNodeClick={(_, node) => select(node.id)}
         onPaneClick={() => select(null)}
+        onConnect={(connection) => {
+          if (connection.source && connection.target) {
+            void addEdge({
+              source: connection.source,
+              target: connection.target,
+              type: "manual",
+            });
+          }
+        }}
+        onEdgeClick={(_, edge) => {
+          if (window.confirm("删除这条连线？")) {
+            void removeEdge({ source: edge.source, target: edge.target });
+          }
+        }}
         onNodeMouseEnter={(event, node) =>
           setHover({
             node: (node.data as CircleNodeData).raw,

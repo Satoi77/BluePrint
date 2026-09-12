@@ -10,9 +10,11 @@ from app.models.schemas import (
     ScanResponse,
 )
 from app.services.logging_db import export_csv, log, query_logs
+from app.services import blueprint_editor
 from app.services.project_store import (
     delete_project,
     get_blueprint,
+    get_mapping,
     get_project,
     list_projects,
     save_mapping,
@@ -67,6 +69,119 @@ def import_blueprint(project_id: int, blueprint: dict) -> ScanResponse:
         return scan_project(project["root_path"], project["name"], "function")
     except ScanError as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.message)
+
+
+def _require_project(project_id: int) -> dict:
+    project = get_project(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail=f"项目不存在: {project_id}")
+    return project
+
+
+def _require_blueprint(project_id: int) -> dict:
+    blueprint = get_mapping(project_id)
+    if not blueprint or not blueprint.get("functions"):
+        raise HTTPException(status_code=404, detail="该项目尚无功能蓝图")
+    return blueprint
+
+
+def _rebuild(project: dict) -> ScanResponse:
+    try:
+        return scan_project(project["root_path"], project["name"], "function")
+    except ScanError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.message)
+
+
+@router.get("/projects/{project_id}/blueprint/source")
+def get_project_blueprint_raw(project_id: int) -> dict:
+    _require_project(project_id)
+    return _require_blueprint(project_id)
+
+
+@router.post("/projects/{project_id}/blueprint/functions", response_model=ScanResponse)
+def add_blueprint_function(project_id: int, function: dict) -> ScanResponse:
+    project = _require_project(project_id)
+    blueprint = _require_blueprint(project_id)
+    try:
+        blueprint_editor.add_function(blueprint, function)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    save_mapping(project_id, blueprint)
+    return _rebuild(project)
+
+
+@router.post(
+    "/projects/{project_id}/blueprint/functions/update",
+    response_model=ScanResponse,
+)
+def update_blueprint_function(project_id: int, function: dict) -> ScanResponse:
+    project = _require_project(project_id)
+    blueprint = _require_blueprint(project_id)
+    try:
+        blueprint_editor.update_function(blueprint, function)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    save_mapping(project_id, blueprint)
+    return _rebuild(project)
+
+
+@router.post(
+    "/projects/{project_id}/blueprint/functions/delete",
+    response_model=ScanResponse,
+)
+def delete_blueprint_function(project_id: int, payload: dict) -> ScanResponse:
+    project = _require_project(project_id)
+    blueprint = _require_blueprint(project_id)
+    try:
+        blueprint_editor.delete_function(blueprint, payload.get("id", ""))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    save_mapping(project_id, blueprint)
+    return _rebuild(project)
+
+
+@router.post(
+    "/projects/{project_id}/blueprint/edges/add", response_model=ScanResponse
+)
+def add_blueprint_edge(project_id: int, edge: dict) -> ScanResponse:
+    project = _require_project(project_id)
+    blueprint = _require_blueprint(project_id)
+    try:
+        blueprint_editor.add_edge(blueprint, edge)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    save_mapping(project_id, blueprint)
+    return _rebuild(project)
+
+
+@router.post(
+    "/projects/{project_id}/blueprint/edges/delete", response_model=ScanResponse
+)
+def delete_blueprint_edge(project_id: int, edge: dict) -> ScanResponse:
+    project = _require_project(project_id)
+    blueprint = _require_blueprint(project_id)
+    blueprint_editor.delete_edge(
+        blueprint, edge.get("source", ""), edge.get("target", "")
+    )
+    save_mapping(project_id, blueprint)
+    return _rebuild(project)
+
+
+@router.get("/projects/{project_id}/blueprint/export", response_class=PlainTextResponse)
+def export_project_blueprint(project_id: int) -> PlainTextResponse:
+    project = _require_project(project_id)
+    blueprint = _require_blueprint(project_id)
+    generated_at = datetime.now(timezone.utc).isoformat()
+    content = blueprint_editor.export_markdown(
+        blueprint, project["name"], generated_at
+    )
+    return PlainTextResponse(
+        content=content,
+        media_type="text/markdown; charset=utf-8",
+        headers={
+            "Content-Disposition": "attachment; filename=blueprint_spec.md"
+        },
+    )
 
 
 @router.delete("/projects/{project_id}")

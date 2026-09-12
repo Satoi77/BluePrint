@@ -7,6 +7,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import IsolatedPool from "./components/IsolatedPool";
 import LevelSwitcher from "./components/LevelSwitcher";
 import LogExportPanel from "./components/LogExportPanel";
+import NodeEditor from "./components/NodeEditor";
 import ProjectPathInput from "./components/ProjectPathInput";
 import ProjectSwitcher from "./components/ProjectSwitcher";
 import SearchBar from "./components/SearchBar";
@@ -89,6 +90,8 @@ function Legend() {
 
 export default function App() {
   const raw = useBlueprintStore((state) => state.raw);
+  const selectedId = useBlueprintStore((state) => state.selectedId);
+  const exportSpec = useBlueprintStore((state) => state.exportSpec);
   const init = useBlueprintStore((state) => state.init);
 
   useEffect(() => {
@@ -117,6 +120,13 @@ export default function App() {
                 跳过 {raw.stats.files_skipped}
               </span>
             )}
+            <button
+              type="button"
+              onClick={() => void exportSpec()}
+              className="rounded border border-line bg-paper px-2.5 py-1 text-ink transition-colors hover:border-blueprint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blueprint/30"
+            >
+              导出说明
+            </button>
           </div>
         )}
       </header>
@@ -125,8 +135,9 @@ export default function App() {
           <BlueprintCanvas />
         </ErrorBoundary>
         <ErrorBanner />
-        <Legend />
+        {selectedId === null && <Legend />}
         <IsolatedPool />
+        <NodeEditor />
         <LogExportPanel />
       </main>
     </div>
