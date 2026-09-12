@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Catab design · critique: C5 H4 E4 S4 R5 U4
+  设计上下文（推断）：受众=个人开发者（管理超大 Python 工程）· 用例=浏览项目结构、识别活跃/陈旧模块 · 语调=technical（制图蓝图）
+  轮换说明：首次运行无历史配色；采用暖纸底 + 制图蓝，主动避开 AI 紫蓝渐变与纯白高对比。
+  字号纪律：全部使用 rem，便于未来由设置页根 font-size 统一缩放（MVP 未建 UI 设置页，故不硬编码 px 字号）。
+*/
+
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f5f3ee;
+  color: #23252b;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* React Flow：制图纸质感 */
+.react-flow__controls button {
+  background: #fbfaf7;
+  border-bottom: 1px solid #d9d5cc;
+  color: #23252b;
+}
+
+.react-flow__controls button:hover {
+  background: #e3eaf2;
+}
+
+.react-flow__minimap {
+  background: #fbfaf7;
+  border: 1px solid #d9d5cc;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

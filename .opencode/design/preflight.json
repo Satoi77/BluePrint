@@ -1,0 +1,9 @@
+{
+  "scannedAt": "2026-09-13",
+  "result": "No pre-flight signals — 空项目，使用完整设计栈",
+  "fontStack": null,
+  "palette": null,
+  "motion": "motion-cut",
+  "spacing": "Tailwind 默认 4pt",
+  "framework": "React 18 + TypeScript + Vite"
+}

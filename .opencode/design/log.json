@@ -1,0 +1,10 @@
+[
+  {
+    "date": "2026-09-13",
+    "palette": "warm-paper + blueprint-blue (#F5F3EE / #2F5D8C)",
+    "fonts": "system-sans + mono (JetBrains Mono/Cascadia 回退)",
+    "layout": "top-bar + infinite blueprint canvas",
+    "signature": "制图纸网格画布 + 状态色描边圆圈节点",
+    "brief": "机器人大脑项目蓝图可视化 MVP"
+  }
+]
