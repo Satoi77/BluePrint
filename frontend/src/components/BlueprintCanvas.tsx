@@ -1,27 +1,31 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Background,
   BackgroundVariant,
   Controls,
   ReactFlow,
+  type Edge,
   type NodeTypes,
+  type ReactFlowInstance,
 } from "@xyflow/react";
 
 import type { RawNode } from "../services/api";
 import { computeHighlight, useBlueprintStore } from "../store/blueprintStore";
-import { buildEdges, layoutGraph } from "../layout/dagreLayout";
-import CircleNode, { type CircleNodeData } from "./CircleNode";
+import { layoutHierarchy } from "../layout/hierarchyLayout";
+import CircleNode, { type CircleNodeData, type CircleNodeType } from "./CircleNode";
 import NodeTooltip from "./NodeTooltip";
-import { colorForGroup, buildGroupColorMap, HIGHLIGHT_COLOR } from "../utils/groupColor";
+import {
+  colorForGroup,
+  buildGroupColorMap,
+  HIGHLIGHT_COLOR,
+} from "../utils/groupColor";
 
 const nodeTypes = { circle: CircleNode } as NodeTypes;
 
-type Lod = "L0" | "L1" | "L2";
-
-function lodForZoom(zoom: number): Lod {
-  if (zoom < 0.28) return "L0";
-  if (zoom < 0.5) return "L1";
-  return "L2";
+function visibleAt(level: number, visible: number): boolean {
+  if (visible <= 0) return level === 0;
+  if (visible === 1) return level === 1;
+  return level === 1 || level === 2;
 }
 
 interface HoverState {
@@ -36,80 +40,100 @@ export default function BlueprintCanvas() {
   const selectedId = useBlueprintStore((state) => state.selectedId);
   const searchQuery = useBlueprintStore((state) => state.searchQuery);
   const select = useBlueprintStore((state) => state.select);
+  const visibleLevel = useBlueprintStore((state) => state.visibleLevel);
   const [hover, setHover] = useState<HoverState | null>(null);
-  const [lod, setLod] = useState<Lod>("L2");
+  const instanceRef = useRef<ReactFlowInstance<CircleNodeType, Edge> | null>(
+    null,
+  );
 
-  const baseNodes = useMemo(
-    () => (raw ? layoutGraph(raw.nodes, raw.edges) : []),
+  const allNodes = useMemo(
+    () => (raw ? layoutHierarchy(raw.nodes, raw.edges) : []),
     [raw],
   );
-  const baseEdges = useMemo(() => (raw ? buildEdges(raw.edges) : []), [raw]);
+
+  const edgeLevel = visibleLevel <= 0 ? 0 : 1;
+  const levelEdges = useMemo(
+    () => (raw?.edges ?? []).filter((edge) => edge.level === edgeLevel),
+    [raw, edgeLevel],
+  );
   const highlight = useMemo(
-    () => computeHighlight(raw?.edges ?? [], selectedId),
-    [raw, selectedId],
+    () => computeHighlight(levelEdges, selectedId),
+    [levelEdges, selectedId],
+  );
+  const groupColors = useMemo(
+    () => buildGroupColorMap((raw?.nodes ?? []).map((node) => node.group)),
+    [raw],
   );
   const groupById = useMemo(() => {
     const map = new Map<string, string>();
     for (const node of raw?.nodes ?? []) map.set(node.id, node.group);
     return map;
   }, [raw]);
-  const groupColors = useMemo(
-    () => buildGroupColorMap((raw?.nodes ?? []).map((node) => node.group)),
-    [raw],
-  );
   const query = searchQuery.trim().toLowerCase();
 
   const displayNodes = useMemo(
     () =>
-      baseNodes.map((node) => {
-        const hit =
-          query.length > 0 &&
-          (node.data.raw.label.toLowerCase().includes(query) ||
-            node.data.raw.file_path.toLowerCase().includes(query));
-        const related = highlight.nodes.has(node.id);
-        const dimmed =
-          (selectedId !== null && !related) || (query.length > 0 && !hit);
+      allNodes
+        .filter((node) => visibleAt(node.data.raw.level, visibleLevel))
+        .map((node) => {
+          const hit =
+            query.length > 0 &&
+            (node.data.raw.label.toLowerCase().includes(query) ||
+              node.data.raw.files.some((file) =>
+                file.toLowerCase().includes(query),
+              ));
+          const related = highlight.nodes.has(node.id);
+          const dimmed =
+            (selectedId !== null && !related) || (query.length > 0 && !hit);
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              dimmed,
+              highlighted:
+                selectedId !== null && related && node.id !== selectedId,
+              searchHit: hit,
+              selected: node.id === selectedId,
+            },
+          };
+        }),
+    [allNodes, visibleLevel, highlight, selectedId, query],
+  );
+
+  const displayEdges = useMemo<Edge[]>(
+    () =>
+      levelEdges.map((edge) => {
+        const isHighlighted = highlight.edges.has(
+          `${edge.source}->${edge.target}`,
+        );
+        const groupColor = colorForGroup(
+          groupColors,
+          groupById.get(edge.source) ?? "",
+        );
         return {
-          ...node,
-          data: {
-            ...node.data,
-            dimmed,
-            highlighted: selectedId !== null && related && node.id !== selectedId,
-            searchHit: hit,
-            selected: node.id === selectedId,
-            lod,
+          id: `${edge.source}->${edge.target}`,
+          source: edge.source,
+          target: edge.target,
+          type: "smoothstep",
+          animated: isHighlighted,
+          style: {
+            stroke: isHighlighted ? HIGHLIGHT_COLOR : groupColor,
+            strokeWidth: isHighlighted ? 2.5 : 1.4,
+            opacity: selectedId !== null ? (isHighlighted ? 1 : 0.05) : 0.5,
           },
         };
       }),
-    [baseNodes, highlight, selectedId, query, lod],
+    [levelEdges, highlight, selectedId, groupColors, groupById],
   );
 
-  const displayEdges = useMemo(() => {
-    if (lod === "L0") return [];
-    return baseEdges.map((edge) => {
-      const isHighlighted = highlight.edges.has(edge.id);
-      const groupColor = colorForGroup(
-        groupColors,
-        groupById.get(edge.source) ?? "",
-      );
-      const stroke =
-        selectedId !== null
-          ? isHighlighted
-            ? HIGHLIGHT_COLOR
-            : groupColor
-          : groupColor;
-      const opacity = selectedId !== null ? (isHighlighted ? 1 : 0.05) : 0.5;
-      return {
-        ...edge,
-        animated: isHighlighted,
-        style: {
-          stroke,
-          strokeWidth: isHighlighted ? 2.5 : 1.4,
-          opacity,
-        },
-      };
+  useEffect(() => {
+    instanceRef.current?.fitView({
+      padding: 0.25,
+      duration: 300,
+      minZoom: 0.2,
+      maxZoom: 1,
     });
-  }, [baseEdges, highlight, selectedId, groupColors, groupById, lod]);
+  }, [visibleLevel, raw]);
 
   return (
     <div className="relative h-full w-full">
@@ -118,13 +142,12 @@ export default function BlueprintCanvas() {
         nodes={displayNodes}
         edges={displayEdges}
         nodeTypes={nodeTypes}
-        minZoom={0.1}
+        minZoom={0.05}
         maxZoom={2}
         fitView
-        fitViewOptions={{ padding: 0.2, minZoom: 0.5, maxZoom: 1 }}
-        onMove={(_, viewport) => {
-          const next = lodForZoom(viewport.zoom);
-          setLod((current) => (current === next ? current : next));
+        fitViewOptions={{ padding: 0.25, minZoom: 0.2, maxZoom: 1 }}
+        onInit={(instance) => {
+          instanceRef.current = instance;
         }}
         onNodeClick={(_, node) => select(node.id)}
         onPaneClick={() => select(null)}
@@ -146,10 +169,6 @@ export default function BlueprintCanvas() {
         />
         <Controls position="bottom-right" showInteractive={false} />
       </ReactFlow>
-
-      <div className="pointer-events-none absolute bottom-4 right-16 z-30 rounded border border-line bg-panel/80 px-2 py-0.5 font-mono text-[0.6rem] text-muted">
-        LOD {lod}
-      </div>
 
       {status === "idle" && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -179,9 +198,6 @@ export default function BlueprintCanvas() {
               {raw.warnings.length > 0
                 ? raw.warnings.join("；")
                 : "该目录下没有可解析的 Python 文件"}
-            </div>
-            <div className="mt-2 font-mono text-[0.66rem] text-muted">
-              当前 MVP 仅解析 Python（.py）源文件
             </div>
           </div>
         </div>

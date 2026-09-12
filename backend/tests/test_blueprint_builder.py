@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 from app.models.schemas import CommitInfo, FileMeta, ImportRef
-from app.scanner.blueprint_builder import aggregate_by_function, build_blueprint
+from app.scanner.blueprint_builder import build_blueprint
 
 
 def make(
@@ -120,33 +120,6 @@ def test_single_segment_import_not_suffix_matched():
         [owner, target], {}, 7, datetime.now(timezone.utc)
     )
     assert edges == []
-
-
-def test_aggregate_by_function():
-    files = [
-        make("pkg1/a.py", [ImportRef("from", "pkg2.b", ["h"], 0, 1)], module="pkg1.a"),
-        make("pkg2/b.py", module="pkg2.b"),
-        make("pkg2/c.py", module="pkg2.c"),
-    ]
-    nodes, edges = build_blueprint(files, {}, 7, datetime.now(timezone.utc))
-    fn_nodes, fn_edges = aggregate_by_function(nodes, edges)
-
-    assert {node.id for node in fn_nodes} == {"pkg1", "pkg2"}
-    assert [(edge.source, edge.target) for edge in fn_edges] == [("pkg1", "pkg2")]
-    pkg2 = next(node for node in fn_nodes if node.id == "pkg2")
-    assert pkg2.files == ["pkg2/b.py", "pkg2/c.py"]
-
-
-def test_aggregate_drops_intra_directory_edges():
-    files = [
-        make("pkg/a.py", [ImportRef("import", "pkg.b", ["pkg.b"], 0, 1)], module="pkg.a"),
-        make("pkg/b.py", module="pkg.b"),
-    ]
-    nodes, edges = build_blueprint(files, {}, 7, datetime.now(timezone.utc))
-    fn_nodes, fn_edges = aggregate_by_function(nodes, edges)
-    assert {node.id for node in fn_nodes} == {"pkg"}
-    assert fn_edges == []
-    assert fn_nodes[0].is_isolated is True
 
 
 def test_group_is_parent_directory():

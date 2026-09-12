@@ -43,7 +43,7 @@ def scan_python_files(root: Path) -> tuple[list[FileMeta], int, list[str]]:
                 continue
             try:
                 source = abs_path.read_bytes()
-                imports, functions = parse_python(source, rel_path)
+                imports, functions, classes = parse_python(source, rel_path)
             except (SyntaxError, ValueError, UnicodeDecodeError, OSError) as exc:
                 skipped += 1
                 message = f"跳过无法解析的文件 {rel_path}: {type(exc).__name__}: {exc}"
@@ -58,6 +58,7 @@ def scan_python_files(root: Path) -> tuple[list[FileMeta], int, list[str]]:
                     is_package=is_package,
                     imports=imports,
                     functions=functions,
+                    classes=classes,
                 )
             )
 

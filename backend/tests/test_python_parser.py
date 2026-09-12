@@ -4,7 +4,7 @@ from app.scanner.python_parser import parse_python
 
 
 def test_absolute_import():
-    imports, _ = parse_python(b"import a.b\nfrom c.d import e, f\n", "x.py")
+    imports, _, _ = parse_python(b"import a.b\nfrom c.d import e, f\n", "x.py")
     assert imports[0].kind == "import"
     assert imports[0].module == "a.b"
     assert imports[0].names == ["a.b"]
@@ -15,7 +15,7 @@ def test_absolute_import():
 
 
 def test_relative_import():
-    imports, _ = parse_python(
+    imports, _, _ = parse_python(
         b"from . import x\nfrom ..pkg import y\nfrom .mod import z\n", "pkg/sub/mod.py"
     )
     assert imports[0].level == 1
@@ -27,7 +27,7 @@ def test_relative_import():
     assert imports[2].module == "mod"
 
 
-def test_functions_top_level_only():
+def test_functions_and_classes_top_level_only():
     source = (
         b"def a():\n"
         b"    pass\n"
@@ -36,13 +36,18 @@ def test_functions_top_level_only():
         b"class C:\n"
         b"    def m(self):\n"
         b"        pass\n"
+        b"class D:\n"
+        b"    pass\n"
     )
-    _, functions = parse_python(source, "x.py")
+    _, functions, classes = parse_python(source, "x.py")
     assert functions == ["a", "b"]
+    assert classes == ["C", "D"]
 
 
 def test_encoding_cookie():
-    imports, _ = parse_python("# -*- coding: gbk -*-\nimport a\n".encode("gbk"), "x.py")
+    imports, _, _ = parse_python(
+        "# -*- coding: gbk -*-\nimport a\n".encode("gbk"), "x.py"
+    )
     assert imports[0].module == "a"
 
 

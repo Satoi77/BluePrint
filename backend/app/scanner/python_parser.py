@@ -3,8 +3,10 @@ import ast
 from app.models.schemas import ImportRef
 
 
-def parse_python(source: bytes, rel_path: str) -> tuple[list[ImportRef], list[str]]:
-    """解析单个 Python 源文件的 import 与顶层函数名。
+def parse_python(
+    source: bytes, rel_path: str
+) -> tuple[list[ImportRef], list[str], list[str]]:
+    """解析单个 Python 源文件的 import、顶层函数名与顶层类名。
 
     传入原始字节，交由 ast 自动识别 PEP 263 编码声明。
     """
@@ -37,4 +39,5 @@ def parse_python(source: bytes, rel_path: str) -> tuple[list[ImportRef], list[st
         for node in tree.body
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
     ]
-    return imports, functions
+    classes = [node.name for node in tree.body if isinstance(node, ast.ClassDef)]
+    return imports, functions, classes

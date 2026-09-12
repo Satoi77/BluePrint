@@ -15,15 +15,23 @@ export interface CircleNodeData {
 
 export type CircleNodeType = Node<CircleNodeData, "circle">;
 
+const SIZES: Record<string, number> = {
+  block: 88,
+  group: 64,
+  file: 54,
+  atomic: 40,
+};
+
 function shortLabel(label: string): string {
   const parts = label.split("/");
   const short = parts.length > 2 ? parts.slice(-2).join("/") : label;
-  return short.length > 24 ? `${short.slice(0, 22)}…` : short;
+  return short.length > 26 ? `${short.slice(0, 24)}…` : short;
 }
 
 export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
   const dim = data.dimmed && !data.highlighted && !data.selected;
-  const showLabel = data.lod === "L2";
+  const size = SIZES[data.raw.kind] ?? 54;
+  const isBlock = data.raw.kind === "block";
   const ring = data.selected
     ? "0 0 0 3px rgba(255,255,255,0.55), 0 0 22px rgba(255,255,255,0.55)"
     : data.highlighted
@@ -40,8 +48,8 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
       <div
         className="relative flex items-center justify-center rounded-full border-2 border-white bg-panel"
         style={{
-          width: 54,
-          height: 54,
+          width: size,
+          height: size,
           boxShadow: ring,
           transition: "box-shadow 180ms ease",
         }}
@@ -56,20 +64,27 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
           style={{ background: STATUS_COLOR[data.raw.status] }}
           title={data.raw.status}
         />
+        {isBlock && (
+          <span className="font-mono text-[0.62rem] text-muted">
+            {data.raw.files.length}
+          </span>
+        )}
         <Handle
           type="source"
           position={Position.Bottom}
           className="!h-1.5 !w-1.5 !border-0 !bg-muted"
         />
       </div>
-      {showLabel && (
-        <div
-          className="mt-1 max-w-[128px] truncate font-mono text-[0.66rem] leading-tight text-white"
-          title={`${data.raw.label}（${data.raw.files.length} 个文件）`}
-        >
-          {shortLabel(data.raw.label)}
-        </div>
-      )}
+      <div
+        className={`mt-1 max-w-[140px] truncate font-mono leading-tight text-white ${
+          isBlock ? "text-[0.72rem]" : "text-[0.64rem]"
+        }`}
+        title={`${data.raw.label}${
+          data.raw.files.length ? `（${data.raw.files.length} 个文件）` : ""
+        }`}
+      >
+        {shortLabel(data.raw.label)}
+      </div>
     </div>
   );
 }

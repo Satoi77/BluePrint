@@ -14,12 +14,18 @@ export interface RawNode {
   is_isolated: boolean;
   group: string;
   files: string[];
+  level: number;
+  parent_id: string | null;
+  kind: "block" | "group" | "file" | "atomic";
+  member_count: number;
 }
 
 export interface RawEdge {
   source: string;
   target: string;
   relation: "import";
+  level: number;
+  weight: number;
 }
 
 export interface ScanStats {
@@ -107,6 +113,17 @@ export function scanProject(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ project_path: projectPath, name }),
+  });
+}
+
+export function importHierarchy(
+  projectId: number,
+  mapping: unknown,
+): Promise<ScanResponse> {
+  return request<ScanResponse>(`/api/projects/${projectId}/blueprint`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(mapping),
   });
 }
 

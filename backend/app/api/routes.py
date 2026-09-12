@@ -13,7 +13,9 @@ from app.services.logging_db import export_csv, log, query_logs
 from app.services.project_store import (
     delete_project,
     get_blueprint,
+    get_project,
     list_projects,
+    save_mapping,
 )
 from app.services.scan_service import ScanError, scan_project
 
@@ -49,6 +51,22 @@ def get_project_blueprint(project_id: int) -> dict:
         )
     payload["project_id"] = project_id
     return payload
+
+
+@router.post("/projects/{project_id}/blueprint", response_model=ScanResponse)
+def import_blueprint(project_id: int, blueprint: dict) -> ScanResponse:
+    """导入 Agent 生成的功能蓝图并重新渲染。"""
+    project = get_project(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail=f"项目不存在: {project_id}")
+    if not blueprint.get("functions"):
+        raise HTTPException(status_code=400, detail="蓝图缺少 functions 字段")
+    save_mapping(project_id, blueprint)
+    log("info", "api.routes", "导入功能蓝图", {"project_id": project_id})
+    try:
+        return scan_project(project["root_path"], project["name"], "function")
+    except ScanError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.message)
 
 
 @router.delete("/projects/{project_id}")

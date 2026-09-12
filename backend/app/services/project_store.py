@@ -30,6 +30,13 @@ _CREATE_STATEMENTS = (
         payload_json TEXT NOT NULL
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS hierarchies (
+        project_id   INTEGER PRIMARY KEY,
+        payload_json TEXT NOT NULL,
+        updated_at   TEXT NOT NULL
+    )
+    """,
 )
 
 
@@ -153,12 +160,79 @@ def get_blueprint(project_id: int) -> Optional[dict[str, Any]]:
     return json.loads(row[0])
 
 
+def get_project(project_id: int) -> Optional[dict[str, Any]]:
+    _ensure()
+    with _lock:
+        conn = _connect()
+        try:
+            row = conn.execute(
+                "SELECT id, name, root_path, created_at, last_scanned_at,"
+                " node_count, edge_count FROM projects WHERE id = ?",
+                (project_id,),
+            ).fetchone()
+        finally:
+            conn.close()
+    return _row_to_project(row) if row else None
+
+
+def get_project_id(project_path: str) -> Optional[int]:
+    _ensure()
+    root = str(Path(project_path).resolve())
+    with _lock:
+        conn = _connect()
+        try:
+            row = conn.execute(
+                "SELECT id FROM projects WHERE root_path = ?", (root,)
+            ).fetchone()
+        finally:
+            conn.close()
+    return row[0] if row else None
+
+
+def save_mapping(project_id: int, mapping: dict[str, Any]) -> None:
+    _ensure()
+    now = datetime.now(timezone.utc).isoformat()
+    with _lock:
+        conn = _connect()
+        try:
+            conn.execute(
+                """
+                INSERT INTO hierarchies (project_id, payload_json, updated_at)
+                VALUES (?, ?, ?)
+                ON CONFLICT(project_id) DO UPDATE SET
+                    payload_json = excluded.payload_json,
+                    updated_at = excluded.updated_at
+                """,
+                (project_id, json.dumps(mapping, ensure_ascii=False), now),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+
+def get_mapping(project_id: int) -> Optional[dict[str, Any]]:
+    _ensure()
+    with _lock:
+        conn = _connect()
+        try:
+            row = conn.execute(
+                "SELECT payload_json FROM hierarchies WHERE project_id = ?",
+                (project_id,),
+            ).fetchone()
+        finally:
+            conn.close()
+    if row is None:
+        return None
+    return json.loads(row[0])
+
+
 def delete_project(project_id: int) -> bool:
     _ensure()
     with _lock:
         conn = _connect()
         try:
             conn.execute("DELETE FROM blueprints WHERE project_id = ?", (project_id,))
+            conn.execute("DELETE FROM hierarchies WHERE project_id = ?", (project_id,))
             cursor = conn.execute("DELETE FROM projects WHERE id = ?", (project_id,))
             conn.commit()
             return cursor.rowcount > 0

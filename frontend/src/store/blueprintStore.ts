@@ -28,6 +28,15 @@ function normalize(data: ScanResponse): ScanResponse {
       files: node.files ?? [],
       functions: node.functions ?? [],
       group: node.group ?? "",
+      level: node.level ?? 1,
+      kind: node.kind ?? "file",
+      parent_id: node.parent_id ?? null,
+      member_count: node.member_count ?? 0,
+    })),
+    edges: data.edges.map((edge) => ({
+      ...edge,
+      level: edge.level ?? 1,
+      weight: edge.weight ?? 1,
     })),
   };
 }
@@ -40,6 +49,8 @@ interface BlueprintState {
   error: string | null;
   selectedId: string | null;
   searchQuery: string;
+  visibleLevel: number;
+  setVisibleLevel: (level: number) => void;
   init: () => Promise<void>;
   scan: (path: string, name?: string) => Promise<void>;
   openProject: (id: number) => Promise<void>;
@@ -57,6 +68,9 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => ({
   error: null,
   selectedId: null,
   searchQuery: "",
+  visibleLevel: 0,
+
+  setVisibleLevel: (level) => set({ visibleLevel: level }),
 
   init: async () => {
     try {

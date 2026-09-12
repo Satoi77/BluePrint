@@ -5,11 +5,16 @@ from typing import Optional
 
 from app.config import RECENT_DAYS
 from app.models.schemas import ScanResponse, ScanStats
-from app.scanner.blueprint_builder import aggregate_by_function, build_blueprint
+from app.scanner.blueprint_agent import (
+    build_from_agent_blueprint,
+    validate_agent_blueprint,
+)
+from app.scanner.blueprint_builder import build_blueprint
 from app.scanner.git_reader import GitError, read_git_history
+from app.scanner.hierarchy import build_function_hierarchy
 from app.scanner.project_scanner import scan_python_files
 from app.services.logging_db import log
-from app.services.project_store import save_project
+from app.services.project_store import get_mapping, get_project_id, save_project
 
 
 class ScanError(Exception):
@@ -64,9 +69,18 @@ def scan_project(
         raise ScanError(f"Git 读取失败: {exc}", 500)
     git_elapsed = time.time() - git_started
 
-    nodes, edges = build_blueprint(files, history, RECENT_DAYS)
+    file_nodes, file_edges = build_blueprint(files, history, RECENT_DAYS)
+    nodes, edges = file_nodes, file_edges
     if granularity == "function":
-        nodes, edges = aggregate_by_function(nodes, edges)
+        existing_id = get_project_id(str(root))
+        blueprint = get_mapping(existing_id) if existing_id else None
+        if blueprint and blueprint.get("functions"):
+            nodes, edges = build_from_agent_blueprint(blueprint, file_nodes)
+            warnings.extend(validate_agent_blueprint(blueprint, files))
+        else:
+            nodes, edges = build_function_hierarchy(
+                files, file_nodes, file_edges, None
+            )
 
     if not files:
         warnings.append("未发现可解析的 Python 文件")

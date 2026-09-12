@@ -21,6 +21,7 @@ class FileMeta:
     is_package: bool
     imports: list[ImportRef] = field(default_factory=list)
     functions: list[str] = field(default_factory=list)
+    classes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -60,12 +61,19 @@ class NodeModel(BaseModel):
     is_isolated: bool = False
     group: str = ""
     files: list[str] = []
+    level: int = 1
+    parent_id: Optional[str] = None
+    kind: Literal["block", "group", "file", "atomic"] = "file"
+    member_count: int = 0
 
 
 class EdgeModel(BaseModel):
     source: str
     target: str
-    relation: Literal["import"] = "import"
+    relation: str = "import"
+    label: str = ""
+    level: int = 1
+    weight: int = 1
 
 
 class ScanStats(BaseModel):

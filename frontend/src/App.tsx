@@ -4,6 +4,8 @@ import type { CommitStatus } from "./services/api";
 import BlueprintCanvas from "./components/BlueprintCanvas";
 import ErrorBanner from "./components/ErrorBanner";
 import ErrorBoundary from "./components/ErrorBoundary";
+import IsolatedPool from "./components/IsolatedPool";
+import LevelSwitcher from "./components/LevelSwitcher";
 import LogExportPanel from "./components/LogExportPanel";
 import ProjectPathInput from "./components/ProjectPathInput";
 import ProjectSwitcher from "./components/ProjectSwitcher";
@@ -19,6 +21,18 @@ function Legend() {
 
   const groups = useMemo(() => {
     if (!raw) return [];
+    const level0 = raw.nodes.filter((node) => node.level === 0);
+    if (level0.length > 0) {
+      const colors = buildGroupColorMap(level0.map((node) => node.group));
+      return level0
+        .map((node) => ({
+          key: node.id,
+          label: node.label,
+          count: node.files.length,
+          color: colors[node.group],
+        }))
+        .sort((a, b) => b.count - a.count);
+    }
     const counts = new Map<string, number>();
     for (const node of raw.nodes) {
       counts.set(
@@ -29,7 +43,12 @@ function Legend() {
     const colors = buildGroupColorMap([...counts.keys()]);
     return [...counts.entries()]
       .sort((a, b) => b[1] - a[1])
-      .map(([group, count]) => ({ group, count, color: colors[group] }));
+      .map(([group, count]) => ({
+        key: group,
+        label: group,
+        count,
+        color: colors[group],
+      }));
   }, [raw]);
 
   return (
@@ -51,13 +70,13 @@ function Legend() {
             功能模块（文件数）
           </div>
           {groups.map((item) => (
-            <div key={item.group} className="flex items-center gap-2 py-0.5">
+            <div key={item.key} className="flex items-center gap-2 py-0.5">
               <span
                 className="inline-block h-0.5 w-4 shrink-0 rounded"
                 style={{ background: item.color }}
               />
-              <span className="min-w-0 flex-1 truncate" title={item.group}>
-                {item.group}
+              <span className="min-w-0 flex-1 truncate" title={item.label}>
+                {item.label}
               </span>
               <span className="shrink-0">{item.count}</span>
             </div>
@@ -87,6 +106,7 @@ export default function App() {
         </div>
         <ProjectSwitcher />
         <ProjectPathInput />
+        <LevelSwitcher />
         <SearchBar />
         {raw && (
           <div className="ml-auto flex items-center gap-3 font-mono text-[0.66rem] text-muted">
@@ -106,6 +126,7 @@ export default function App() {
         </ErrorBoundary>
         <ErrorBanner />
         <Legend />
+        <IsolatedPool />
         <LogExportPanel />
       </main>
     </div>

@@ -88,15 +88,26 @@ def test_scan_function_granularity(repo, git):
     )
     assert response.status_code == 200
     data = response.json()
-    ids = {node["id"] for node in data["nodes"]}
-    assert ids == {"pkg1", "pkg2"}
+
+    blocks = {n["id"] for n in data["nodes"] if n["kind"] == "block"}
+    files = {n["id"] for n in data["nodes"] if n["kind"] == "file"}
+    atomics = {n["id"] for n in data["nodes"] if n["kind"] == "atomic"}
+
+    assert blocks == {"block:pkg1", "block:pkg2"}
+    assert files == {"pkg1/a.py", "pkg2/b.py"}
+    assert "pkg2/b.py::helper" in atomics
     assert any(
-        edge["source"] == "pkg1" and edge["target"] == "pkg2"
-        for edge in data["edges"]
+        e["source"] == "block:pkg1"
+        and e["target"] == "block:pkg2"
+        and e["level"] == 0
+        for e in data["edges"]
     )
-    pkg1 = next(node for node in data["nodes"] if node["id"] == "pkg1")
-    assert pkg1["files"] == ["pkg1/a.py"]
-    assert pkg1["functions"] == []
+    assert any(
+        e["source"] == "pkg1/a.py"
+        and e["target"] == "pkg2/b.py"
+        and e["level"] == 1
+        for e in data["edges"]
+    )
 
 
 def test_scan_persists_and_lists_project(repo, git):
