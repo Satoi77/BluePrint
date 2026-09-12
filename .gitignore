@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# Runtime data (logs DB)
+backend/data/
+
+# Node / frontend
+node_modules/
+dist/
+*.local
+
+# Editors
+.idea/
+.vscode/
+
+# CodeGraph
+.codegraph/
+
+# OS
+.DS_Store
+Thumbs.db
