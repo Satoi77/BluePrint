@@ -11,6 +11,26 @@ def _build_module_index(files: list[FileMeta]) -> dict[str, list[str]]:
     return index
 
 
+def _lookup(candidate: str, module_index: dict[str, list[str]]) -> Optional[str]:
+    """在模块索引中查找候选模块名。
+
+    先精确匹配；失败时，对含包边界的多段名（如 app.services.x）做后缀匹配，
+    以兼容"仓库根 = 扫描根、包根在其子目录（如 backend/）"的常见布局。
+    单段名（os/logging 等）不做后缀匹配，避免与三方库/标准库误连。
+    """
+    if candidate in module_index:
+        return sorted(module_index[candidate], key=len)[0]
+    if "." in candidate:
+        suffix = "." + candidate
+        paths: list[str] = []
+        for name, name_paths in module_index.items():
+            if name.endswith(suffix):
+                paths.extend(name_paths)
+        if paths:
+            return sorted(paths, key=len)[0]
+    return None
+
+
 def _resolve(
     ref: ImportRef, owner: FileMeta, module_index: dict[str, list[str]]
 ) -> Optional[str]:
@@ -51,8 +71,9 @@ def _resolve(
                 candidates.append(full)
 
     for candidate in candidates:
-        if candidate in module_index:
-            return sorted(module_index[candidate], key=len)[0]
+        resolved = _lookup(candidate, module_index)
+        if resolved is not None:
+            return resolved
     return None
 
 

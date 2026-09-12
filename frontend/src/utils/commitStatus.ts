@@ -35,5 +35,7 @@ export function formatRelative(iso: string | null): string {
   if (hours < 24) return `${hours} 小时前`;
   const days = Math.floor(hours / 24);
   if (days < 30) return `${days} 天前`;
-  return formatAbsolute(iso);
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} 个月前`;
+  return `${Math.floor(months / 12)} 年前`;
 }

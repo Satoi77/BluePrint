@@ -92,7 +92,7 @@ export default function BlueprintCanvas() {
         minZoom={0.1}
         maxZoom={2}
         fitView
-        fitViewOptions={{ padding: 0.2 }}
+        fitViewOptions={{ padding: 0.2, minZoom: 0.5, maxZoom: 1 }}
         onNodeClick={(_, node) => select(node.id)}
         onPaneClick={() => select(null)}
         onNodeMouseEnter={(event, node) =>
@@ -130,6 +130,22 @@ export default function BlueprintCanvas() {
           <div className="flex items-center gap-3 rounded-md border border-line bg-panel px-5 py-3 font-mono text-sm">
             <span className="h-3 w-3 animate-spin rounded-full border-2 border-blueprint border-t-transparent" />
             正在扫描项目…
+          </div>
+        </div>
+      )}
+
+      {status === "success" && raw && raw.nodes.length === 0 && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="max-w-md rounded-lg border border-dashed border-line bg-panel/85 px-6 py-5 text-center">
+            <div className="font-mono text-sm text-ink">未发现可解析的节点</div>
+            <div className="mt-2 break-all text-xs text-muted">
+              {raw.warnings.length > 0
+                ? raw.warnings.join("；")
+                : "该目录下没有可解析的 Python 文件"}
+            </div>
+            <div className="mt-2 font-mono text-[0.66rem] text-muted">
+              当前 MVP 仅解析 Python（.py）源文件
+            </div>
           </div>
         </div>
       )}

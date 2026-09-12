@@ -92,3 +92,31 @@ def test_relative_parent_import():
         [sub, util], {}, 7, datetime.now(timezone.utc)
     )
     assert ("pkg/sub/mod.py", "pkg/util.py") in {(e.source, e.target) for e in edges}
+
+
+def test_suffix_match_when_scan_root_has_prefix():
+    owner = make(
+        "backend/app/services/x.py",
+        [ImportRef("from", "app.services.y", ["helper"], 0, 1)],
+        module="backend.app.services.x",
+    )
+    target = make("backend/app/services/y.py", module="backend.app.services.y")
+    _, edges = build_blueprint(
+        [owner, target], {}, 7, datetime.now(timezone.utc)
+    )
+    assert ("backend/app/services/x.py", "backend/app/services/y.py") in {
+        (e.source, e.target) for e in edges
+    }
+
+
+def test_single_segment_import_not_suffix_matched():
+    owner = make(
+        "backend/app/x.py",
+        [ImportRef("import", "logging", ["logging"], 0, 1)],
+        module="backend.app.x",
+    )
+    target = make("backend/app/logging.py", module="backend.app.logging")
+    _, edges = build_blueprint(
+        [owner, target], {}, 7, datetime.now(timezone.utc)
+    )
+    assert edges == []

@@ -84,9 +84,11 @@ description: BluePrint（机器人大脑项目蓝图可视化）的架构设计�
 
 ## 六、项目本地知识沉淀（实际记录）
 
-### 扫描根 = 模块命名空间
-后端解析 import 时，模块名以**扫描根**为基准。若扫描仓库根（含 `backend/`），文件模块名是 `backend.app.x`，而代码写 `app.x` → 全部解析落空、`edge_count=0`（界面仍正常显示孤立节点）。要正确连线，应扫描**包根**（如 `backend/`）；但 MVP 要求扫描目录内含 `.git`，二者在 BluePrint 自身不一致。后续可增强：同一入口内分别识别仓库根与包根。
-**来源**：2026-09-13 端到端验证（commit f06a8cd）。
+### 扫描根 = 模块命名空间；用后缀匹配兜底
+后端解析 import 时模块名以**扫描根**为基准。常见布局是仓库根含 `backend/`（包根）与 `frontend/`，代码用绝对导入 `from app.x import y`；扫描仓库根时索引里是 `backend.app.x`，精确匹配失败 → 系统性丢边。
+**已实现兜底**：`_lookup` 先精确匹配，失败时对 **≥2 段**候选做包边界后缀匹配（`app.x` 对齐 `backend.app.x`）；**单段名不做**后缀匹配，避免 `os`/`logging`/`utils` 与三方库误连。多命中取最短路径。
+**实测**：novel_project_Web 由 0 连线 → 357 连线。
+**来源**：2026-09-13 真实项目实测。
 
 ### 前端构建：单 tsconfig + `tsc --noEmit`
 不要用 `tsc -b` + composite 引用（会把 `vite.config.js/.d.ts` 写回源码目录，且 `noEmit` 触发 TS6310）。本项目 `build` = `tsc --noEmit && vite build`，`tsconfig.json` 的 `include` 含 `vite.config.ts`，无 `tsconfig.node.json`。
