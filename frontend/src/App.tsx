@@ -8,6 +8,7 @@ import IsolatedPool from "./components/IsolatedPool";
 import LevelSwitcher from "./components/LevelSwitcher";
 import LogExportPanel from "./components/LogExportPanel";
 import NodeEditor from "./components/NodeEditor";
+import ProjectMenu from "./components/ProjectMenu";
 import ProjectPathInput from "./components/ProjectPathInput";
 import ProjectSwitcher from "./components/ProjectSwitcher";
 import SearchBar from "./components/SearchBar";
@@ -101,6 +102,7 @@ export default function App() {
   return (
     <div className="flex h-screen flex-col bg-paper text-ink">
       <header className="z-20 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-panel px-4 py-2.5">
+        <ProjectMenu />
         <div className="flex items-baseline gap-2">
           <span className="font-mono text-sm font-semibold tracking-tight text-blueprint">
             BluePrint

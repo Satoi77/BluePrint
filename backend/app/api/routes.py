@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
 
 from app.models.schemas import (
+    CreateProjectRequest,
     LogExportRequest,
     ProjectModel,
     ScanRequest,
@@ -12,6 +13,7 @@ from app.models.schemas import (
 from app.services.logging_db import export_csv, log, query_logs
 from app.services import blueprint_editor
 from app.services.project_store import (
+    create_blank_project,
     delete_project,
     get_blueprint,
     get_mapping,
@@ -21,7 +23,11 @@ from app.services.project_store import (
     save_mapping,
     save_positions,
 )
-from app.services.scan_service import ScanError, scan_project
+from app.services.scan_service import (
+    ScanError,
+    render_blueprint_offline,
+    scan_project,
+)
 
 router = APIRouter(prefix="/api")
 
@@ -91,16 +97,33 @@ def _require_project(project_id: int) -> dict:
 
 def _require_blueprint(project_id: int) -> dict:
     blueprint = get_mapping(project_id)
-    if not blueprint or not blueprint.get("functions"):
+    if blueprint is None:
         raise HTTPException(status_code=404, detail="该项目尚无功能蓝图")
+    blueprint.setdefault("functions", [])
+    blueprint.setdefault("edges", [])
+    blueprint.setdefault("symbol_names", {})
     return blueprint
 
 
 def _rebuild(project: dict) -> ScanResponse:
+    blueprint = get_mapping(project["id"])
     try:
         return scan_project(project["root_path"], project["name"], "function")
     except ScanError as exc:
-        raise HTTPException(status_code=exc.status_code, detail=exc.message)
+        # 空白项目或路径无效：不依赖文件系统/Git，直接按蓝图渲染
+        if blueprint is None:
+            raise HTTPException(status_code=exc.status_code, detail=exc.message)
+        return render_blueprint_offline(project, blueprint)
+
+
+@router.post("/projects", response_model=ProjectModel)
+def create_project(request: CreateProjectRequest) -> ProjectModel:
+    name = request.name.strip()
+    if not name:
+        raise HTTPException(status_code=400, detail="项目名称不能为空")
+    project = create_blank_project(name, request.root_path)
+    log("info", "api.routes", "新建空白项目", {"project_id": project["id"]})
+    return ProjectModel(**project)
 
 
 @router.get("/projects/{project_id}/blueprint/source")

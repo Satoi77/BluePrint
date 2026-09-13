@@ -217,6 +217,61 @@ def test_blueprint_edit_and_export(repo, git):
     assert "功能结构化说明" in exported.text
 
 
+def test_create_blank_project_and_edit_offline():
+    created = client.post(
+        "/api/projects", json={"name": "设计稿", "root_path": "D:/design/demo"}
+    )
+    assert created.status_code == 200
+    project_id = created.json()["id"]
+
+    source = client.get(f"/api/projects/{project_id}/blueprint/source")
+    assert source.status_code == 200
+    assert source.json()["functions"] == []
+
+    rendered = client.get(f"/api/projects/{project_id}/blueprint")
+    assert rendered.status_code == 200
+    assert rendered.json()["nodes"] == []
+
+    added = client.post(
+        f"/api/projects/{project_id}/blueprint/functions",
+        json={
+            "id": "root",
+            "name": "主功能",
+            "level": 0,
+            "parent": None,
+            "kind": "block",
+            "files": [],
+            "symbols": [],
+        },
+    )
+    assert added.status_code == 200
+    assert any(node["id"] == "root" for node in added.json()["nodes"])
+
+    client.post(
+        f"/api/projects/{project_id}/blueprint/functions",
+        json={
+            "id": "root.sub",
+            "name": "子功能",
+            "level": 1,
+            "parent": "root",
+            "kind": "group",
+            "files": [],
+            "symbols": [],
+        },
+    )
+    edge = client.post(
+        f"/api/projects/{project_id}/blueprint/edges/add",
+        json={"source": "root", "target": "root.sub", "type": "manual"},
+    )
+    assert edge.status_code == 200
+    assert any(
+        item["source"] == "root" and item["target"] == "root.sub"
+        for item in edge.json()["edges"]
+    )
+
+    assert client.delete(f"/api/projects/{project_id}").status_code == 200
+
+
 def test_bad_file_does_not_abort(repo, git):
     (repo / "good.py").write_text("x = 1\n", encoding="utf-8")
     (repo / "bad.py").write_text("def (:\n", encoding="utf-8")

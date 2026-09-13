@@ -39,6 +39,11 @@ class ScanRequest(BaseModel):
     granularity: Literal["function", "file"] = "function"
 
 
+class CreateProjectRequest(BaseModel):
+    name: str
+    root_path: str = ""
+
+
 class ProjectModel(BaseModel):
     id: int
     name: str

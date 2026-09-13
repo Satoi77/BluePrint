@@ -32,9 +32,8 @@ const nodeTypes = { circle: CircleNode } as NodeTypes;
 const INTERSECTION_COLOR = "#FF4D6D";
 
 function visibleAt(level: number, visible: number): boolean {
-  if (visible <= 0) return level === 0;
-  if (visible === 1) return level === 1;
-  return level === 1 || level === 2;
+  // 累进式：放大时保留上层上下文，跨层边才能显示
+  return level <= visible;
 }
 
 interface Point {
@@ -141,6 +140,7 @@ export default function BlueprintCanvas() {
   const moveNode = useBlueprintStore((state) => state.moveNode);
   const addEdge = useBlueprintStore((state) => state.addEdge);
   const removeEdge = useBlueprintStore((state) => state.removeEdge);
+  const designMode = useBlueprintStore((state) => state.designMode);
   const [hover, setHover] = useState<HoverState | null>(null);
   const instanceRef = useRef<ReactFlowInstance<CircleNodeType, Edge> | null>(
     null,
@@ -159,10 +159,8 @@ export default function BlueprintCanvas() {
 
   const activeEdges = useMemo<RawEdge[]>(() => {
     const edges = raw?.edges ?? [];
-    const base =
-      visibleLevel <= 0
-        ? edges.filter((edge) => edge.level === 0)
-        : edges.filter((edge) => edge.level === 1);
+    const maxBase = visibleLevel <= 0 ? 0 : 1;
+    const base = edges.filter((edge) => edge.level <= maxBase);
     if (visibleLevel === 2 && selectedId) {
       const atomic = edges.filter(
         (edge) =>
@@ -233,10 +231,12 @@ export default function BlueprintCanvas() {
           groupById.get(edge.source) ?? "",
         );
         const stroke = isHighlighted ? HIGHLIGHT_COLOR : groupColor;
-        // 方向：下级功能（层级更深）指向上级功能
+        // 创作模式：上级→下级（自顶向下）；浏览模式：下级→上级
         const sourceLevel = levelOf.get(edge.source) ?? 1;
         const targetLevel = levelOf.get(edge.target) ?? 1;
-        const arrowAtTarget = sourceLevel >= targetLevel;
+        const arrowAtTarget = designMode
+          ? sourceLevel <= targetLevel
+          : sourceLevel >= targetLevel;
         const marker = {
           type: MarkerType.ArrowClosed,
           color: stroke,
@@ -260,7 +260,7 @@ export default function BlueprintCanvas() {
           },
         };
       }),
-    [activeEdges, highlight, selectedId, groupColors, groupById, levelOf],
+    [activeEdges, highlight, selectedId, groupColors, groupById, levelOf, designMode],
   );
 
   const intersections = useMemo(() => {
@@ -406,13 +406,23 @@ export default function BlueprintCanvas() {
       {status === "success" && raw && raw.nodes.length === 0 && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="max-w-md rounded-lg border border-dashed border-line bg-panel/85 px-6 py-5 text-center">
-            <div className="font-mono text-sm text-ink">未发现可解析的节点</div>
+            <div className="font-mono text-sm text-ink">
+              {designMode ? "创作模式：空白蓝图" : "未发现可解析的节点"}
+            </div>
             <div className="mt-2 break-all text-xs text-muted">
-              {raw.warnings.length > 0
-                ? raw.warnings.join("；")
-                : "该目录下没有可解析的 Python 文件"}
+              {designMode
+                ? "从左上角菜单点「新增根功能」开始设计；悬停节点、拖动连接点即可连线。"
+                : raw.warnings.length > 0
+                  ? raw.warnings.join("；")
+                  : "该目录下没有可解析的 Python 文件"}
             </div>
           </div>
+        </div>
+      )}
+
+      {designMode && (
+        <div className="pointer-events-none absolute bottom-4 left-1/2 z-30 -translate-x-1/2 rounded border border-blueprint bg-panel/90 px-2.5 py-0.5 font-mono text-[0.62rem] text-blueprint">
+          创作模式 · 箭头 上级→下级 · 自动保存
         </div>
       )}
 

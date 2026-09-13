@@ -275,6 +275,112 @@ def save_positions(project_id: int, positions: dict[str, dict]) -> None:
             conn.close()
 
 
+def create_blank_project(name: str, root_path: str) -> dict[str, Any]:
+    """新建空白项目：空蓝图 + 空渲染数据，供自顶向下设计。"""
+    _ensure()
+    root = (
+        str(Path(root_path).resolve())
+        if root_path and root_path.strip()
+        else f"design://{name}"
+    )
+    now = datetime.now(timezone.utc).isoformat()
+    empty_payload = json.dumps(
+        {
+            "project_path": root,
+            "generated_at": now,
+            "nodes": [],
+            "edges": [],
+            "stats": {
+                "files_scanned": 0,
+                "files_skipped": 0,
+                "node_count": 0,
+                "edge_count": 0,
+            },
+            "warnings": [],
+            "project_id": None,
+            "project_name": name,
+            "positions": {},
+        },
+        ensure_ascii=False,
+    )
+    empty_blueprint = json.dumps(
+        {"functions": [], "edges": [], "symbol_names": {}}, ensure_ascii=False
+    )
+    with _lock:
+        conn = _connect()
+        try:
+            conn.execute(
+                """
+                INSERT INTO projects
+                    (name, root_path, created_at, last_scanned_at, node_count, edge_count)
+                VALUES (?, ?, ?, ?, 0, 0)
+                ON CONFLICT(root_path) DO UPDATE SET name = excluded.name
+                """,
+                (name, root, now, now),
+            )
+            row = conn.execute(
+                "SELECT id, name, root_path, created_at, last_scanned_at,"
+                " node_count, edge_count FROM projects WHERE root_path = ?",
+                (root,),
+            ).fetchone()
+            project_id = row[0]
+            conn.execute(
+                """
+                INSERT INTO blueprints (project_id, generated_at, payload_json)
+                VALUES (?, ?, ?)
+                ON CONFLICT(project_id) DO UPDATE SET
+                    generated_at = excluded.generated_at,
+                    payload_json = excluded.payload_json
+                """,
+                (project_id, now, empty_payload),
+            )
+            conn.execute(
+                """
+                INSERT INTO hierarchies (project_id, payload_json, updated_at)
+                VALUES (?, ?, ?)
+                ON CONFLICT(project_id) DO UPDATE SET
+                    payload_json = excluded.payload_json,
+                    updated_at = excluded.updated_at
+                """,
+                (project_id, empty_blueprint, now),
+            )
+            conn.commit()
+            return _row_to_project(row)
+        finally:
+            conn.close()
+
+
+def save_payload_by_id(project_id: int, response) -> None:
+    """按项目 id 保存渲染数据并更新计数（离线渲染用）。"""
+    _ensure()
+    with _lock:
+        conn = _connect()
+        try:
+            conn.execute(
+                """
+                INSERT INTO blueprints (project_id, generated_at, payload_json)
+                VALUES (?, ?, ?)
+                ON CONFLICT(project_id) DO UPDATE SET
+                    generated_at = excluded.generated_at,
+                    payload_json = excluded.payload_json
+                """,
+                (project_id, response.generated_at, response.model_dump_json()),
+            )
+            conn.execute(
+                "UPDATE projects SET last_scanned_at = ?, node_count = ?,"
+                " edge_count = ? WHERE id = ?",
+                (
+                    response.generated_at,
+                    response.stats.node_count,
+                    response.stats.edge_count,
+                    project_id,
+                ),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+
+
 def delete_project(project_id: int) -> bool:
     _ensure()
     with _lock:

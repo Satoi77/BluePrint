@@ -155,6 +155,17 @@ export function importHierarchy(
   });
 }
 
+export function createProject(
+  name: string,
+  rootPath: string,
+): Promise<Project> {
+  return request<Project>("/api/projects", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, root_path: rootPath }),
+  });
+}
+
 export function listProjects(): Promise<Project[]> {
   return request<Project[]>("/api/projects");
 }

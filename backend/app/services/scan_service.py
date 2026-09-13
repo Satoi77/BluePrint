@@ -18,6 +18,7 @@ from app.services.project_store import (
     get_mapping,
     get_positions,
     get_project_id,
+    save_payload_by_id,
     save_project,
 )
 
@@ -38,6 +39,31 @@ def validate_project_path(project_path: str) -> Path:
     if not (path / ".git").exists():
         raise ScanError(f"目录中未找到 .git，无法读取提交历史: {project_path}", 400)
     return path.resolve()
+
+
+def render_blueprint_offline(project: dict, blueprint: dict) -> ScanResponse:
+    """不依赖文件系统/Git，仅按 Agent 蓝图渲染（空白项目或路径无效时使用）。"""
+    nodes, edges = build_from_agent_blueprint(
+        blueprint, [], None, None, RECENT_DAYS
+    )
+    response = ScanResponse(
+        project_path=project["root_path"],
+        generated_at=datetime.now(timezone.utc).isoformat(),
+        nodes=nodes,
+        edges=edges,
+        stats=ScanStats(
+            files_scanned=0,
+            files_skipped=0,
+            node_count=len(nodes),
+            edge_count=len(edges),
+        ),
+        warnings=[],
+        project_id=project["id"],
+        project_name=project["name"],
+        positions=get_positions(project["id"]),
+    )
+    save_payload_by_id(project["id"], response)
+    return response
 
 
 def scan_project(

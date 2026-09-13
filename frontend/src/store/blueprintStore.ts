@@ -5,6 +5,7 @@ import {
   addBlueprintFunction,
   deleteBlueprintEdge,
   deleteBlueprintFunction,
+  createProject as apiCreateProject,
   deleteProject as apiDeleteProject,
   fetchBlueprintSpec,
   getBlueprintSource,
@@ -63,6 +64,9 @@ interface BlueprintState {
   visibleLevel: number;
   blueprintSource: AgentBlueprint | null;
   positions: Record<string, { x: number; y: number }>;
+  designMode: boolean;
+  setDesignMode: (value: boolean) => void;
+  createProject: (name: string, path: string) => Promise<void>;
   setVisibleLevel: (level: number) => void;
   init: () => Promise<void>;
   scan: (path: string, name?: string) => Promise<void>;
@@ -117,8 +121,10 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
   visibleLevel: 0,
   blueprintSource: null,
   positions: {},
+  designMode: false,
 
   setVisibleLevel: (level) => set({ visibleLevel: level }),
+  setDesignMode: (value) => set({ designMode: value }),
 
   init: async () => {
     try {
@@ -295,6 +301,20 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
       log("info", "store.blueprint", "导出功能说明", { projectId: id });
     } catch (error) {
       set({ error: msg(error) });
+    }
+  },
+
+  createProject: async (name, path) => {
+    try {
+      const project = await apiCreateProject(name, path);
+      set({ projects: await listProjects() });
+      await get().openProject(project.id);
+      log("info", "store.blueprint", "新建空白项目", { id: project.id });
+    } catch (error) {
+      set({ error: msg(error) });
+      log("error", "store.blueprint", "新建项目失败", {
+        message: msg(error),
+      });
     }
   },
 };
