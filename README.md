@@ -14,6 +14,7 @@
 
 ## 文档
 
+- **用 Agent 生成全景蓝图（核心用法）**：[`docs/用Agent生成蓝图.md`](docs/用Agent生成蓝图.md)
 - 使用说明：[`docs/使用说明.md`](docs/使用说明.md)
 - 蓝图生成规范（Agent 建图）：[`docs/蓝图生成规范.md`](docs/蓝图生成规范.md)
 - Agent skill：[`.opencode/skills/blueprint-generation/SKILL.md`](.opencode/skills/blueprint-generation/SKILL.md)
