@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useBlueprintStore } from "../store/blueprintStore";
 
@@ -10,7 +10,22 @@ export default function ProjectPathInput() {
   );
   const status = useBlueprintStore((state) => state.status);
   const scan = useBlueprintStore((state) => state.scan);
+  const projects = useBlueprintStore((state) => state.projects);
+  const activeProjectId = useBlueprintStore((state) => state.activeProjectId);
   const loading = status === "loading";
+
+  const active = projects.find((project) => project.id === activeProjectId);
+
+  // 跟随当前项目；删除全部项目后清空残留地址
+  useEffect(() => {
+    if (active) {
+      setPath(active.root_path);
+      localStorage.setItem(STORAGE_KEY, active.root_path);
+    } else if (projects.length === 0) {
+      setPath("");
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, [active, projects.length]);
 
   const submit = () => {
     const trimmed = path.trim();
