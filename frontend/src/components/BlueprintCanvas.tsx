@@ -290,13 +290,24 @@ export default function BlueprintCanvas() {
   };
 
   return (
-    <div className="relative h-full w-full">
+    <div
+      className="relative h-full w-full"
+      onMouseDown={(event) => {
+        // 屏蔽中键自动滚动，交给 React Flow 做平移
+        if (event.button === 1) event.preventDefault();
+      }}
+    >
       <ReactFlow
         nodes={displayNodes}
         edges={displayEdges}
         nodeTypes={nodeTypes}
         minZoom={0.05}
         maxZoom={2}
+        zoomOnScroll
+        zoomOnPinch
+        zoomOnDoubleClick={false}
+        panOnScroll={false}
+        panOnDrag={[0, 1]}
         fitView
         fitViewOptions={{ padding: 0.2, minZoom: 0.2, maxZoom: 1 }}
         onInit={(instance) => {
