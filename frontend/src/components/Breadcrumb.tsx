@@ -7,6 +7,7 @@ export default function Breadcrumb() {
   const focusId = useBlueprintStore((state) => state.focusId);
   const setFocus = useBlueprintStore((state) => state.setFocus);
   const designMode = useBlueprintStore((state) => state.designMode);
+  const showAllAtomics = useBlueprintStore((state) => state.showAllAtomics);
 
   const focusNode = raw?.nodes.find((node) => node.id === focusId);
   const atRoot = !focusId || !focusNode?.parent_id;
@@ -22,6 +23,14 @@ export default function Breadcrumb() {
     }
     return result;
   }, [raw, focusId, atRoot]);
+
+  if (showAllAtomics) {
+    return (
+      <div className="font-mono text-[0.68rem] text-muted">
+        全部原子功能（点空白处退出）
+      </div>
+    );
+  }
 
   if (designMode) {
     return (

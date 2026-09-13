@@ -41,6 +41,10 @@ export default function BlueprintCanvas() {
   const select = useBlueprintStore((state) => state.select);
   const focusId = useBlueprintStore((state) => state.focusId);
   const setFocus = useBlueprintStore((state) => state.setFocus);
+  const showAllAtomics = useBlueprintStore((state) => state.showAllAtomics);
+  const setShowAllAtomics = useBlueprintStore(
+    (state) => state.setShowAllAtomics,
+  );
   const positions = useBlueprintStore((state) => state.positions);
   const moveNode = useBlueprintStore((state) => state.moveNode);
   const addEdge = useBlueprintStore((state) => state.addEdge);
@@ -62,9 +66,17 @@ export default function BlueprintCanvas() {
     return map;
   }, [raw]);
 
+  const maxLevel = useMemo(() => {
+    if (!raw || raw.nodes.length === 0) return 0;
+    return Math.max(...raw.nodes.map((node) => node.level));
+  }, [raw]);
+
   // 逐级钻取：默认显示 root + 主干；点主干展开其下一级。创作模式显示全部。
   const displayedRaw = useMemo(() => {
     const nodes = raw?.nodes ?? [];
+    if (showAllAtomics) {
+      return nodes.filter((node) => node.level === maxLevel);
+    }
     if (designMode) return nodes;
     if (!focusId) {
       const roots = nodes.filter((node) => !node.parent_id);
@@ -78,7 +90,7 @@ export default function BlueprintCanvas() {
     const ids = new Set<string>([focusId]);
     for (const child of childrenOf.get(focusId) ?? []) ids.add(child);
     return nodes.filter((node) => ids.has(node.id));
-  }, [raw, focusId, designMode, childrenOf]);
+  }, [raw, focusId, designMode, childrenOf, showAllAtomics, maxLevel]);
 
   const laidOut = useMemo(
     () => compactLayout(displayedRaw, positions),
@@ -229,8 +241,8 @@ export default function BlueprintCanvas() {
   ]);
 
   const fitKey = `${raw?.project_id ?? 0}:${focusId ?? "root"}:${designMode}:${
-    raw?.stats.node_count ?? 0
-  }`;
+    showAllAtomics ? "atoms" : "tree"
+  }:${raw?.stats.node_count ?? 0}`;
   useEffect(() => {
     instanceRef.current?.fitView({
       padding: 0.2,
@@ -263,6 +275,10 @@ export default function BlueprintCanvas() {
 
   const handlePaneClick = () => {
     select(null);
+    if (showAllAtomics) {
+      setShowAllAtomics(false);
+      return;
+    }
     // 点空白处返回上一级（逐级回退到 root+主干）
     if (designMode || !focusId) return;
     const current = raw?.nodes.find((node) => node.id === focusId);

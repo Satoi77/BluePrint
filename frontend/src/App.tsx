@@ -94,6 +94,10 @@ export default function App() {
   const selectedId = useBlueprintStore((state) => state.selectedId);
   const exportSpec = useBlueprintStore((state) => state.exportSpec);
   const init = useBlueprintStore((state) => state.init);
+  const showAllAtomics = useBlueprintStore((state) => state.showAllAtomics);
+  const setShowAllAtomics = useBlueprintStore(
+    (state) => state.setShowAllAtomics,
+  );
 
   useEffect(() => {
     void init();
@@ -112,6 +116,17 @@ export default function App() {
         <ProjectSwitcher />
         <ProjectPathInput />
         <Breadcrumb />
+        <button
+          type="button"
+          onClick={() => setShowAllAtomics(!showAllAtomics)}
+          className={`rounded-md border px-3 py-1.5 font-mono text-[0.68rem] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blueprint/30 ${
+            showAllAtomics
+              ? "border-blueprint bg-blueprint text-white"
+              : "border-line bg-paper text-muted hover:text-ink"
+          }`}
+        >
+          全部原子功能
+        </button>
         <SearchBar />
         {raw && (
           <div className="ml-auto flex items-center gap-3 font-mono text-[0.66rem] text-muted">
