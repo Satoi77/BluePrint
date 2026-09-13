@@ -261,6 +261,20 @@ export default function BlueprintCanvas() {
     }
   };
 
+  const handlePaneClick = () => {
+    select(null);
+    // 点空白处返回上一级（逐级回退到 root+主干）
+    if (designMode || !focusId) return;
+    const current = raw?.nodes.find((node) => node.id === focusId);
+    const parentId = current?.parent_id;
+    if (!parentId) {
+      setFocus(null);
+      return;
+    }
+    const parent = raw?.nodes.find((node) => node.id === parentId);
+    setFocus(parent?.parent_id ? parentId : null);
+  };
+
   return (
     <div className="relative h-full w-full">
       <ReactFlow
@@ -278,7 +292,7 @@ export default function BlueprintCanvas() {
         onNodeDragStop={(_, node) =>
           moveNode(node.id, node.position.x, node.position.y)
         }
-        onPaneClick={() => select(null)}
+        onPaneClick={handlePaneClick}
         onConnect={(connection) => {
           if (connection.source && connection.target) {
             void addEdge({
