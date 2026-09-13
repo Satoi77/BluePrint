@@ -124,9 +124,7 @@ export default function BlueprintCanvas() {
       computeHighlight(
         (raw?.edges ?? []).filter(
           (edge) =>
-            edge.level <= 2 &&
-            visibleIds.has(edge.source) &&
-            visibleIds.has(edge.target),
+            visibleIds.has(edge.source) && visibleIds.has(edge.target),
         ),
         selectedId,
       ),
@@ -164,12 +162,7 @@ export default function BlueprintCanvas() {
   const displayEdges = useMemo<Edge[]>(() => {
     const result: Edge[] = [];
     for (const edge of raw?.edges ?? []) {
-      const base = edge.level <= 2;
-      const atomicSel =
-        edge.level >= 3 &&
-        selectedId !== null &&
-        (edge.source === selectedId || edge.target === selectedId);
-      if (!base && !atomicSel) continue;
+      // 只要连线两端都可见就显示（含原子功能之间的调用关系）
       if (!visibleIds.has(edge.source) || !visibleIds.has(edge.target))
         continue;
       const id = `${edge.source}->${edge.target}`;
