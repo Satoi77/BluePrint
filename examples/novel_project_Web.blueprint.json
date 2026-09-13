@@ -5,10 +5,21 @@
   "generated_at": "2026-09-13T00:00:00Z",
   "functions": [
     {
-      "id": "material",
-      "name": "生成素材",
+      "id": "root",
+      "name": "小说创作系统",
       "level": 0,
       "parent": null,
+      "kind": "block",
+      "description": "系统总入口，管理各主干功能",
+      "files": [],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "material",
+      "name": "生成素材",
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "雪花写作法 13 类素材的 AI 生成与编辑",
       "files": [
@@ -27,7 +38,7 @@
     {
       "id": "material.prompt",
       "name": "提示词构建",
-      "level": 1,
+      "level": 2,
       "parent": "material",
       "kind": "group",
       "description": "按素材类型拼装与渲染提示词",
@@ -42,7 +53,7 @@
     {
       "id": "material.wizard",
       "name": "素材生成向导",
-      "level": 1,
+      "level": 2,
       "parent": "material",
       "kind": "group",
       "description": "一句话概括→骨架→事件链的向导式生成",
@@ -54,7 +65,7 @@
     {
       "id": "material.character",
       "name": "人物卡与角色状态",
-      "level": 1,
+      "level": 2,
       "parent": "material",
       "kind": "group",
       "description": "人物卡生成与角色进度跟踪",
@@ -68,8 +79,8 @@
     {
       "id": "outline",
       "name": "大纲生成",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "卷纲与章纲的生成与同步",
       "files": [
@@ -81,7 +92,7 @@
     {
       "id": "outline.volume",
       "name": "卷纲生成",
-      "level": 1,
+      "level": 2,
       "parent": "outline",
       "kind": "group",
       "files": [
@@ -92,7 +103,7 @@
     {
       "id": "outline.sync",
       "name": "大纲同步",
-      "level": 1,
+      "level": 2,
       "parent": "outline",
       "kind": "group",
       "files": [
@@ -103,8 +114,8 @@
     {
       "id": "write",
       "name": "写正文",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "单章 / 多章 / 整卷流式生成正文",
       "files": [
@@ -117,7 +128,7 @@
     {
       "id": "write.stream",
       "name": "流式正文生成",
-      "level": 1,
+      "level": 2,
       "parent": "write",
       "kind": "group",
       "files": [
@@ -128,7 +139,7 @@
     {
       "id": "write.api",
       "name": "写作接口",
-      "level": 1,
+      "level": 2,
       "parent": "write",
       "kind": "group",
       "files": [
@@ -139,7 +150,7 @@
     {
       "id": "write.parse",
       "name": "章节解析",
-      "level": 1,
+      "level": 2,
       "parent": "write",
       "kind": "group",
       "files": [
@@ -150,8 +161,8 @@
     {
       "id": "audit",
       "name": "审核",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "规则检测 + AI 逐段分析，正文/章纲/卷纲三级审核",
       "files": [
@@ -163,7 +174,7 @@
     {
       "id": "audit.rule",
       "name": "规则与 AI 检测",
-      "level": 1,
+      "level": 2,
       "parent": "audit",
       "kind": "group",
       "files": [
@@ -174,7 +185,7 @@
     {
       "id": "audit.api",
       "name": "审核接口",
-      "level": 1,
+      "level": 2,
       "parent": "audit",
       "kind": "group",
       "files": [
@@ -185,8 +196,8 @@
     {
       "id": "memory",
       "name": "提取信息",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "四维记忆分析、时间线追踪、角色长短期记忆",
       "files": [
@@ -201,7 +212,7 @@
     {
       "id": "memory.analysis",
       "name": "四维记忆分析",
-      "level": 1,
+      "level": 2,
       "parent": "memory",
       "kind": "group",
       "description": "共识 / 秘密 / 信息差 / 讽刺 四维分析",
@@ -213,7 +224,7 @@
     {
       "id": "memory.store",
       "name": "记忆存储",
-      "level": 1,
+      "level": 2,
       "parent": "memory",
       "kind": "group",
       "files": [
@@ -224,7 +235,7 @@
     {
       "id": "memory.character",
       "name": "角色记忆",
-      "level": 1,
+      "level": 2,
       "parent": "memory",
       "kind": "group",
       "files": [
@@ -235,7 +246,7 @@
     {
       "id": "memory.cleanup",
       "name": "派生数据清理",
-      "level": 1,
+      "level": 2,
       "parent": "memory",
       "kind": "group",
       "files": [
@@ -246,7 +257,7 @@
     {
       "id": "memory.api",
       "name": "记忆接口",
-      "level": 1,
+      "level": 2,
       "parent": "memory",
       "kind": "group",
       "files": [
@@ -257,8 +268,8 @@
     {
       "id": "manage",
       "name": "小说与章节管理",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "多小说管理、卷级树、章节编辑、导入导出、归档",
       "files": [
@@ -274,7 +285,7 @@
     {
       "id": "manage.novel",
       "name": "小说管理",
-      "level": 1,
+      "level": 2,
       "parent": "manage",
       "kind": "group",
       "files": [
@@ -285,7 +296,7 @@
     {
       "id": "manage.chapter",
       "name": "章节与卷级树",
-      "level": 1,
+      "level": 2,
       "parent": "manage",
       "kind": "group",
       "files": [
@@ -297,7 +308,7 @@
     {
       "id": "manage.file",
       "name": "文件导入导出",
-      "level": 1,
+      "level": 2,
       "parent": "manage",
       "kind": "group",
       "files": [
@@ -308,7 +319,7 @@
     {
       "id": "manage.archive",
       "name": "归档",
-      "level": 1,
+      "level": 2,
       "parent": "manage",
       "kind": "group",
       "files": [
@@ -320,8 +331,8 @@
     {
       "id": "wizard",
       "name": "流式写作向导",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "设定→大纲→正文→审核的全流程流水线",
       "files": [
@@ -332,8 +343,8 @@
     {
       "id": "settings",
       "name": "设置",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "模型 / 提示词 / 密码 / 配色 / 备份等系统设置",
       "files": [
@@ -345,7 +356,7 @@
     {
       "id": "settings.model",
       "name": "模型接入",
-      "level": 1,
+      "level": 2,
       "parent": "settings",
       "kind": "group",
       "files": [
@@ -356,7 +367,7 @@
     {
       "id": "settings.auth",
       "name": "认证与安全",
-      "level": 1,
+      "level": 2,
       "parent": "settings",
       "kind": "group",
       "files": [
@@ -368,7 +379,7 @@
     {
       "id": "settings.db",
       "name": "数据库与 CRUD",
-      "level": 1,
+      "level": 2,
       "parent": "settings",
       "kind": "group",
       "files": [
@@ -383,7 +394,7 @@
     {
       "id": "settings.log",
       "name": "日志系统",
-      "level": 1,
+      "level": 2,
       "parent": "settings",
       "kind": "group",
       "files": [
@@ -396,7 +407,7 @@
     {
       "id": "settings.core",
       "name": "全局配置与工具",
-      "level": 1,
+      "level": 2,
       "parent": "settings",
       "kind": "group",
       "files": [
@@ -412,8 +423,8 @@
     {
       "id": "security",
       "name": "数据安全",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "密钥加密、数据库备份与恢复",
       "files": [
@@ -425,8 +436,8 @@
     {
       "id": "external",
       "name": "外部接口（写公众号）",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "对外暴露的接口，供外部 / 公众号调用",
       "files": [
@@ -437,8 +448,8 @@
     {
       "id": "async",
       "name": "对话生成等待",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "AI 调用、流式等待、高峰时段控制与降级",
       "files": [
@@ -450,8 +461,8 @@
     {
       "id": "ui.app",
       "name": "应用框架与导航",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "单页应用外壳：根组件按侧边栏标签切换各业务面板，负责启动引导与全局样式主题。",
       "files": [
@@ -468,7 +479,7 @@
     {
       "id": "ui.app.shell",
       "name": "应用外壳与启动",
-      "level": 1,
+      "level": 2,
       "parent": "ui.app",
       "kind": "group",
       "description": "根组件、启动引导、全局样式与应用常量。",
@@ -484,7 +495,7 @@
     {
       "id": "ui.app.shell.root",
       "name": "应用根组件与标签路由",
-      "level": 2,
+      "level": 3,
       "parent": "ui.app.shell",
       "kind": "atomic",
       "description": "持有 activeTab，按标签渲染各面板；监听 navigate-to-stream-writing 事件切换页签。",
@@ -499,7 +510,7 @@
     {
       "id": "ui.app.shell.bootstrap",
       "name": "应用启动引导",
-      "level": 2,
+      "level": 3,
       "parent": "ui.app.shell",
       "kind": "atomic",
       "description": "挂载前读取 general_font_size 并写入 CSS 变量，然后渲染 App。",
@@ -514,7 +525,7 @@
     {
       "id": "ui.app.shell.styles",
       "name": "全局样式与主题变量",
-      "level": 2,
+      "level": 3,
       "parent": "ui.app.shell",
       "kind": "atomic",
       "description": "Tailwind 主题色、字体变量、输入控件/按钮样式、滚动条与动画关键帧。",
@@ -527,7 +538,7 @@
     {
       "id": "ui.app.shell.constants",
       "name": "应用常量",
-      "level": 2,
+      "level": 3,
       "parent": "ui.app.shell",
       "kind": "atomic",
       "description": "版本号与创作者名。",
@@ -543,7 +554,7 @@
     {
       "id": "ui.app.nav",
       "name": "侧边导航",
-      "level": 1,
+      "level": 2,
       "parent": "ui.app",
       "kind": "group",
       "description": "业务面板入口导航。",
@@ -556,7 +567,7 @@
     {
       "id": "ui.app.nav.sidebar",
       "name": "侧边导航栏",
-      "level": 2,
+      "level": 3,
       "parent": "ui.app.nav",
       "kind": "atomic",
       "description": "渲染 12 个导航项，显示当前小说与版本号。",
@@ -571,7 +582,7 @@
     {
       "id": "ui.app.i18n",
       "name": "界面文案",
-      "level": 1,
+      "level": 2,
       "parent": "ui.app",
       "kind": "group",
       "description": "集中式 UI 文案常量（i18n 起步）。",
@@ -584,7 +595,7 @@
     {
       "id": "ui.app.i18n.text",
       "name": "UI 文案常量表",
-      "level": 2,
+      "level": 3,
       "parent": "ui.app.i18n",
       "kind": "atomic",
       "description": "common/novel/chapter/material/writing/audit 各域常用文案。",
@@ -599,8 +610,8 @@
     {
       "id": "ui.novel",
       "name": "小说管理",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "多小说的创建、重命名、删除、切换，以及导出/导入/完结清理等数据迁移能力。",
       "files": [
@@ -613,7 +624,7 @@
     {
       "id": "ui.novel.list",
       "name": "小说列表与当前小说",
-      "level": 1,
+      "level": 2,
       "parent": "ui.novel",
       "kind": "group",
       "description": "小说集合的展示、选中与全局状态维护。",
@@ -627,7 +638,7 @@
     {
       "id": "ui.novel.list.page",
       "name": "小说管理页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.novel.list",
       "kind": "atomic",
       "description": "小说卡片列表与新建/重命名/删除/选择/导出/导入/完结按钮及弹窗。",
@@ -649,7 +660,7 @@
     {
       "id": "ui.novel.list.store",
       "name": "小说全局状态仓库",
-      "level": 2,
+      "level": 3,
       "parent": "ui.novel.list",
       "kind": "atomic",
       "description": "Zustand：小说列表、当前小说、章节缓存、API 密钥状态、全局字体、树刷新信号与异步动作。",
@@ -664,7 +675,7 @@
     {
       "id": "ui.novel.transfer",
       "name": "小说数据导入导出",
-      "level": 1,
+      "level": 2,
       "parent": "ui.novel",
       "kind": "group",
       "description": "目录导出/导入、完结清理与对应接口封装。",
@@ -678,7 +689,7 @@
     {
       "id": "ui.novel.transfer.api",
       "name": "小说接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.novel.transfer",
       "kind": "atomic",
       "description": "novelApi：列表/创建/重命名/删除/完结/导入导出/配置/映射/校验起点/编辑锁/归档等。",
@@ -693,8 +704,8 @@
     {
       "id": "ui.material",
       "name": "素材与设定",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "雪花写作法设定集、人物卡/人物状态、卷纲与章纲、记忆素材视图、短剧剧本素材及素材搜索与导入向导。",
       "files": [
@@ -707,7 +718,7 @@
     {
       "id": "ui.material.library",
       "name": "素材库",
-      "level": 1,
+      "level": 2,
       "parent": "ui.material",
       "kind": "group",
       "description": "素材类型的浏览、编辑、字数统计与全文搜索。",
@@ -721,7 +732,7 @@
     {
       "id": "ui.material.library.page",
       "name": "素材管理页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.library",
       "kind": "atomic",
       "description": "按 materialTypes 渲染 18 种素材入口，加载、保存与 AI 生成调度中枢。",
@@ -740,7 +751,7 @@
     {
       "id": "ui.material.library.search",
       "name": "素材全文搜索",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.library",
       "kind": "atomic",
       "description": "拉取全部素材，按关键词逐行匹配并预览，点击跳转到对应素材类型。",
@@ -756,7 +767,7 @@
     {
       "id": "ui.material.setup",
       "name": "基础设定生成",
-      "level": 1,
+      "level": 2,
       "parent": "ui.material",
       "kind": "group",
       "description": "雪花写作法设定集：一句话概括、五句话骨架、题材、世界观、金手指、事件链、书名/简介。",
@@ -771,7 +782,7 @@
     {
       "id": "ui.material.setup.snowflake",
       "name": "雪花写作法向导",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.setup",
       "kind": "atomic",
       "description": "两步向导：一句话概括 → 五句话骨架，流式生成并保存为素材。",
@@ -790,7 +801,7 @@
     {
       "id": "ui.material.setup.generators",
       "name": "设定流式生成器",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.setup",
       "kind": "atomic",
       "description": "一句话/骨架/世界观/金手指/事件链/反推/书名/简介 的流式生成接口。",
@@ -812,7 +823,7 @@
     {
       "id": "ui.material.character",
       "name": "人物卡与人物状态",
-      "level": 1,
+      "level": 2,
       "parent": "ui.material",
       "kind": "group",
       "description": "人物卡编辑、AI 生成人物卡/小传/提取角色名，以及按卷的人物状态表与按章纲增量更新。",
@@ -828,7 +839,7 @@
     {
       "id": "ui.material.character.cards",
       "name": "人物卡编辑器",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.character",
       "kind": "atomic",
       "description": "角色折叠卡：核心设定/背景/外貌/身份/性格/环境/心理分区编辑，展示完整度与人物小传。",
@@ -844,7 +855,7 @@
     {
       "id": "ui.material.character.generate",
       "name": "人物卡与角色名生成",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.character",
       "kind": "atomic",
       "description": "生成人物卡（JSON 容错重试）、提取角色名、合并去重为新角色、生成人物小传。",
@@ -864,7 +875,7 @@
     {
       "id": "ui.material.character.status",
       "name": "人物状态表",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.character",
       "kind": "atomic",
       "description": "按角色/卷维护身份、地点、时间、起止卷的可编辑表格，支持 AI 生成与批量保存。",
@@ -882,7 +893,7 @@
     {
       "id": "ui.material.character.progress",
       "name": "按章纲更新人物",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.character",
       "kind": "atomic",
       "description": "以最近 20 章章纲为窗口分析人物进展，更新人物卡与状态表；可选追加身份清单。",
@@ -901,7 +912,7 @@
     {
       "id": "ui.material.outline",
       "name": "卷纲与章纲",
-      "level": 1,
+      "level": 2,
       "parent": "ui.material",
       "kind": "group",
       "description": "卷纲/章纲的生成、格式化、树形浏览、拖拽排序、章节-卷映射与审核联动。",
@@ -917,7 +928,7 @@
     {
       "id": "ui.material.outline.volume",
       "name": "卷纲生成与编辑",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.outline",
       "kind": "atomic",
       "description": "单卷/多卷/整本卷纲生成、格式化、总卷数总字数设置与自动建卷。",
@@ -934,7 +945,7 @@
     {
       "id": "ui.material.outline.volumeTree",
       "name": "卷纲树",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.outline",
       "kind": "atomic",
       "description": "卷列表（有内容/空标记）选择与右键清除内容。",
@@ -949,7 +960,7 @@
     {
       "id": "ui.material.outline.chapter",
       "name": "章纲生成与编辑",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.outline",
       "kind": "atomic",
       "description": "单章/多章/整卷章纲生成（流式）、格式化、提取参与角色、自动创建与单章重写。",
@@ -969,7 +980,7 @@
     {
       "id": "ui.material.outline.chapterTree",
       "name": "章纲树",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.outline",
       "kind": "atomic",
       "description": "按卷展示章纲，支持多选、拖拽换卷、改章号/卷号、新建/删除、提取全卷人物、重写本章章纲。",
@@ -989,7 +1000,7 @@
     {
       "id": "ui.material.outline.mapping",
       "name": "章节-卷映射表",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.outline",
       "kind": "atomic",
       "description": "展示/查询/构建章节与卷的映射关系，供章节树卷归属与生成时卷号推断。",
@@ -1006,7 +1017,7 @@
     {
       "id": "ui.material.outline.api",
       "name": "卷与章纲接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.outline",
       "kind": "atomic",
       "description": "volumeApi（卷读写/建删/改名/批量/清空）与 chapterOutlineApi（章纲读写/删）。",
@@ -1022,7 +1033,7 @@
     {
       "id": "ui.material.memoryViews",
       "name": "记忆素材视图",
-      "level": 1,
+      "level": 2,
       "parent": "ui.material",
       "kind": "group",
       "description": "在素材页内可视化查看四维记忆分析与时间线 JSON。",
@@ -1035,7 +1046,7 @@
     {
       "id": "ui.material.memoryViews.analysis",
       "name": "四维记忆素材视图",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.memoryViews",
       "kind": "atomic",
       "description": "解析记忆分析 JSON，按卷筛选展示四维汇总、逐章分析与时间线。",
@@ -1050,7 +1061,7 @@
     {
       "id": "ui.material.memoryViews.timeline",
       "name": "时间线素材视图",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.memoryViews",
       "kind": "atomic",
       "description": "解析时间线 JSON，按卷筛选并以时间轴展示事件；含原始 JSON 与自适应高度输入框。",
@@ -1067,7 +1078,7 @@
     {
       "id": "ui.material.script",
       "name": "短剧剧本素材",
-      "level": 1,
+      "level": 2,
       "parent": "ui.material",
       "kind": "group",
       "description": "素材页内的短剧分镜脚本编辑与 ComfyUI 帧提示词生成。",
@@ -1080,7 +1091,7 @@
     {
       "id": "ui.material.script.editor",
       "name": "剧本分镜编辑器",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.script",
       "kind": "atomic",
       "description": "加载/保存剧本镜头与提示词，支持插入/删除/编辑、角色/场景/帧提示词流式与批量生成、密码删除。",
@@ -1104,7 +1115,7 @@
     {
       "id": "ui.material.importWizard",
       "name": "素材导入向导",
-      "level": 1,
+      "level": 2,
       "parent": "ui.material",
       "kind": "group",
       "description": "将外部粘贴文本导入为指定素材类型，可选用 AI 处理。",
@@ -1118,7 +1129,7 @@
     {
       "id": "ui.material.importWizard.dialog",
       "name": "导入向导对话框",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.importWizard",
       "kind": "atomic",
       "description": "选择素材类型并粘贴内容 → 调用 wizardApi.import 保存，展示结果与错误详情。",
@@ -1138,7 +1149,7 @@
     {
       "id": "ui.material.service",
       "name": "素材生成服务层",
-      "level": 1,
+      "level": 2,
       "parent": "ui.material",
       "kind": "group",
       "description": "对 writingApi/configApi/characterStatusApi 的业务封装，统一错误处理与结果解析。",
@@ -1151,7 +1162,7 @@
     {
       "id": "ui.material.service.facade",
       "name": "素材生成门面",
-      "level": 2,
+      "level": 3,
       "parent": "ui.material.service",
       "kind": "atomic",
       "description": "generateOutline/generateGodFinger/generateWorldview/fetchTemplate 等统一返回 {success,content,error}。",
@@ -1169,8 +1180,8 @@
     {
       "id": "ui.write",
       "name": "正文写作",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "正文生成全链路：AI 写作、手搓写作、流式写作向导，以及共享的生成引擎状态机。",
       "files": [
@@ -1186,7 +1197,7 @@
     {
       "id": "ui.write.panel",
       "name": "写作面板入口",
-      "level": 1,
+      "level": 2,
       "parent": "ui.write",
       "kind": "group",
       "description": "AI 写作与手搓写作的标签切换。",
@@ -1199,7 +1210,7 @@
     {
       "id": "ui.write.panel.switch",
       "name": "写作模式切换",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.panel",
       "kind": "atomic",
       "description": "在 AI 写作与手搓写作之间切换。",
@@ -1214,7 +1225,7 @@
     {
       "id": "ui.write.ai",
       "name": "AI 写作",
-      "level": 1,
+      "level": 2,
       "parent": "ui.write",
       "kind": "group",
       "description": "单章/多章/整卷三种模式批量生成正文，含模型、用户输入、记忆引入、自选文件与模板。",
@@ -1227,7 +1238,7 @@
     {
       "id": "ui.write.ai.page",
       "name": "AI 写作页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.ai",
       "kind": "atomic",
       "description": "生成模式与参数配置、待生成章节计算、生成委托给 generationStore，展示流式正文并可编辑保存。",
@@ -1247,7 +1258,7 @@
     {
       "id": "ui.write.manual",
       "name": "手搓写作",
-      "level": 1,
+      "level": 2,
       "parent": "ui.write",
       "kind": "group",
       "description": "手动写作编辑器：三栏布局、卷纲/章纲/人物/设定集浮窗、生成指导与正文参考生成。",
@@ -1261,7 +1272,7 @@
     {
       "id": "ui.write.manual.page",
       "name": "手搓写作页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.manual",
       "kind": "atomic",
       "description": "章节树+正文编辑器+信息面板，支持拖拽分栏、自动保存、手机预览、新建章节与卷号推断。",
@@ -1281,7 +1292,7 @@
     {
       "id": "ui.write.manual.guidance",
       "name": "生成指导",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.manual",
       "kind": "atomic",
       "description": "从章纲流式扩展为可执行的事件拆分写作指导。",
@@ -1296,7 +1307,7 @@
     {
       "id": "ui.write.manual.reference",
       "name": "正文参考生成",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.manual",
       "kind": "atomic",
       "description": "流式生成参考正文并自动审核，未通过重试至多 3 次，通过后保存为章节参考素材。",
@@ -1312,7 +1323,7 @@
     {
       "id": "ui.write.manual.windows",
       "name": "写作浮窗与高亮",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.manual",
       "kind": "atomic",
       "description": "可拖拽的设定集浮窗（含搜索定位与关键词高亮）与可缩放的人物详情浮窗。",
@@ -1331,7 +1342,7 @@
     {
       "id": "ui.write.manual.tree",
       "name": "手搓写作章节树",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.manual",
       "kind": "atomic",
       "description": "按卷分组的章节树，支持多选、拖拽换卷、正倒序与刷新。",
@@ -1347,7 +1358,7 @@
     {
       "id": "ui.write.stream",
       "name": "流式写作向导",
-      "level": 1,
+      "level": 2,
       "parent": "ui.write",
       "kind": "group",
       "description": "四阶段向导：设定集生成 → 大纲生成 → 正文生成循环 → 完成，支持按卷/跨卷与定时启动。",
@@ -1361,7 +1372,7 @@
     {
       "id": "ui.write.stream.wizard",
       "name": "流式写作向导页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.stream",
       "kind": "atomic",
       "description": "18 步流程状态机，串联设定集/大纲/正文各步生成、审核、模板选择、自选文件、映射与进度订阅。",
@@ -1383,7 +1394,7 @@
     {
       "id": "ui.write.stream.results",
       "name": "生成结果分页展示",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.stream",
       "kind": "atomic",
       "description": "按页展示已生成章节的正文、逐章审核报告与记忆数据。",
@@ -1398,7 +1409,7 @@
     {
       "id": "ui.write.engine",
       "name": "正文生成引擎",
-      "level": 1,
+      "level": 2,
       "parent": "ui.write",
       "kind": "group",
       "description": "跨页面共享的生成状态机与逐章循环：生成、审核、重写、记忆分析、故障窗口、进度与内存裁剪。",
@@ -1412,7 +1423,7 @@
     {
       "id": "ui.write.engine.store",
       "name": "生成状态仓库",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.engine",
       "kind": "atomic",
       "description": "useGenerationStore：AI/流式/跨卷三种入口、进度、实时正文、审核/记忆结果、停止、重试与重置。",
@@ -1436,7 +1447,7 @@
     {
       "id": "ui.write.engine.loop",
       "name": "逐章生成循环",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.engine",
       "kind": "atomic",
       "description": "按章生成→故障窗口→审核→记忆分析，含进度补偿与超龄章节裁剪，返回失败章节与中止标志。",
@@ -1453,7 +1464,7 @@
     {
       "id": "ui.write.engine.auditRewrite",
       "name": "审核重写循环",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.engine",
       "kind": "atomic",
       "description": "审核未达阈值或有严重问题时按意见重写（最多 5 次）；审核 API 失败直接跳过。",
@@ -1470,7 +1481,7 @@
     {
       "id": "ui.write.engine.failureWindow",
       "name": "故障窗口等待",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.engine",
       "kind": "atomic",
       "description": "多次重试无内容产出时暂停任务，暴露倒计时供弹窗展示，等待后重试一次，仍失败则中止。",
@@ -1485,7 +1496,7 @@
     {
       "id": "ui.write.engine.memoryEnsure",
       "name": "记忆数据自动补全",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.engine",
       "kind": "atomic",
       "description": "生成前检查记忆覆盖度，缺失时自动补生成四维分析/时间线并合成，失败不阻塞正文。",
@@ -1501,7 +1512,7 @@
     {
       "id": "ui.write.engine.streamChapter",
       "name": "单章流式生成与保存",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.engine",
       "kind": "atomic",
       "description": "带读空闲超时与重试的单章流式生成，边生成边落库。",
@@ -1516,7 +1527,7 @@
     {
       "id": "ui.write.engine.configStore",
       "name": "写作配置仓库",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.engine",
       "kind": "atomic",
       "description": "跨组件共享的生成模型、思考模式与选中写作模板。",
@@ -1531,7 +1542,7 @@
     {
       "id": "ui.write.engine.api",
       "name": "写作接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.engine",
       "kind": "atomic",
       "description": "writingApi、chapterContentApi 与 streamGenerate/ChapterContent/RegenerateWithAudit/Guidance 流式入口。",
@@ -1551,7 +1562,7 @@
     {
       "id": "ui.write.customData",
       "name": "自选文件数据",
-      "level": 1,
+      "level": 2,
       "parent": "ui.write",
       "kind": "group",
       "description": "生成时按需挑选素材/卷纲/章纲/记忆/审计报告/前 N 章正文作为上下文。",
@@ -1564,7 +1575,7 @@
     {
       "id": "ui.write.customData.selector",
       "name": "自选文件选择器",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.customData",
       "kind": "atomic",
       "description": "拉取可用数据，分组多选并支持自动延续与前 N 章正文，构建 CustomDataSelection 列表。",
@@ -1581,7 +1592,7 @@
     {
       "id": "ui.write.context",
       "name": "写作上下文与提示",
-      "level": 1,
+      "level": 2,
       "parent": "ui.write",
       "kind": "group",
       "description": "用户补充要求、人物身份输入与故障窗口提示等辅助能力。",
@@ -1595,7 +1606,7 @@
     {
       "id": "ui.write.context.section",
       "name": "写作上下文区",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.context",
       "kind": "atomic",
       "description": "可折叠的用户补充要求与人物身份输入，支持从人物卡导入身份、按章纲追加身份快照。",
@@ -1611,7 +1622,7 @@
     {
       "id": "ui.write.context.failureModal",
       "name": "故障窗口倒计时弹窗",
-      "level": 2,
+      "level": 3,
       "parent": "ui.write.context",
       "kind": "atomic",
       "description": "全屏倒计时弹窗告知故障窗口剩余时间，并提供立即停止。",
@@ -1626,8 +1637,8 @@
     {
       "id": "ui.chapter",
       "name": "章节管理",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "章节树浏览与拖拽排序、章节正文编辑器、正文目录导入与章节级审核/重写/记忆入口。",
       "files": [
@@ -1641,7 +1652,7 @@
     {
       "id": "ui.chapter.editor",
       "name": "章节编辑器",
-      "level": 1,
+      "level": 2,
       "parent": "ui.chapter",
       "kind": "group",
       "description": "单章正文的查看、编辑、保存与辅助工具。",
@@ -1654,7 +1665,7 @@
     {
       "id": "ui.chapter.editor.page",
       "name": "章节管理页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.editor",
       "kind": "atomic",
       "description": "章节树 + contentEditable 编辑器，含标题解析、字数统计、分栏拖拽、自动保存、编辑锁与校验起点。",
@@ -1678,7 +1689,7 @@
     {
       "id": "ui.chapter.editor.search",
       "name": "查找替换与全局搜索",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.editor",
       "kind": "atomic",
       "description": "当前章节内查找/替换计数，以及跨全部章节的内容搜索与分页结果。",
@@ -1695,7 +1706,7 @@
     {
       "id": "ui.chapter.editor.preview",
       "name": "手机阅读预览",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.editor",
       "kind": "atomic",
       "description": "按每页固定字数分页的手机样式预览，点击左右区域翻页；含复制正文。",
@@ -1710,7 +1721,7 @@
     {
       "id": "ui.chapter.editor.audit",
       "name": "章节右键审核",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.editor",
       "kind": "atomic",
       "description": "对单章或多选章节调用 AI 审核、标记报告状态并展示审核报告面板。",
@@ -1727,7 +1738,7 @@
     {
       "id": "ui.chapter.editor.regenerate",
       "name": "章节审核重写",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.editor",
       "kind": "atomic",
       "description": "取已有审核报告或即时审核，流式重写正文并删除旧报告。",
@@ -1742,7 +1753,7 @@
     {
       "id": "ui.chapter.editor.memory",
       "name": "章节记忆提取",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.editor",
       "kind": "atomic",
       "description": "对章节执行四维分析与时间线提取并保存，刷新记忆标记。",
@@ -1758,7 +1769,7 @@
     {
       "id": "ui.chapter.tree",
       "name": "章节树",
-      "level": 1,
+      "level": 2,
       "parent": "ui.chapter",
       "kind": "group",
       "description": "卷/章两级树：浏览、多选、拖拽换卷、重命名、隐藏、校验起点与各类标记。",
@@ -1772,7 +1783,7 @@
     {
       "id": "ui.chapter.tree.view",
       "name": "章节树组件",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.tree",
       "kind": "atomic",
       "description": "树数据加载、卷/章 CRUD、拖拽排序、批量删除、右键菜单与隐藏状态本地持久化。",
@@ -1800,7 +1811,7 @@
     {
       "id": "ui.chapter.tree.api",
       "name": "章节树接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.tree",
       "kind": "atomic",
       "description": "treeApi.get：一次返回卷列表与章节映射（含字数、是否有正文）。",
@@ -1815,7 +1826,7 @@
     {
       "id": "ui.chapter.import",
       "name": "正文目录导入",
-      "level": 1,
+      "level": 2,
       "parent": "ui.chapter",
       "kind": "group",
       "description": "从本地目录/文件夹批量导入章节正文，自动识别卷目录。",
@@ -1829,7 +1840,7 @@
     {
       "id": "ui.chapter.import.dialog",
       "name": "目录导入对话框",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.import",
       "kind": "atomic",
       "description": "优先 File System Access API 递归遍历目录，回退 webkitdirectory；支持卷范围映射并展示结果。",
@@ -1848,7 +1859,7 @@
     {
       "id": "ui.chapter.import.api",
       "name": "章节接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.chapter.import",
       "kind": "atomic",
       "description": "chapterApi：章节列表/读写/增删/已有章节/目录与文件导入/数据状态/全文搜索。",
@@ -1863,8 +1874,8 @@
     {
       "id": "ui.audit",
       "name": "内容审核",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "正文/卷纲/章纲三类审核：AI 逐段问题分级、自动重写循环、报告展示与保存、已读标记与树分数联动。",
       "files": [
@@ -1879,7 +1890,7 @@
     {
       "id": "ui.audit.panel",
       "name": "审核面板",
-      "level": 1,
+      "level": 2,
       "parent": "ui.audit",
       "kind": "group",
       "description": "审核主界面与报告组件。",
@@ -1894,7 +1905,7 @@
     {
       "id": "ui.audit.panel.page",
       "name": "审核面板页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "三模式（正文/卷纲/章纲）审核：加载内容与已存报告、批量审核、进度与标记、报告区与原文对照。",
@@ -1919,7 +1930,7 @@
     {
       "id": "ui.audit.panel.chapter",
       "name": "正文审核与重写",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "单章/批量正文 AI 审核，按结果自动重写并再审核（最多 3 轮），支持段落编辑/删除/恢复。",
@@ -1938,7 +1949,7 @@
     {
       "id": "ui.audit.panel.volumeOutline",
       "name": "卷纲审核与重写",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "卷纲 AI 审核并按改进意见自动重写（最多 3 轮，阈值 80 分），支持单卷与多卷。",
@@ -1958,7 +1969,7 @@
     {
       "id": "ui.audit.panel.chapterOutline",
       "name": "章纲审核与重写",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "整卷章纲审核、逐章章纲审核、单章重写与批量审核，含报告解析与保存。",
@@ -1978,7 +1989,7 @@
     {
       "id": "ui.audit.panel.report",
       "name": "审核报告展示",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "展示审核状态、总分、优缺点/红线/修改优先级与逐段问题，支持点击跳转段落。",
@@ -1993,7 +2004,7 @@
     {
       "id": "ui.audit.panel.issues",
       "name": "段落问题列表",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "按严重级别着色展示单段问题、扣分与亮点。",
@@ -2008,7 +2019,7 @@
     {
       "id": "ui.audit.panel.singleView",
       "name": "单章审核报告视图",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "单章章纲审核报告的内联展示（评分、优缺点、修改方向、问题列表）。",
@@ -2024,7 +2035,7 @@
     {
       "id": "ui.audit.panel.status",
       "name": "审核状态判定",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "由分数与问题级别推导审核等级及对应颜色与文案。",
@@ -2041,7 +2052,7 @@
     {
       "id": "ui.audit.panel.api",
       "name": "审核接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.audit.panel",
       "kind": "atomic",
       "description": "auditApi：正文/AI 套话/整卷/逐章审核，报告读取/状态/已读/删除。",
@@ -2056,8 +2067,8 @@
     {
       "id": "ui.memory",
       "name": "记忆系统",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "四维记忆分析与时间线提取/保存/查看：按范围分析、逐章查看、已保存数据浏览与缺失章节补分析。",
       "files": [
@@ -2071,7 +2082,7 @@
     {
       "id": "ui.memory.analysis",
       "name": "记忆分析与查看",
-      "level": 1,
+      "level": 2,
       "parent": "ui.memory",
       "kind": "group",
       "description": "分析/提取执行、结果展示与数据查看器。",
@@ -2086,7 +2097,7 @@
     {
       "id": "ui.memory.analysis.page",
       "name": "记忆系统页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.memory.analysis",
       "kind": "atomic",
       "description": "章节树 + 范围/模型/模板控制，执行四维分析与时间线提取，结果分页展示并保存到数据库。",
@@ -2112,7 +2123,7 @@
     {
       "id": "ui.memory.analysis.inlineViewer",
       "name": "记忆内联查看器",
-      "level": 2,
+      "level": 3,
       "parent": "ui.memory.analysis",
       "kind": "atomic",
       "description": "按所选章节范围加载并逐章展示四维记忆与时间线，缺数据时可一键请求分析。",
@@ -2130,7 +2141,7 @@
     {
       "id": "ui.memory.analysis.dataViewer",
       "name": "记忆数据查看器",
-      "level": 2,
+      "level": 3,
       "parent": "ui.memory.analysis",
       "kind": "atomic",
       "description": "弹窗式按卷/章筛选查看已保存的四维汇总、时间线、逐章分析与 JSON 输出。",
@@ -2150,7 +2161,7 @@
     {
       "id": "ui.memory.analysis.api",
       "name": "记忆接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.memory.analysis",
       "kind": "atomic",
       "description": "memoryApi（ingest/context/foreshadowings/timeline/snapshot/analyze/save/merge/status/viewData）与流式分析/时间线入口。",
@@ -2167,8 +2178,8 @@
     {
       "id": "ui.settings",
       "name": "设置",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "API 密钥/模型、提示词与模板、系统配置、备份恢复、配色主题、管理密码、外部接口、高峰时段控制等全局设置。",
       "files": [
@@ -2182,7 +2193,7 @@
     {
       "id": "ui.settings.panel",
       "name": "设置面板",
-      "level": 1,
+      "level": 2,
       "parent": "ui.settings",
       "kind": "group",
       "description": "各类设置的读写界面。",
@@ -2195,7 +2206,7 @@
     {
       "id": "ui.settings.panel.page",
       "name": "设置页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "承载密钥、配色、密码、字体、素材列数、外部接口、高峰时段、提示词/模板/配置管理与默认 AI 设置。",
@@ -2212,7 +2223,7 @@
     {
       "id": "ui.settings.panel.apiKeys",
       "name": "API 密钥与模型配置",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "按模型配置密钥、连通性测试、查看模型信息与新增模型。",
@@ -2231,7 +2242,7 @@
     {
       "id": "ui.settings.panel.prompts",
       "name": "提示词管理",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "提示词增删改、受保护提示词禁删、从文件批量加载。",
@@ -2247,7 +2258,7 @@
     {
       "id": "ui.settings.panel.templates",
       "name": "提示词模板管理",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "模板增删改，含变量列表展示。",
@@ -2263,7 +2274,7 @@
     {
       "id": "ui.settings.panel.configs",
       "name": "系统配置管理",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "键值配置项的增删改。",
@@ -2279,7 +2290,7 @@
     {
       "id": "ui.settings.panel.backups",
       "name": "数据库备份恢复",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "创建/恢复/删除数据库备份。",
@@ -2296,7 +2307,7 @@
     {
       "id": "ui.settings.panel.theme",
       "name": "页面配色主题",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "12 种预设配色与自定义方案，写入 CSS 变量并持久化。",
@@ -2316,7 +2327,7 @@
     {
       "id": "ui.settings.panel.password",
       "name": "管理密码",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "校验并保存 4 位数字管理密码。",
@@ -2331,7 +2342,7 @@
     {
       "id": "ui.settings.panel.externalApi",
       "name": "外部接口",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "开关本机外部调用接口、生成/清除 API Key 并展示调用示例。",
@@ -2348,7 +2359,7 @@
     {
       "id": "ui.settings.panel.configApi",
       "name": "配置接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.panel",
       "kind": "atomic",
       "description": "configApi：模型/密钥/连通性/素材/提示词/模板/配置/密码/外部接口/可用数据/自定义提示词组装。",
@@ -2363,7 +2374,7 @@
     {
       "id": "ui.settings.peakTime",
       "name": "AI 高峰时段控制",
-      "level": 1,
+      "level": 2,
       "parent": "ui.settings",
       "kind": "group",
       "description": "高峰时段拦截/价格提醒的门卫逻辑与全局弹窗。",
@@ -2377,7 +2388,7 @@
     {
       "id": "ui.settings.peakTime.store",
       "name": "高峰时段状态仓库",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.peakTime",
       "kind": "atomic",
       "description": "窗口/价格/开关配置、高峰判定、ensureAIAllowed 门卫与同窗口决策复用。",
@@ -2397,7 +2408,7 @@
     {
       "id": "ui.settings.peakTime.modal",
       "name": "高峰时段弹窗",
-      "level": 2,
+      "level": 3,
       "parent": "ui.settings.peakTime",
       "kind": "atomic",
       "description": "blocked 模式纯提示，warning 模式展示价格表并确认是否继续。",
@@ -2412,8 +2423,8 @@
     {
       "id": "ui.experimental",
       "name": "实验功能",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "短篇生成、对话式生成、公众号杂文写作与短剧分镜剧本四大实验标签页。",
       "files": [
@@ -2427,7 +2438,7 @@
     {
       "id": "ui.experimental.panel",
       "name": "实验面板",
-      "level": 1,
+      "level": 2,
       "parent": "ui.experimental",
       "kind": "group",
       "description": "实验功能主面板与提示词管理。",
@@ -2440,7 +2451,7 @@
     {
       "id": "ui.experimental.panel.page",
       "name": "实验功能页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.experimental.panel",
       "kind": "atomic",
       "description": "四标签页切换与记忆当前标签；统一提示词选择/新建/覆盖/删除。",
@@ -2464,7 +2475,7 @@
     {
       "id": "ui.experimental.shortStory",
       "name": "短篇生成",
-      "level": 1,
+      "level": 2,
       "parent": "ui.experimental",
       "kind": "group",
       "description": "提示词+纲要流式生成短篇，支持保存/复制/一键清空备份。",
@@ -2477,7 +2488,7 @@
     {
       "id": "ui.experimental.shortStory.page",
       "name": "短篇生成页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.experimental.shortStory",
       "kind": "atomic",
       "description": "模型/思考模式选择、生成与停止、保存配置、复制、清空并自动备份为 txt。",
@@ -2497,7 +2508,7 @@
     {
       "id": "ui.experimental.chat",
       "name": "对话式生成",
-      "level": 1,
+      "level": 2,
       "parent": "ui.experimental",
       "kind": "group",
       "description": "多会话对话，支持搜索、字号、导出、复制、导入到流式写作。",
@@ -2510,7 +2521,7 @@
     {
       "id": "ui.experimental.chat.page",
       "name": "对话式生成页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.experimental.chat",
       "kind": "atomic",
       "description": "会话列表与消息流，流式对话、会话持久化、右键重命名/复制/导出/导入到流式写作。",
@@ -2539,7 +2550,7 @@
     {
       "id": "ui.experimental.gzh",
       "name": "公众号写作",
-      "level": 1,
+      "level": 2,
       "parent": "ui.experimental",
       "kind": "group",
       "description": "以鲁迅风格系统提示词根据新闻事件生成杂文。",
@@ -2552,7 +2563,7 @@
     {
       "id": "ui.experimental.gzh.page",
       "name": "公众号写作页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.experimental.gzh",
       "kind": "atomic",
       "description": "系统提示词+新闻描述+自定义要求流式生成杂文，支持复制保存。",
@@ -2571,7 +2582,7 @@
     {
       "id": "ui.experimental.drama",
       "name": "短剧剧本",
-      "level": 1,
+      "level": 2,
       "parent": "ui.experimental",
       "kind": "group",
       "description": "多章素材→分镜草稿预评估→单集/多集剧本生成，以及 ComfyUI 角色/场景/帧提示词生成。",
@@ -2587,7 +2598,7 @@
     {
       "id": "ui.experimental.drama.hook",
       "name": "短剧业务 Hook",
-      "level": 2,
+      "level": 3,
       "parent": "ui.experimental.drama",
       "kind": "atomic",
       "description": "章节/素材加载、分镜草稿生成与时长评估、单/多集剧本生成、镜头重生成、帧/角色/场景提示词生成与持久化。",
@@ -2623,7 +2634,7 @@
     {
       "id": "ui.experimental.drama.view",
       "name": "短剧剧本视图",
-      "level": 2,
+      "level": 3,
       "parent": "ui.experimental.drama",
       "kind": "atomic",
       "description": "展示剧本控制栏、分镜草稿与正式镜头、帧提示词弹窗、角色/场景提示词卡片与生成记录。",
@@ -2638,7 +2649,7 @@
     {
       "id": "ui.experimental.drama.types",
       "name": "短剧类型定义",
-      "level": 2,
+      "level": 3,
       "parent": "ui.experimental.drama",
       "kind": "atomic",
       "description": "DramaShot/DramaEpisode/DramaDraftShot/DramaEstimate/ComfyUIPromptCard/ChatSession 等接口。",
@@ -2659,7 +2670,7 @@
     {
       "id": "ui.experimental.drama.constants",
       "name": "实验功能系统提示词",
-      "level": 2,
+      "level": 3,
       "parent": "ui.experimental.drama",
       "kind": "atomic",
       "description": "对话系统提示词、短剧剧本总监提示词、鲁迅风格杂文提示词常量。",
@@ -2676,8 +2687,8 @@
     {
       "id": "ui.database",
       "name": "数据库管理",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "通用数据库表浏览与增删改：按分组浏览表、分页排序查询、记录编辑/新增/删除。",
       "files": [
@@ -2689,7 +2700,7 @@
     {
       "id": "ui.database.browser",
       "name": "数据库浏览器",
-      "level": 1,
+      "level": 2,
       "parent": "ui.database",
       "kind": "group",
       "description": "表结构与数据 CRUD 界面。",
@@ -2702,7 +2713,7 @@
     {
       "id": "ui.database.browser.page",
       "name": "数据库管理页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.database.browser",
       "kind": "atomic",
       "description": "左栏表分组树 + 中栏数据表格（分页/排序）+ 编辑/新增弹窗。",
@@ -2724,7 +2735,7 @@
     {
       "id": "ui.database.browser.api",
       "name": "数据库接口封装",
-      "level": 2,
+      "level": 3,
       "parent": "ui.database.browser",
       "kind": "atomic",
       "description": "databaseApi：备份创建/列表/恢复/删除与表的列表/查询/增删改。",
@@ -2739,8 +2750,8 @@
     {
       "id": "ui.tools",
       "name": "工具",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "运维类工具：从章纲重建章节-卷映射、整本小说归档为文本与独立数据库。",
       "files": [
@@ -2752,7 +2763,7 @@
     {
       "id": "ui.tools.panel",
       "name": "工具面板",
-      "level": 1,
+      "level": 2,
       "parent": "ui.tools",
       "kind": "group",
       "description": "映射重建与归档工具。",
@@ -2765,7 +2776,7 @@
     {
       "id": "ui.tools.panel.page",
       "name": "工具页",
-      "level": 2,
+      "level": 3,
       "parent": "ui.tools.panel",
       "kind": "atomic",
       "description": "从章纲重建映射（刷新树）与小说归档（确认弹窗、只读保护、结果展示）。",
@@ -2780,8 +2791,8 @@
     {
       "id": "ui.about",
       "name": "关于",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "应用简介、快速开始、功能模块、创作工作流、配置说明与版本信息。",
       "files": [
@@ -2793,7 +2804,7 @@
     {
       "id": "ui.about.page",
       "name": "关于页",
-      "level": 1,
+      "level": 2,
       "parent": "ui.about",
       "kind": "group",
       "description": "静态信息展示页，含可折叠 Section 与 FeatureCard 小组件。",
@@ -2810,8 +2821,8 @@
     {
       "id": "ui.infra",
       "name": "前端基础设施",
-      "level": 0,
-      "parent": null,
+      "level": 1,
+      "parent": "root",
       "kind": "block",
       "description": "跨业务共享的 HTTP 客户端、流式解析、类型定义与通用工具。",
       "files": [
@@ -2827,7 +2838,7 @@
     {
       "id": "ui.infra.api",
       "name": "HTTP 与流式基础设施",
-      "level": 1,
+      "level": 2,
       "parent": "ui.infra",
       "kind": "group",
       "description": "axios 实例、高峰时段请求拦截与 SSE 流解析。",
@@ -2840,7 +2851,7 @@
     {
       "id": "ui.infra.api.client",
       "name": "HTTP 客户端",
-      "level": 2,
+      "level": 3,
       "parent": "ui.infra.api",
       "kind": "atomic",
       "description": "axios 实例（baseURL /api、超时 180s）及 Prompt/PromptTemplate/Config/Backup 等共享接口类型。",
@@ -2859,7 +2870,7 @@
     {
       "id": "ui.infra.api.peakGuard",
       "name": "AI 高峰时段请求拦截",
-      "level": 2,
+      "level": 3,
       "parent": "ui.infra.api",
       "kind": "atomic",
       "description": "按正则识别 AI 生成类端点，请求前经 ensureAIAllowed 门卫；命中高峰则拒绝并给出统一提示。",
@@ -2877,7 +2888,7 @@
     {
       "id": "ui.infra.api.streamParse",
       "name": "SSE 流式响应解析",
-      "level": 2,
+      "level": 3,
       "parent": "ui.infra.api",
       "kind": "atomic",
       "description": "解析 data: 行、content/error/retry_status/进度/结果事件、读空闲超时与完成音。",
@@ -2894,7 +2905,7 @@
     {
       "id": "ui.infra.types",
       "name": "共享类型定义",
-      "level": 1,
+      "level": 2,
       "parent": "ui.infra",
       "kind": "group",
       "description": "贯穿各业务的 TypeScript 类型与默认值。",
@@ -2907,7 +2918,7 @@
     {
       "id": "ui.infra.types.models",
       "name": "领域模型类型",
-      "level": 2,
+      "level": 3,
       "parent": "ui.infra.types",
       "kind": "atomic",
       "description": "Novel/Chapter/AuditResult/AIAuditResponse/Character/defaultCharacter/APIConfig/Volume/MemoryAnalysisResult 等模型与默认角色。",
@@ -2933,7 +2944,7 @@
     {
       "id": "ui.infra.utils",
       "name": "通用工具",
-      "level": 1,
+      "level": 2,
       "parent": "ui.infra",
       "kind": "group",
       "description": "文本格式化、卷号中文显示与完成提示音。",
@@ -2948,7 +2959,7 @@
     {
       "id": "ui.infra.utils.textFormat",
       "name": "文本格式化工具",
-      "level": 2,
+      "level": 3,
       "parent": "ui.infra.utils",
       "kind": "atomic",
       "description": "toTitleCase/splitParagraphs/annotateContent/filterAIResponsePrefix/formatReportTime/tryParseJSONField。",
@@ -2968,7 +2979,7 @@
     {
       "id": "ui.infra.utils.volumeDisplay",
       "name": "卷号显示工具",
-      "level": 2,
+      "level": 3,
       "parent": "ui.infra.utils",
       "kind": "atomic",
       "description": "阿拉伯数字卷号转中文并保留自定义标题。",
@@ -2984,7 +2995,7 @@
     {
       "id": "ui.infra.utils.sound",
       "name": "完成提示音",
-      "level": 2,
+      "level": 3,
       "parent": "ui.infra.utils",
       "kind": "atomic",
       "description": "批次深度控制与双音完成提示。",

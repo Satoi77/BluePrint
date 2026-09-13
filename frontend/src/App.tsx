@@ -4,8 +4,8 @@ import type { CommitStatus } from "./services/api";
 import BlueprintCanvas from "./components/BlueprintCanvas";
 import ErrorBanner from "./components/ErrorBanner";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Breadcrumb from "./components/Breadcrumb";
 import IsolatedPool from "./components/IsolatedPool";
-import LevelSwitcher from "./components/LevelSwitcher";
 import LogExportPanel from "./components/LogExportPanel";
 import NodeEditor from "./components/NodeEditor";
 import ProjectMenu from "./components/ProjectMenu";
@@ -111,7 +111,7 @@ export default function App() {
         </div>
         <ProjectSwitcher />
         <ProjectPathInput />
-        <LevelSwitcher />
+        <Breadcrumb />
         <SearchBar />
         {raw && (
           <div className="ml-auto flex items-center gap-3 font-mono text-[0.66rem] text-muted">

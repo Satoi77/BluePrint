@@ -83,8 +83,6 @@ def validate_agent_blueprint(
         fid = item.get("id")
         level = item.get("level")
         kind = item.get("kind")
-        if level in _LEVEL_KIND and kind and kind != _LEVEL_KIND[level]:
-            warnings.append(f"{fid}: level={level} 与 kind={kind} 不一致")
         parent = item.get("parent")
         if parent is not None:
             if parent not in by_id:
@@ -198,10 +196,13 @@ def build_from_agent_blueprint(
             )
         )
 
-    # 机械补齐 L2 原子功能：对**尚未显式给出 L2 子节点**的 L1 逐个补齐
-    parents_with_l2 = {node.parent_id for node in nodes if node.level == 2}
+    # 机械补齐树叶（原子功能）：任意「非 atomic、无子节点、有文件或符号」的节点
+    # 都在其下一层生成原子功能。Python 由软件列函数；其他语言用声明的 symbols。
+    parents_with_children = {node.parent_id for node in nodes if node.parent_id}
     for node in list(nodes):
-        if node.level != 1 or node.id in parents_with_l2:
+        if node.kind == "atomic" or node.id in parents_with_children:
+            continue
+        if not node.files and not node.functions:
             continue
         collected: list[tuple[str, str]] = []
         has_python = False
@@ -239,7 +240,7 @@ def build_from_agent_blueprint(
                     is_isolated=False,
                     group=node.id,
                     files=[path],
-                    level=2,
+                    level=node.level + 1,
                     parent_id=node.id,
                     kind="atomic",
                     member_count=1,
@@ -248,9 +249,10 @@ def build_from_agent_blueprint(
 
     # 原子级调用边（仅对软件可解析的 Python 文件）
     if files:
+        node_level = {node.id: node.level for node in nodes}
         symbol_node: dict[tuple[str, str], str] = {}
         for node in nodes:
-            if node.level == 2 and node.files and node.functions:
+            if node.kind == "atomic" and node.files and node.functions:
                 symbol_node.setdefault(
                     (node.files[0], node.functions[0]), node.id
                 )
@@ -270,18 +272,22 @@ def build_from_agent_blueprint(
                         source=source,
                         target=target,
                         relation="call",
-                        level=2,
+                        level=max(
+                            node_level.get(source, 3),
+                            node_level.get(target, 3),
+                        ),
                         weight=1,
                     )
                 )
 
-    # 无任何边且未显式标注者，也视为孤立
+    # 无任何边且**无子节点**者，视为孤立（有子节点的父级不算孤立）
+    parents = {node.parent_id for node in nodes if node.parent_id}
     degree: dict[str, int] = {}
     for edge in edges:
         degree[edge.source] = degree.get(edge.source, 0) + 1
         degree[edge.target] = degree.get(edge.target, 0) + 1
     for node in nodes:
-        if degree.get(node.id, 0) == 0:
+        if degree.get(node.id, 0) == 0 and node.id not in parents:
             node.is_isolated = True
 
     return nodes, edges

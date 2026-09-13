@@ -62,6 +62,8 @@ interface BlueprintState {
   selectedId: string | null;
   searchQuery: string;
   visibleLevel: number;
+  focusId: string | null;
+  setFocus: (id: string | null) => void;
   blueprintSource: AgentBlueprint | null;
   positions: Record<string, { x: number; y: number }>;
   designMode: boolean;
@@ -118,12 +120,14 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
   error: null,
   selectedId: null,
   searchQuery: "",
-  visibleLevel: 0,
+  visibleLevel: 1,
+  focusId: null,
   blueprintSource: null,
   positions: {},
   designMode: false,
 
   setVisibleLevel: (level) => set({ visibleLevel: level }),
+  setFocus: (id) => set({ focusId: id }),
   setDesignMode: (value) => set({ designMode: value }),
 
   init: async () => {
@@ -156,6 +160,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
         searchQuery: "",
         activeProjectId: data.project_id,
         positions: data.positions ?? {},
+        focusId: null,
       });
       if (data.project_id) {
         localStorage.setItem(ACTIVE_KEY, String(data.project_id));
@@ -179,6 +184,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
         status: "success",
         activeProjectId: id,
         positions: data.positions ?? {},
+        focusId: null,
       });
       localStorage.setItem(ACTIVE_KEY, String(id));
       await refreshSource(id);
