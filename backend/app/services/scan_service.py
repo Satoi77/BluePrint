@@ -80,7 +80,9 @@ def scan_project(
         existing_id = get_project_id(str(root))
         blueprint = get_mapping(existing_id) if existing_id else None
         if blueprint and blueprint.get("functions"):
-            nodes, edges = build_from_agent_blueprint(blueprint, file_nodes, files)
+            nodes, edges = build_from_agent_blueprint(
+                blueprint, file_nodes, files, history, RECENT_DAYS
+            )
             warnings.extend(validate_agent_blueprint(blueprint, files))
         else:
             nodes, edges = build_function_hierarchy(

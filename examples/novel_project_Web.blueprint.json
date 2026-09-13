@@ -446,6 +446,2557 @@
         "backend/app/services/peak_time.py"
       ],
       "isolated": true
+    },
+    {
+      "id": "ui.app",
+      "name": "应用框架与导航",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "单页应用外壳：根组件按侧边栏标签切换各业务面板，负责启动引导与全局样式主题。",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/main.tsx",
+        "frontend/src/index.css",
+        "frontend/src/constants.ts",
+        "frontend/src/components/Sidebar.tsx",
+        "frontend/src/utils/uiText.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.shell",
+      "name": "应用外壳与启动",
+      "level": 1,
+      "parent": "ui.app",
+      "kind": "group",
+      "description": "根组件、启动引导、全局样式与应用常量。",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/main.tsx",
+        "frontend/src/index.css",
+        "frontend/src/constants.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.shell.root",
+      "name": "应用根组件与标签路由",
+      "level": 2,
+      "parent": "ui.app.shell",
+      "kind": "atomic",
+      "description": "持有 activeTab，按标签渲染各面板；监听 navigate-to-stream-writing 事件切换页签。",
+      "files": [
+        "frontend/src/App.tsx"
+      ],
+      "symbols": [
+        "App"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.shell.bootstrap",
+      "name": "应用启动引导",
+      "level": 2,
+      "parent": "ui.app.shell",
+      "kind": "atomic",
+      "description": "挂载前读取 general_font_size 并写入 CSS 变量，然后渲染 App。",
+      "files": [
+        "frontend/src/main.tsx"
+      ],
+      "symbols": [
+        "bootstrap"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.shell.styles",
+      "name": "全局样式与主题变量",
+      "level": 2,
+      "parent": "ui.app.shell",
+      "kind": "atomic",
+      "description": "Tailwind 主题色、字体变量、输入控件/按钮样式、滚动条与动画关键帧。",
+      "files": [
+        "frontend/src/index.css"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.shell.constants",
+      "name": "应用常量",
+      "level": 2,
+      "parent": "ui.app.shell",
+      "kind": "atomic",
+      "description": "版本号与创作者名。",
+      "files": [
+        "frontend/src/constants.ts"
+      ],
+      "symbols": [
+        "APP_VERSION",
+        "CREATOR_NAME"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.nav",
+      "name": "侧边导航",
+      "level": 1,
+      "parent": "ui.app",
+      "kind": "group",
+      "description": "业务面板入口导航。",
+      "files": [
+        "frontend/src/components/Sidebar.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.nav.sidebar",
+      "name": "侧边导航栏",
+      "level": 2,
+      "parent": "ui.app.nav",
+      "kind": "atomic",
+      "description": "渲染 12 个导航项，显示当前小说与版本号。",
+      "files": [
+        "frontend/src/components/Sidebar.tsx"
+      ],
+      "symbols": [
+        "Sidebar"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.i18n",
+      "name": "界面文案",
+      "level": 1,
+      "parent": "ui.app",
+      "kind": "group",
+      "description": "集中式 UI 文案常量（i18n 起步）。",
+      "files": [
+        "frontend/src/utils/uiText.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.app.i18n.text",
+      "name": "UI 文案常量表",
+      "level": 2,
+      "parent": "ui.app.i18n",
+      "kind": "atomic",
+      "description": "common/novel/chapter/material/writing/audit 各域常用文案。",
+      "files": [
+        "frontend/src/utils/uiText.ts"
+      ],
+      "symbols": [
+        "UI_TEXT"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.novel",
+      "name": "小说管理",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "多小说的创建、重命名、删除、切换，以及导出/导入/完结清理等数据迁移能力。",
+      "files": [
+        "frontend/src/components/NovelList.tsx",
+        "frontend/src/stores/novelStore.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.novel.list",
+      "name": "小说列表与当前小说",
+      "level": 1,
+      "parent": "ui.novel",
+      "kind": "group",
+      "description": "小说集合的展示、选中与全局状态维护。",
+      "files": [
+        "frontend/src/components/NovelList.tsx",
+        "frontend/src/stores/novelStore.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.novel.list.page",
+      "name": "小说管理页",
+      "level": 2,
+      "parent": "ui.novel.list",
+      "kind": "atomic",
+      "description": "小说卡片列表与新建/重命名/删除/选择/导出/导入/完结按钮及弹窗。",
+      "files": [
+        "frontend/src/components/NovelList.tsx"
+      ],
+      "symbols": [
+        "NovelList",
+        "handleCreate",
+        "handleRename",
+        "handleDelete",
+        "handleExport",
+        "handleImport",
+        "handleFinalize",
+        "openImport"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.novel.list.store",
+      "name": "小说全局状态仓库",
+      "level": 2,
+      "parent": "ui.novel.list",
+      "kind": "atomic",
+      "description": "Zustand：小说列表、当前小说、章节缓存、API 密钥状态、全局字体、树刷新信号与异步动作。",
+      "files": [
+        "frontend/src/stores/novelStore.ts"
+      ],
+      "symbols": [
+        "useNovelStore"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.novel.transfer",
+      "name": "小说数据导入导出",
+      "level": 1,
+      "parent": "ui.novel",
+      "kind": "group",
+      "description": "目录导出/导入、完结清理与对应接口封装。",
+      "files": [
+        "frontend/src/components/NovelList.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.novel.transfer.api",
+      "name": "小说接口封装",
+      "level": 2,
+      "parent": "ui.novel.transfer",
+      "kind": "atomic",
+      "description": "novelApi：列表/创建/重命名/删除/完结/导入导出/配置/映射/校验起点/编辑锁/归档等。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "novelApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material",
+      "name": "素材与设定",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "雪花写作法设定集、人物卡/人物状态、卷纲与章纲、记忆素材视图、短剧剧本素材及素材搜索与导入向导。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx",
+        "frontend/src/services/materialService.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.library",
+      "name": "素材库",
+      "level": 1,
+      "parent": "ui.material",
+      "kind": "group",
+      "description": "素材类型的浏览、编辑、字数统计与全文搜索。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx",
+        "frontend/src/components/MaterialSearch.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.library.page",
+      "name": "素材管理页",
+      "level": 2,
+      "parent": "ui.material.library",
+      "kind": "atomic",
+      "description": "按 materialTypes 渲染 18 种素材入口，加载、保存与 AI 生成调度中枢。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx"
+      ],
+      "symbols": [
+        "MaterialPanel",
+        "loadMaterial",
+        "loadScriptTreeData",
+        "loadScriptContentFromDB",
+        "saveScriptShotPromptsBatch"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.library.search",
+      "name": "素材全文搜索",
+      "level": 2,
+      "parent": "ui.material.library",
+      "kind": "atomic",
+      "description": "拉取全部素材，按关键词逐行匹配并预览，点击跳转到对应素材类型。",
+      "files": [
+        "frontend/src/components/MaterialSearch.tsx"
+      ],
+      "symbols": [
+        "MaterialSearch",
+        "doSearch"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.setup",
+      "name": "基础设定生成",
+      "level": 1,
+      "parent": "ui.material",
+      "kind": "group",
+      "description": "雪花写作法设定集：一句话概括、五句话骨架、题材、世界观、金手指、事件链、书名/简介。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx",
+        "frontend/src/components/SnowflakeWizard.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.setup.snowflake",
+      "name": "雪花写作法向导",
+      "level": 2,
+      "parent": "ui.material.setup",
+      "kind": "atomic",
+      "description": "两步向导：一句话概括 → 五句话骨架，流式生成并保存为素材。",
+      "files": [
+        "frontend/src/components/SnowflakeWizard.tsx"
+      ],
+      "symbols": [
+        "SnowflakeWizard",
+        "handleOneSentenceGenerate",
+        "handleFiveSentencesGenerate",
+        "handleSaveOneSentence",
+        "handleSaveFiveSentences"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.setup.generators",
+      "name": "设定流式生成器",
+      "level": 2,
+      "parent": "ui.material.setup",
+      "kind": "atomic",
+      "description": "一句话/骨架/世界观/金手指/事件链/反推/书名/简介 的流式生成接口。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "streamGenerateOneSentence",
+        "streamGenerateFiveSentences",
+        "streamGenerateWorldview",
+        "streamGenerateGodFinger",
+        "streamGenerateOutline",
+        "streamGenerateOutlineReverse",
+        "streamGenerateBookName",
+        "streamGenerateBookSummary"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.character",
+      "name": "人物卡与人物状态",
+      "level": 1,
+      "parent": "ui.material",
+      "kind": "group",
+      "description": "人物卡编辑、AI 生成人物卡/小传/提取角色名，以及按卷的人物状态表与按章纲增量更新。",
+      "files": [
+        "frontend/src/components/CharacterViews.tsx",
+        "frontend/src/components/CharacterStatusPanel.tsx",
+        "frontend/src/components/CharacterProgressButton.tsx",
+        "frontend/src/services/materialService.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.character.cards",
+      "name": "人物卡编辑器",
+      "level": 2,
+      "parent": "ui.material.character",
+      "kind": "atomic",
+      "description": "角色折叠卡：核心设定/背景/外貌/身份/性格/环境/心理分区编辑，展示完整度与人物小传。",
+      "files": [
+        "frontend/src/components/CharacterViews.tsx"
+      ],
+      "symbols": [
+        "CharactersView",
+        "getCharacterStatus"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.character.generate",
+      "name": "人物卡与角色名生成",
+      "level": 2,
+      "parent": "ui.material.character",
+      "kind": "atomic",
+      "description": "生成人物卡（JSON 容错重试）、提取角色名、合并去重为新角色、生成人物小传。",
+      "files": [
+        "frontend/src/services/materialService.ts"
+      ],
+      "symbols": [
+        "generateCharacterCard",
+        "extractCharacterNames",
+        "getNewCharactersFromNames",
+        "generateCharacterBiography",
+        "cleanAndParseJSON",
+        "parseNamesFromResponse"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.character.status",
+      "name": "人物状态表",
+      "level": 2,
+      "parent": "ui.material.character",
+      "kind": "atomic",
+      "description": "按角色/卷维护身份、地点、时间、起止卷的可编辑表格，支持 AI 生成与批量保存。",
+      "files": [
+        "frontend/src/components/CharacterStatusPanel.tsx"
+      ],
+      "symbols": [
+        "CharacterStatusPanel",
+        "loadData",
+        "handleSave",
+        "handleGenerate"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.character.progress",
+      "name": "按章纲更新人物",
+      "level": 2,
+      "parent": "ui.material.character",
+      "kind": "atomic",
+      "description": "以最近 20 章章纲为窗口分析人物进展，更新人物卡与状态表；可选追加身份清单。",
+      "files": [
+        "frontend/src/components/CharacterProgressButton.tsx",
+        "frontend/src/services/materialService.ts",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "CharacterProgressButton",
+        "analyzeCharacterProgress",
+        "characterStatusApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.outline",
+      "name": "卷纲与章纲",
+      "level": 1,
+      "parent": "ui.material",
+      "kind": "group",
+      "description": "卷纲/章纲的生成、格式化、树形浏览、拖拽排序、章节-卷映射与审核联动。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx",
+        "frontend/src/components/VolumeOutlineTree.tsx",
+        "frontend/src/components/ChapterOutlineTree.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.outline.volume",
+      "name": "卷纲生成与编辑",
+      "level": 2,
+      "parent": "ui.material.outline",
+      "kind": "atomic",
+      "description": "单卷/多卷/整本卷纲生成、格式化、总卷数总字数设置与自动建卷。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx",
+        "frontend/src/services/materialService.ts"
+      ],
+      "symbols": [
+        "generateVolumeOutline",
+        "formatVolumeOutline"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.outline.volumeTree",
+      "name": "卷纲树",
+      "level": 2,
+      "parent": "ui.material.outline",
+      "kind": "atomic",
+      "description": "卷列表（有内容/空标记）选择与右键清除内容。",
+      "files": [
+        "frontend/src/components/VolumeOutlineTree.tsx"
+      ],
+      "symbols": [
+        "VolumeOutlineTree"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.outline.chapter",
+      "name": "章纲生成与编辑",
+      "level": 2,
+      "parent": "ui.material.outline",
+      "kind": "atomic",
+      "description": "单章/多章/整卷章纲生成（流式）、格式化、提取参与角色、自动创建与单章重写。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx",
+        "frontend/src/services/materialService.ts"
+      ],
+      "symbols": [
+        "generateChapterOutline",
+        "generateChapterOutlineStream",
+        "formatChapterOutline",
+        "handleScriptBatchGenerateAll",
+        "handleScriptGenerateShotPrompt"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.outline.chapterTree",
+      "name": "章纲树",
+      "level": 2,
+      "parent": "ui.material.outline",
+      "kind": "atomic",
+      "description": "按卷展示章纲，支持多选、拖拽换卷、改章号/卷号、新建/删除、提取全卷人物、重写本章章纲。",
+      "files": [
+        "frontend/src/components/ChapterOutlineTree.tsx"
+      ],
+      "symbols": [
+        "ChapterOutlineTree",
+        "handleDrop",
+        "handleSaveChapterNumber",
+        "handleSaveVolumeNumber",
+        "handleAddChapter",
+        "handleContextDeleteVolume"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.outline.mapping",
+      "name": "章节-卷映射表",
+      "level": 2,
+      "parent": "ui.material.outline",
+      "kind": "atomic",
+      "description": "展示/查询/构建章节与卷的映射关系，供章节树卷归属与生成时卷号推断。",
+      "files": [
+        "frontend/src/components/CharacterViews.tsx",
+        "frontend/src/components/MaterialPanel.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "ChapterVolumeMappingTable"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.outline.api",
+      "name": "卷与章纲接口封装",
+      "level": 2,
+      "parent": "ui.material.outline",
+      "kind": "atomic",
+      "description": "volumeApi（卷读写/建删/改名/批量/清空）与 chapterOutlineApi（章纲读写/删）。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "volumeApi",
+        "chapterOutlineApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.memoryViews",
+      "name": "记忆素材视图",
+      "level": 1,
+      "parent": "ui.material",
+      "kind": "group",
+      "description": "在素材页内可视化查看四维记忆分析与时间线 JSON。",
+      "files": [
+        "frontend/src/components/material/MemoryViews.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.memoryViews.analysis",
+      "name": "四维记忆素材视图",
+      "level": 2,
+      "parent": "ui.material.memoryViews",
+      "kind": "atomic",
+      "description": "解析记忆分析 JSON，按卷筛选展示四维汇总、逐章分析与时间线。",
+      "files": [
+        "frontend/src/components/material/MemoryViews.tsx"
+      ],
+      "symbols": [
+        "MemoryAnalysisView"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.memoryViews.timeline",
+      "name": "时间线素材视图",
+      "level": 2,
+      "parent": "ui.material.memoryViews",
+      "kind": "atomic",
+      "description": "解析时间线 JSON，按卷筛选并以时间轴展示事件；含原始 JSON 与自适应高度输入框。",
+      "files": [
+        "frontend/src/components/material/MemoryViews.tsx"
+      ],
+      "symbols": [
+        "MemoryTimelineView",
+        "MemoryRawJson",
+        "AutoHeightTextarea"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.script",
+      "name": "短剧剧本素材",
+      "level": 1,
+      "parent": "ui.material",
+      "kind": "group",
+      "description": "素材页内的短剧分镜脚本编辑与 ComfyUI 帧提示词生成。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.script.editor",
+      "name": "剧本分镜编辑器",
+      "level": 2,
+      "parent": "ui.material.script",
+      "kind": "atomic",
+      "description": "加载/保存剧本镜头与提示词，支持插入/删除/编辑、角色/场景/帧提示词流式与批量生成、密码删除。",
+      "files": [
+        "frontend/src/components/MaterialPanel.tsx"
+      ],
+      "symbols": [
+        "buildShotPromptArgs",
+        "handleInsertShot",
+        "handleDeleteShot",
+        "handleEditShotSave",
+        "handleScriptBatchGenerateAllShots",
+        "handleScriptDelete",
+        "syncScriptShotsToRawJson",
+        "startResize",
+        "onResizeMove",
+        "onResizeEnd"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.importWizard",
+      "name": "素材导入向导",
+      "level": 1,
+      "parent": "ui.material",
+      "kind": "group",
+      "description": "将外部粘贴文本导入为指定素材类型，可选用 AI 处理。",
+      "files": [
+        "frontend/src/components/ImportWizard.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.importWizard.dialog",
+      "name": "导入向导对话框",
+      "level": 2,
+      "parent": "ui.material.importWizard",
+      "kind": "atomic",
+      "description": "选择素材类型并粘贴内容 → 调用 wizardApi.import 保存，展示结果与错误详情。",
+      "files": [
+        "frontend/src/components/ImportWizard.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "ImportWizard",
+        "handleImport",
+        "handleNext",
+        "handleReset",
+        "wizardApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.service",
+      "name": "素材生成服务层",
+      "level": 1,
+      "parent": "ui.material",
+      "kind": "group",
+      "description": "对 writingApi/configApi/characterStatusApi 的业务封装，统一错误处理与结果解析。",
+      "files": [
+        "frontend/src/services/materialService.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.material.service.facade",
+      "name": "素材生成门面",
+      "level": 2,
+      "parent": "ui.material.service",
+      "kind": "atomic",
+      "description": "generateOutline/generateGodFinger/generateWorldview/fetchTemplate 等统一返回 {success,content,error}。",
+      "files": [
+        "frontend/src/services/materialService.ts"
+      ],
+      "symbols": [
+        "generateOutline",
+        "generateGodFinger",
+        "generateWorldview",
+        "fetchTemplate"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write",
+      "name": "正文写作",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "正文生成全链路：AI 写作、手搓写作、流式写作向导，以及共享的生成引擎状态机。",
+      "files": [
+        "frontend/src/components/WritingPanel.tsx",
+        "frontend/src/components/AIWriting.tsx",
+        "frontend/src/components/ManualWriting.tsx",
+        "frontend/src/components/StreamWritingWizard.tsx",
+        "frontend/src/stores/generationStore.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.panel",
+      "name": "写作面板入口",
+      "level": 1,
+      "parent": "ui.write",
+      "kind": "group",
+      "description": "AI 写作与手搓写作的标签切换。",
+      "files": [
+        "frontend/src/components/WritingPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.panel.switch",
+      "name": "写作模式切换",
+      "level": 2,
+      "parent": "ui.write.panel",
+      "kind": "atomic",
+      "description": "在 AI 写作与手搓写作之间切换。",
+      "files": [
+        "frontend/src/components/WritingPanel.tsx"
+      ],
+      "symbols": [
+        "WritingPanel"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.ai",
+      "name": "AI 写作",
+      "level": 1,
+      "parent": "ui.write",
+      "kind": "group",
+      "description": "单章/多章/整卷三种模式批量生成正文，含模型、用户输入、记忆引入、自选文件与模板。",
+      "files": [
+        "frontend/src/components/AIWriting.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.ai.page",
+      "name": "AI 写作页",
+      "level": 2,
+      "parent": "ui.write.ai",
+      "kind": "atomic",
+      "description": "生成模式与参数配置、待生成章节计算、生成委托给 generationStore，展示流式正文并可编辑保存。",
+      "files": [
+        "frontend/src/components/AIWriting.tsx"
+      ],
+      "symbols": [
+        "AIWriting",
+        "getChaptersToGenerate",
+        "handleGenerate",
+        "handleViewRawData",
+        "handleViewPromptTemplate",
+        "handleSaveGeneratedContent"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.manual",
+      "name": "手搓写作",
+      "level": 1,
+      "parent": "ui.write",
+      "kind": "group",
+      "description": "手动写作编辑器：三栏布局、卷纲/章纲/人物/设定集浮窗、生成指导与正文参考生成。",
+      "files": [
+        "frontend/src/components/ManualWriting.tsx",
+        "frontend/src/components/ManualChapterTree.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.manual.page",
+      "name": "手搓写作页",
+      "level": 2,
+      "parent": "ui.write.manual",
+      "kind": "atomic",
+      "description": "章节树+正文编辑器+信息面板，支持拖拽分栏、自动保存、手机预览、新建章节与卷号推断。",
+      "files": [
+        "frontend/src/components/ManualWriting.tsx"
+      ],
+      "symbols": [
+        "ManualWriting",
+        "handleCreateChapter",
+        "determineVolumeForNewChapter",
+        "loadVolumeOutline",
+        "loadChapterOutline",
+        "loadCharacters"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.manual.guidance",
+      "name": "生成指导",
+      "level": 2,
+      "parent": "ui.write.manual",
+      "kind": "atomic",
+      "description": "从章纲流式扩展为可执行的事件拆分写作指导。",
+      "files": [
+        "frontend/src/components/ManualWriting.tsx"
+      ],
+      "symbols": [
+        "handleGenerateGuidance"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.manual.reference",
+      "name": "正文参考生成",
+      "level": 2,
+      "parent": "ui.write.manual",
+      "kind": "atomic",
+      "description": "流式生成参考正文并自动审核，未通过重试至多 3 次，通过后保存为章节参考素材。",
+      "files": [
+        "frontend/src/components/ManualWriting.tsx"
+      ],
+      "symbols": [
+        "handleGenerateReference",
+        "handleCloseReference"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.manual.windows",
+      "name": "写作浮窗与高亮",
+      "level": 2,
+      "parent": "ui.write.manual",
+      "kind": "atomic",
+      "description": "可拖拽的设定集浮窗（含搜索定位与关键词高亮）与可缩放的人物详情浮窗。",
+      "files": [
+        "frontend/src/components/ManualWriting.tsx"
+      ],
+      "symbols": [
+        "FloatingContentWindow",
+        "HighlightedText",
+        "CharacterDetailWindow",
+        "openFloatingWindow",
+        "closeFloatingWindow"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.manual.tree",
+      "name": "手搓写作章节树",
+      "level": 2,
+      "parent": "ui.write.manual",
+      "kind": "atomic",
+      "description": "按卷分组的章节树，支持多选、拖拽换卷、正倒序与刷新。",
+      "files": [
+        "frontend/src/components/ManualChapterTree.tsx"
+      ],
+      "symbols": [
+        "ManualChapterTree",
+        "handleDrop"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.stream",
+      "name": "流式写作向导",
+      "level": 1,
+      "parent": "ui.write",
+      "kind": "group",
+      "description": "四阶段向导：设定集生成 → 大纲生成 → 正文生成循环 → 完成，支持按卷/跨卷与定时启动。",
+      "files": [
+        "frontend/src/components/StreamWritingWizard.tsx",
+        "frontend/src/components/stream-write/RenderContentResults.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.stream.wizard",
+      "name": "流式写作向导页",
+      "level": 2,
+      "parent": "ui.write.stream",
+      "kind": "atomic",
+      "description": "18 步流程状态机，串联设定集/大纲/正文各步生成、审核、模板选择、自选文件、映射与进度订阅。",
+      "files": [
+        "frontend/src/components/StreamWritingWizard.tsx"
+      ],
+      "symbols": [
+        "StreamWritingWizard",
+        "ALL_STEPS",
+        "loadExistingMaterials",
+        "handleGenerateCharacters",
+        "handleGenerateAllBiographies",
+        "handleExtractCharacters",
+        "goToStep",
+        "handleCreateNovel"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.stream.results",
+      "name": "生成结果分页展示",
+      "level": 2,
+      "parent": "ui.write.stream",
+      "kind": "atomic",
+      "description": "按页展示已生成章节的正文、逐章审核报告与记忆数据。",
+      "files": [
+        "frontend/src/components/stream-write/RenderContentResults.tsx"
+      ],
+      "symbols": [
+        "RenderContentResults"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine",
+      "name": "正文生成引擎",
+      "level": 1,
+      "parent": "ui.write",
+      "kind": "group",
+      "description": "跨页面共享的生成状态机与逐章循环：生成、审核、重写、记忆分析、故障窗口、进度与内存裁剪。",
+      "files": [
+        "frontend/src/stores/generationStore.ts",
+        "frontend/src/stores/writingConfigStore.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine.store",
+      "name": "生成状态仓库",
+      "level": 2,
+      "parent": "ui.write.engine",
+      "kind": "atomic",
+      "description": "useGenerationStore：AI/流式/跨卷三种入口、进度、实时正文、审核/记忆结果、停止、重试与重置。",
+      "files": [
+        "frontend/src/stores/generationStore.ts"
+      ],
+      "symbols": [
+        "useGenerationStore",
+        "startGeneration",
+        "startStreamGeneration",
+        "startCrossVolumeGeneration",
+        "stopGeneration",
+        "syncAndMergeMemory",
+        "resetStreamState",
+        "respondToRetry",
+        "setImportedChatData",
+        "clearImportedChatData"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine.loop",
+      "name": "逐章生成循环",
+      "level": 2,
+      "parent": "ui.write.engine",
+      "kind": "atomic",
+      "description": "按章生成→故障窗口→审核→记忆分析，含进度补偿与超龄章节裁剪，返回失败章节与中止标志。",
+      "files": [
+        "frontend/src/stores/generationStore.ts"
+      ],
+      "symbols": [
+        "_runChapterLoop",
+        "generateSingleChapter",
+        "trimRecent"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine.auditRewrite",
+      "name": "审核重写循环",
+      "level": 2,
+      "parent": "ui.write.engine",
+      "kind": "atomic",
+      "description": "审核未达阈值或有严重问题时按意见重写（最多 5 次）；审核 API 失败直接跳过。",
+      "files": [
+        "frontend/src/stores/generationStore.ts"
+      ],
+      "symbols": [
+        "_auditAndRewrite",
+        "_auditSingleChapter",
+        "_buildAuditFeedback"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine.failureWindow",
+      "name": "故障窗口等待",
+      "level": 2,
+      "parent": "ui.write.engine",
+      "kind": "atomic",
+      "description": "多次重试无内容产出时暂停任务，暴露倒计时供弹窗展示，等待后重试一次，仍失败则中止。",
+      "files": [
+        "frontend/src/stores/generationStore.ts"
+      ],
+      "symbols": [
+        "waitFailureWindow"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine.memoryEnsure",
+      "name": "记忆数据自动补全",
+      "level": 2,
+      "parent": "ui.write.engine",
+      "kind": "atomic",
+      "description": "生成前检查记忆覆盖度，缺失时自动补生成四维分析/时间线并合成，失败不阻塞正文。",
+      "files": [
+        "frontend/src/stores/generationStore.ts"
+      ],
+      "symbols": [
+        "_ensureMemoryData",
+        "_runMemoryStream"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine.streamChapter",
+      "name": "单章流式生成与保存",
+      "level": 2,
+      "parent": "ui.write.engine",
+      "kind": "atomic",
+      "description": "带读空闲超时与重试的单章流式生成，边生成边落库。",
+      "files": [
+        "frontend/src/stores/generationStore.ts"
+      ],
+      "symbols": [
+        "_streamGenerateChapter"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine.configStore",
+      "name": "写作配置仓库",
+      "level": 2,
+      "parent": "ui.write.engine",
+      "kind": "atomic",
+      "description": "跨组件共享的生成模型、思考模式与选中写作模板。",
+      "files": [
+        "frontend/src/stores/writingConfigStore.ts"
+      ],
+      "symbols": [
+        "useWritingConfigStore"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.engine.api",
+      "name": "写作接口封装",
+      "level": 2,
+      "parent": "ui.write.engine",
+      "kind": "atomic",
+      "description": "writingApi、chapterContentApi 与 streamGenerate/ChapterContent/RegenerateWithAudit/Guidance 流式入口。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "writingApi",
+        "chapterContentApi",
+        "streamGenerate",
+        "streamGenerateChapterContent",
+        "streamRegenerateChapterWithAudit",
+        "streamGenerateGuidance"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.customData",
+      "name": "自选文件数据",
+      "level": 1,
+      "parent": "ui.write",
+      "kind": "group",
+      "description": "生成时按需挑选素材/卷纲/章纲/记忆/审计报告/前 N 章正文作为上下文。",
+      "files": [
+        "frontend/src/components/CustomDataSelector.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.customData.selector",
+      "name": "自选文件选择器",
+      "level": 2,
+      "parent": "ui.write.customData",
+      "kind": "atomic",
+      "description": "拉取可用数据，分组多选并支持自动延续与前 N 章正文，构建 CustomDataSelection 列表。",
+      "files": [
+        "frontend/src/components/CustomDataSelector.tsx"
+      ],
+      "symbols": [
+        "CustomDataSelector",
+        "buildCustomDataRequest",
+        "SectionHeader"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.context",
+      "name": "写作上下文与提示",
+      "level": 1,
+      "parent": "ui.write",
+      "kind": "group",
+      "description": "用户补充要求、人物身份输入与故障窗口提示等辅助能力。",
+      "files": [
+        "frontend/src/components/WritingContextSection.tsx",
+        "frontend/src/components/FailureWindowModal.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.context.section",
+      "name": "写作上下文区",
+      "level": 2,
+      "parent": "ui.write.context",
+      "kind": "atomic",
+      "description": "可折叠的用户补充要求与人物身份输入，支持从人物卡导入身份、按章纲追加身份快照。",
+      "files": [
+        "frontend/src/components/WritingContextSection.tsx"
+      ],
+      "symbols": [
+        "WritingContextSection",
+        "handleImportFromCharacters"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.write.context.failureModal",
+      "name": "故障窗口倒计时弹窗",
+      "level": 2,
+      "parent": "ui.write.context",
+      "kind": "atomic",
+      "description": "全屏倒计时弹窗告知故障窗口剩余时间，并提供立即停止。",
+      "files": [
+        "frontend/src/components/FailureWindowModal.tsx"
+      ],
+      "symbols": [
+        "FailureWindowModal"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter",
+      "name": "章节管理",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "章节树浏览与拖拽排序、章节正文编辑器、正文目录导入与章节级审核/重写/记忆入口。",
+      "files": [
+        "frontend/src/components/ChapterList.tsx",
+        "frontend/src/components/ChapterTree.tsx",
+        "frontend/src/components/ImportFromDirectoryDialog.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.editor",
+      "name": "章节编辑器",
+      "level": 1,
+      "parent": "ui.chapter",
+      "kind": "group",
+      "description": "单章正文的查看、编辑、保存与辅助工具。",
+      "files": [
+        "frontend/src/components/ChapterList.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.editor.page",
+      "name": "章节管理页",
+      "level": 2,
+      "parent": "ui.chapter.editor",
+      "kind": "atomic",
+      "description": "章节树 + contentEditable 编辑器，含标题解析、字数统计、分栏拖拽、自动保存、编辑锁与校验起点。",
+      "files": [
+        "frontend/src/components/ChapterList.tsx"
+      ],
+      "symbols": [
+        "ChapterList",
+        "parseTitleFromContent",
+        "stripEmptyLines",
+        "addParagraphBreaks",
+        "loadContent",
+        "performSave",
+        "handleSave",
+        "handleEditorInput",
+        "handleEditorPaste",
+        "loadTotalWordCount"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.editor.search",
+      "name": "查找替换与全局搜索",
+      "level": 2,
+      "parent": "ui.chapter.editor",
+      "kind": "atomic",
+      "description": "当前章节内查找/替换计数，以及跨全部章节的内容搜索与分页结果。",
+      "files": [
+        "frontend/src/components/ChapterList.tsx"
+      ],
+      "symbols": [
+        "handleSearch",
+        "handleReplace",
+        "handleGlobalSearch"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.editor.preview",
+      "name": "手机阅读预览",
+      "level": 2,
+      "parent": "ui.chapter.editor",
+      "kind": "atomic",
+      "description": "按每页固定字数分页的手机样式预览，点击左右区域翻页；含复制正文。",
+      "files": [
+        "frontend/src/components/ChapterList.tsx"
+      ],
+      "symbols": [
+        "handleCopy"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.editor.audit",
+      "name": "章节右键审核",
+      "level": 2,
+      "parent": "ui.chapter.editor",
+      "kind": "atomic",
+      "description": "对单章或多选章节调用 AI 审核、标记报告状态并展示审核报告面板。",
+      "files": [
+        "frontend/src/components/ChapterList.tsx"
+      ],
+      "symbols": [
+        "handleContextMenuChapterAudit",
+        "markChapterResult",
+        "reloadAuditReportPane"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.editor.regenerate",
+      "name": "章节审核重写",
+      "level": 2,
+      "parent": "ui.chapter.editor",
+      "kind": "atomic",
+      "description": "取已有审核报告或即时审核，流式重写正文并删除旧报告。",
+      "files": [
+        "frontend/src/components/ChapterList.tsx"
+      ],
+      "symbols": [
+        "handleContextMenuRegenerate"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.editor.memory",
+      "name": "章节记忆提取",
+      "level": 2,
+      "parent": "ui.chapter.editor",
+      "kind": "atomic",
+      "description": "对章节执行四维分析与时间线提取并保存，刷新记忆标记。",
+      "files": [
+        "frontend/src/components/ChapterList.tsx"
+      ],
+      "symbols": [
+        "handleContextMenuExtractMemory",
+        "reloadMemoryPane"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.tree",
+      "name": "章节树",
+      "level": 1,
+      "parent": "ui.chapter",
+      "kind": "group",
+      "description": "卷/章两级树：浏览、多选、拖拽换卷、重命名、隐藏、校验起点与各类标记。",
+      "files": [
+        "frontend/src/components/ChapterTree.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.tree.view",
+      "name": "章节树组件",
+      "level": 2,
+      "parent": "ui.chapter.tree",
+      "kind": "atomic",
+      "description": "树数据加载、卷/章 CRUD、拖拽排序、批量删除、右键菜单与隐藏状态本地持久化。",
+      "files": [
+        "frontend/src/components/ChapterTree.tsx"
+      ],
+      "symbols": [
+        "ChapterTree",
+        "loadData",
+        "buildDisplayState",
+        "handleChapterClick",
+        "handleDrop",
+        "handleCreateVolume",
+        "handleCreateChapter",
+        "handleDeleteVolume",
+        "confirmBatchDelete",
+        "handleToggleVerificationStart",
+        "parseTitleFromContent",
+        "countWords",
+        "loadHiddenState",
+        "saveHiddenState"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.tree.api",
+      "name": "章节树接口封装",
+      "level": 2,
+      "parent": "ui.chapter.tree",
+      "kind": "atomic",
+      "description": "treeApi.get：一次返回卷列表与章节映射（含字数、是否有正文）。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "treeApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.import",
+      "name": "正文目录导入",
+      "level": 1,
+      "parent": "ui.chapter",
+      "kind": "group",
+      "description": "从本地目录/文件夹批量导入章节正文，自动识别卷目录。",
+      "files": [
+        "frontend/src/components/ImportFromDirectoryDialog.tsx",
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.import.dialog",
+      "name": "目录导入对话框",
+      "level": 2,
+      "parent": "ui.chapter.import",
+      "kind": "atomic",
+      "description": "优先 File System Access API 递归遍历目录，回退 webkitdirectory；支持卷范围映射并展示结果。",
+      "files": [
+        "frontend/src/components/ImportFromDirectoryDialog.tsx"
+      ],
+      "symbols": [
+        "ImportFromDirectoryDialog",
+        "walkDirectory",
+        "handleSelectDir",
+        "handleFilesSelected",
+        "handleImport"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.chapter.import.api",
+      "name": "章节接口封装",
+      "level": 2,
+      "parent": "ui.chapter.import",
+      "kind": "atomic",
+      "description": "chapterApi：章节列表/读写/增删/已有章节/目录与文件导入/数据状态/全文搜索。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "chapterApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit",
+      "name": "内容审核",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "正文/卷纲/章纲三类审核：AI 逐段问题分级、自动重写循环、报告展示与保存、已读标记与树分数联动。",
+      "files": [
+        "frontend/src/components/AuditPanel.tsx",
+        "frontend/src/components/audit/AuditReportSection.tsx",
+        "frontend/src/components/audit/ParagraphIssueList.tsx",
+        "frontend/src/utils/auditStatus.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel",
+      "name": "审核面板",
+      "level": 1,
+      "parent": "ui.audit",
+      "kind": "group",
+      "description": "审核主界面与报告组件。",
+      "files": [
+        "frontend/src/components/AuditPanel.tsx",
+        "frontend/src/components/audit/AuditReportSection.tsx",
+        "frontend/src/components/audit/ParagraphIssueList.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.page",
+      "name": "审核面板页",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "三模式（正文/卷纲/章纲）审核：加载内容与已存报告、批量审核、进度与标记、报告区与原文对照。",
+      "files": [
+        "frontend/src/components/AuditPanel.tsx"
+      ],
+      "symbols": [
+        "AuditPanel",
+        "loadContent",
+        "loadVolumeOutline",
+        "loadChapterOutlines",
+        "handleSelectChapter",
+        "handleSelectVolumeOutline",
+        "handleSelectChapterOutline",
+        "fetchAuditReportStatuses",
+        "fetchVolumeOutlineCounts",
+        "markChapterResult",
+        "syncAuditToReportPane"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.chapter",
+      "name": "正文审核与重写",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "单章/批量正文 AI 审核，按结果自动重写并再审核（最多 3 轮），支持段落编辑/删除/恢复。",
+      "files": [
+        "frontend/src/components/AuditPanel.tsx"
+      ],
+      "symbols": [
+        "handleAudit",
+        "handleRegenerate",
+        "handleContextMenuChapterAudit",
+        "handleContextMenuRegenerate",
+        "handleParagraphChange"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.volumeOutline",
+      "name": "卷纲审核与重写",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "卷纲 AI 审核并按改进意见自动重写（最多 3 轮，阈值 80 分），支持单卷与多卷。",
+      "files": [
+        "frontend/src/components/AuditPanel.tsx"
+      ],
+      "symbols": [
+        "handleOutlineRegenerate",
+        "runVolumeOutlineAutoRewriteLoop",
+        "needsVolumeOutlineRewrite",
+        "buildVolumeOutlineAuditReport",
+        "handleContextMenuVolumeOutlineAudit",
+        "handleContextMenuVolumeOutlineAuditMulti"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.chapterOutline",
+      "name": "章纲审核与重写",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "整卷章纲审核、逐章章纲审核、单章重写与批量审核，含报告解析与保存。",
+      "files": [
+        "frontend/src/components/AuditPanel.tsx"
+      ],
+      "symbols": [
+        "handleChapterOutlineRewrite",
+        "handleSingleChapterOutlineAudit",
+        "handleSingleChapterOutlineRewrite",
+        "handleBatchChapterOutlineAudit",
+        "handleContextMenuChapterOutlineAudit",
+        "handleContextMenuChapterOutlineAuditMulti"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.report",
+      "name": "审核报告展示",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "展示审核状态、总分、优缺点/红线/修改优先级与逐段问题，支持点击跳转段落。",
+      "files": [
+        "frontend/src/components/audit/AuditReportSection.tsx"
+      ],
+      "symbols": [
+        "AuditReportSection"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.issues",
+      "name": "段落问题列表",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "按严重级别着色展示单段问题、扣分与亮点。",
+      "files": [
+        "frontend/src/components/audit/ParagraphIssueList.tsx"
+      ],
+      "symbols": [
+        "ParagraphIssueList"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.singleView",
+      "name": "单章审核报告视图",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "单章章纲审核报告的内联展示（评分、优缺点、修改方向、问题列表）。",
+      "files": [
+        "frontend/src/components/AuditPanel.tsx"
+      ],
+      "symbols": [
+        "SingleChapterAuditReportView",
+        "isValidAuditReport"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.status",
+      "name": "审核状态判定",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "由分数与问题级别推导审核等级及对应颜色与文案。",
+      "files": [
+        "frontend/src/utils/auditStatus.ts"
+      ],
+      "symbols": [
+        "deriveAuditLevel",
+        "getAuditStatus",
+        "AUDIT_LEVEL_TEXT_CLASS"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.audit.panel.api",
+      "name": "审核接口封装",
+      "level": 2,
+      "parent": "ui.audit.panel",
+      "kind": "atomic",
+      "description": "auditApi：正文/AI 套话/整卷/逐章审核，报告读取/状态/已读/删除。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "auditApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.memory",
+      "name": "记忆系统",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "四维记忆分析与时间线提取/保存/查看：按范围分析、逐章查看、已保存数据浏览与缺失章节补分析。",
+      "files": [
+        "frontend/src/components/MemoryPanel.tsx",
+        "frontend/src/components/MemoryInlineViewer.tsx",
+        "frontend/src/components/MemoryDataViewer.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.memory.analysis",
+      "name": "记忆分析与查看",
+      "level": 1,
+      "parent": "ui.memory",
+      "kind": "group",
+      "description": "分析/提取执行、结果展示与数据查看器。",
+      "files": [
+        "frontend/src/components/MemoryPanel.tsx",
+        "frontend/src/components/MemoryInlineViewer.tsx",
+        "frontend/src/components/MemoryDataViewer.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.memory.analysis.page",
+      "name": "记忆系统页",
+      "level": 2,
+      "parent": "ui.memory.analysis",
+      "kind": "atomic",
+      "description": "章节树 + 范围/模型/模板控制，执行四维分析与时间线提取，结果分页展示并保存到数据库。",
+      "files": [
+        "frontend/src/components/MemoryPanel.tsx"
+      ],
+      "symbols": [
+        "MemoryPanel",
+        "handleAnalyze",
+        "handleExtractTimeline",
+        "handleSave",
+        "handleSaveTimeline",
+        "loadMemoryStatus",
+        "handleSelectChapter",
+        "getVolumeChapterRange",
+        "renderFourDimensions",
+        "renderTimeline",
+        "renderPerChapter",
+        "formatChapterRanges"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.memory.analysis.inlineViewer",
+      "name": "记忆内联查看器",
+      "level": 2,
+      "parent": "ui.memory.analysis",
+      "kind": "atomic",
+      "description": "按所选章节范围加载并逐章展示四维记忆与时间线，缺数据时可一键请求分析。",
+      "files": [
+        "frontend/src/components/MemoryInlineViewer.tsx"
+      ],
+      "symbols": [
+        "MemoryInlineViewer",
+        "loadData",
+        "getChapterData",
+        "getChapterTimeline"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.memory.analysis.dataViewer",
+      "name": "记忆数据查看器",
+      "level": 2,
+      "parent": "ui.memory.analysis",
+      "kind": "atomic",
+      "description": "弹窗式按卷/章筛选查看已保存的四维汇总、时间线、逐章分析与 JSON 输出。",
+      "files": [
+        "frontend/src/components/MemoryDataViewer.tsx"
+      ],
+      "symbols": [
+        "MemoryDataViewer",
+        "loadData",
+        "getFilteredData",
+        "renderFourDimensions",
+        "renderTimelineSummary",
+        "renderPerChapter"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.memory.analysis.api",
+      "name": "记忆接口封装",
+      "level": 2,
+      "parent": "ui.memory.analysis",
+      "kind": "atomic",
+      "description": "memoryApi（ingest/context/foreshadowings/timeline/snapshot/analyze/save/merge/status/viewData）与流式分析/时间线入口。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "memoryApi",
+        "streamAnalyze",
+        "streamExtractTimeline"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings",
+      "name": "设置",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "API 密钥/模型、提示词与模板、系统配置、备份恢复、配色主题、管理密码、外部接口、高峰时段控制等全局设置。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx",
+        "frontend/src/components/PeakTimeModal.tsx",
+        "frontend/src/stores/peakTimeStore.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel",
+      "name": "设置面板",
+      "level": 1,
+      "parent": "ui.settings",
+      "kind": "group",
+      "description": "各类设置的读写界面。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.page",
+      "name": "设置页",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "承载密钥、配色、密码、字体、素材列数、外部接口、高峰时段、提示词/模板/配置管理与默认 AI 设置。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "SettingsPanel",
+        "handleSaveDefaultAISettings",
+        "handleLoadPromptsFromFiles"
+      ],
+      "isolated": true
+    },
+    {
+      "id": "ui.settings.panel.apiKeys",
+      "name": "API 密钥与模型配置",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "按模型配置密钥、连通性测试、查看模型信息与新增模型。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "handleSaveAPIKey",
+        "handleEditApiKey",
+        "handleApiKeyChange",
+        "handleTestConnection",
+        "handleAddModel"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.prompts",
+      "name": "提示词管理",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "提示词增删改、受保护提示词禁删、从文件批量加载。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "handlePromptSubmit",
+        "handleDeletePrompt"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.templates",
+      "name": "提示词模板管理",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "模板增删改，含变量列表展示。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "handleTemplateSubmit",
+        "handleDeleteTemplate"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.configs",
+      "name": "系统配置管理",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "键值配置项的增删改。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "handleConfigSubmit",
+        "handleDeleteConfig"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.backups",
+      "name": "数据库备份恢复",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "创建/恢复/删除数据库备份。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "handleCreateBackup",
+        "handleRestoreBackup",
+        "handleDeleteBackup"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.theme",
+      "name": "页面配色主题",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "12 种预设配色与自定义方案，写入 CSS 变量并持久化。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "applyColorScheme",
+        "applyPreset",
+        "handleApplyPreset",
+        "handleOpenNewScheme",
+        "handleSaveNewScheme",
+        "handleDeleteScheme"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.password",
+      "name": "管理密码",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "校验并保存 4 位数字管理密码。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "handleSavePassword"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.externalApi",
+      "name": "外部接口",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "开关本机外部调用接口、生成/清除 API Key 并展示调用示例。",
+      "files": [
+        "frontend/src/components/SettingsPanel.tsx"
+      ],
+      "symbols": [
+        "handleToggleExternalApi",
+        "handleGenerateExternalKey",
+        "handleClearExternalKey"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.panel.configApi",
+      "name": "配置接口封装",
+      "level": 2,
+      "parent": "ui.settings.panel",
+      "kind": "atomic",
+      "description": "configApi：模型/密钥/连通性/素材/提示词/模板/配置/密码/外部接口/可用数据/自定义提示词组装。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "configApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.peakTime",
+      "name": "AI 高峰时段控制",
+      "level": 1,
+      "parent": "ui.settings",
+      "kind": "group",
+      "description": "高峰时段拦截/价格提醒的门卫逻辑与全局弹窗。",
+      "files": [
+        "frontend/src/stores/peakTimeStore.ts",
+        "frontend/src/components/PeakTimeModal.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.peakTime.store",
+      "name": "高峰时段状态仓库",
+      "level": 2,
+      "parent": "ui.settings.peakTime",
+      "kind": "atomic",
+      "description": "窗口/价格/开关配置、高峰判定、ensureAIAllowed 门卫与同窗口决策复用。",
+      "files": [
+        "frontend/src/stores/peakTimeStore.ts"
+      ],
+      "symbols": [
+        "usePeakTimeStore",
+        "findMatchingWindow",
+        "windowKey",
+        "ensureAIAllowed",
+        "resolveModal",
+        "isPeakTime"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.settings.peakTime.modal",
+      "name": "高峰时段弹窗",
+      "level": 2,
+      "parent": "ui.settings.peakTime",
+      "kind": "atomic",
+      "description": "blocked 模式纯提示，warning 模式展示价格表并确认是否继续。",
+      "files": [
+        "frontend/src/components/PeakTimeModal.tsx"
+      ],
+      "symbols": [
+        "PeakTimeModal"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental",
+      "name": "实验功能",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "短篇生成、对话式生成、公众号杂文写作与短剧分镜剧本四大实验标签页。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx",
+        "frontend/src/components/experimental/useDrama.ts",
+        "frontend/src/components/experimental/DramaScriptView.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.panel",
+      "name": "实验面板",
+      "level": 1,
+      "parent": "ui.experimental",
+      "kind": "group",
+      "description": "实验功能主面板与提示词管理。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.panel.page",
+      "name": "实验功能页",
+      "level": 2,
+      "parent": "ui.experimental.panel",
+      "kind": "atomic",
+      "description": "四标签页切换与记忆当前标签；统一提示词选择/新建/覆盖/删除。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx"
+      ],
+      "symbols": [
+        "ExperimentalPanel",
+        "loadModels",
+        "loadPrompts",
+        "loadState",
+        "handleSelectPrompt",
+        "handleOpenNewPrompt",
+        "handleNewPromptSubmit",
+        "handleSavePrompt",
+        "handleOverwritePrompt",
+        "handleDeletePrompt"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.shortStory",
+      "name": "短篇生成",
+      "level": 1,
+      "parent": "ui.experimental",
+      "kind": "group",
+      "description": "提示词+纲要流式生成短篇，支持保存/复制/一键清空备份。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.shortStory.page",
+      "name": "短篇生成页",
+      "level": 2,
+      "parent": "ui.experimental.shortStory",
+      "kind": "atomic",
+      "description": "模型/思考模式选择、生成与停止、保存配置、复制、清空并自动备份为 txt。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx"
+      ],
+      "symbols": [
+        "renderShortStory",
+        "handleGenerate",
+        "handleStop",
+        "handleSave",
+        "handleCopy",
+        "handleClearAll"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.chat",
+      "name": "对话式生成",
+      "level": 1,
+      "parent": "ui.experimental",
+      "kind": "group",
+      "description": "多会话对话，支持搜索、字号、导出、复制、导入到流式写作。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.chat.page",
+      "name": "对话式生成页",
+      "level": 2,
+      "parent": "ui.experimental.chat",
+      "kind": "atomic",
+      "description": "会话列表与消息流，流式对话、会话持久化、右键重命名/复制/导出/导入到流式写作。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx"
+      ],
+      "symbols": [
+        "renderChat",
+        "handleChatSend",
+        "handleChatStop",
+        "handleNewChat",
+        "handleSwitchSession",
+        "handleChatDeleteSession",
+        "handleChatDeleteMessage",
+        "handleChatCopyMessage",
+        "handleRenameSession",
+        "handleCopySession",
+        "handleExportSession",
+        "handleImportToStreamWriting",
+        "handleChatExport",
+        "saveChatSessionToDB",
+        "loadChatSessionsFromDB"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.gzh",
+      "name": "公众号写作",
+      "level": 1,
+      "parent": "ui.experimental",
+      "kind": "group",
+      "description": "以鲁迅风格系统提示词根据新闻事件生成杂文。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.gzh.page",
+      "name": "公众号写作页",
+      "level": 2,
+      "parent": "ui.experimental.gzh",
+      "kind": "atomic",
+      "description": "系统提示词+新闻描述+自定义要求流式生成杂文，支持复制保存。",
+      "files": [
+        "frontend/src/components/ExperimentalPanel.tsx"
+      ],
+      "symbols": [
+        "renderGZH",
+        "handleGZHGenerate",
+        "handleGZHStop",
+        "handleGZHCopy",
+        "handleGZHSave"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.drama",
+      "name": "短剧剧本",
+      "level": 1,
+      "parent": "ui.experimental",
+      "kind": "group",
+      "description": "多章素材→分镜草稿预评估→单集/多集剧本生成，以及 ComfyUI 角色/场景/帧提示词生成。",
+      "files": [
+        "frontend/src/components/experimental/useDrama.ts",
+        "frontend/src/components/experimental/DramaScriptView.tsx",
+        "frontend/src/components/experimental/types.ts",
+        "frontend/src/components/experimental/constants.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.drama.hook",
+      "name": "短剧业务 Hook",
+      "level": 2,
+      "parent": "ui.experimental.drama",
+      "kind": "atomic",
+      "description": "章节/素材加载、分镜草稿生成与时长评估、单/多集剧本生成、镜头重生成、帧/角色/场景提示词生成与持久化。",
+      "files": [
+        "frontend/src/components/experimental/useDrama.ts"
+      ],
+      "symbols": [
+        "useDrama",
+        "loadDramaChapters",
+        "loadDramaMaterials",
+        "loadDramaGenerationLog",
+        "handleGenerateDraft",
+        "handleRegenerateShot",
+        "handleConfirmFromDraft",
+        "handleMultiEpisodeGeneration",
+        "handleGenerateCharacterPrompts",
+        "handleGenerateScenePrompts",
+        "handleGenerateShotPrompt",
+        "handleDramaCopy",
+        "handleDramaExport",
+        "tryParseShots",
+        "tryExtractCharacters",
+        "tryParseDraftShots",
+        "analyzeDraftDuration",
+        "parseComfyUIPrompts",
+        "buildMinimalDramaContext",
+        "getVolumeOutlineForChapters",
+        "initSelectedShotIds",
+        "handleBatchImportConfirm"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.drama.view",
+      "name": "短剧剧本视图",
+      "level": 2,
+      "parent": "ui.experimental.drama",
+      "kind": "atomic",
+      "description": "展示剧本控制栏、分镜草稿与正式镜头、帧提示词弹窗、角色/场景提示词卡片与生成记录。",
+      "files": [
+        "frontend/src/components/experimental/DramaScriptView.tsx"
+      ],
+      "symbols": [
+        "DramaScriptView"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.drama.types",
+      "name": "短剧类型定义",
+      "level": 2,
+      "parent": "ui.experimental.drama",
+      "kind": "atomic",
+      "description": "DramaShot/DramaEpisode/DramaDraftShot/DramaEstimate/ComfyUIPromptCard/ChatSession 等接口。",
+      "files": [
+        "frontend/src/components/experimental/types.ts"
+      ],
+      "symbols": [
+        "DramaShot",
+        "DramaEpisode",
+        "DramaDraftShot",
+        "DramaEstimate",
+        "ComfyUIPromptCard",
+        "ChatMessage",
+        "ChatSession"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.experimental.drama.constants",
+      "name": "实验功能系统提示词",
+      "level": 2,
+      "parent": "ui.experimental.drama",
+      "kind": "atomic",
+      "description": "对话系统提示词、短剧剧本总监提示词、鲁迅风格杂文提示词常量。",
+      "files": [
+        "frontend/src/components/experimental/constants.ts"
+      ],
+      "symbols": [
+        "CHAT_SYSTEM_PROMPT",
+        "DEFAULT_DRAMA_PROMPT",
+        "DEFAULT_GZH_PROMPT"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.database",
+      "name": "数据库管理",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "通用数据库表浏览与增删改：按分组浏览表、分页排序查询、记录编辑/新增/删除。",
+      "files": [
+        "frontend/src/components/DatabasePanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": true
+    },
+    {
+      "id": "ui.database.browser",
+      "name": "数据库浏览器",
+      "level": 1,
+      "parent": "ui.database",
+      "kind": "group",
+      "description": "表结构与数据 CRUD 界面。",
+      "files": [
+        "frontend/src/components/DatabasePanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.database.browser.page",
+      "name": "数据库管理页",
+      "level": 2,
+      "parent": "ui.database.browser",
+      "kind": "atomic",
+      "description": "左栏表分组树 + 中栏数据表格（分页/排序）+ 编辑/新增弹窗。",
+      "files": [
+        "frontend/src/components/DatabasePanel.tsx"
+      ],
+      "symbols": [
+        "DatabasePanel",
+        "loadDbTables",
+        "loadTableData",
+        "handleSort",
+        "handleDbDelete",
+        "handleDbEdit",
+        "handleDbNew",
+        "handleDbSave"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.database.browser.api",
+      "name": "数据库接口封装",
+      "level": 2,
+      "parent": "ui.database.browser",
+      "kind": "atomic",
+      "description": "databaseApi：备份创建/列表/恢复/删除与表的列表/查询/增删改。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "databaseApi"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.tools",
+      "name": "工具",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "运维类工具：从章纲重建章节-卷映射、整本小说归档为文本与独立数据库。",
+      "files": [
+        "frontend/src/components/ToolsPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": true
+    },
+    {
+      "id": "ui.tools.panel",
+      "name": "工具面板",
+      "level": 1,
+      "parent": "ui.tools",
+      "kind": "group",
+      "description": "映射重建与归档工具。",
+      "files": [
+        "frontend/src/components/ToolsPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.tools.panel.page",
+      "name": "工具页",
+      "level": 2,
+      "parent": "ui.tools.panel",
+      "kind": "atomic",
+      "description": "从章纲重建映射（刷新树）与小说归档（确认弹窗、只读保护、结果展示）。",
+      "files": [
+        "frontend/src/components/ToolsPanel.tsx"
+      ],
+      "symbols": [
+        "ToolsPanel"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.about",
+      "name": "关于",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "应用简介、快速开始、功能模块、创作工作流、配置说明与版本信息。",
+      "files": [
+        "frontend/src/components/AboutPanel.tsx"
+      ],
+      "symbols": [],
+      "isolated": true
+    },
+    {
+      "id": "ui.about.page",
+      "name": "关于页",
+      "level": 1,
+      "parent": "ui.about",
+      "kind": "group",
+      "description": "静态信息展示页，含可折叠 Section 与 FeatureCard 小组件。",
+      "files": [
+        "frontend/src/components/AboutPanel.tsx"
+      ],
+      "symbols": [
+        "AboutPanel",
+        "Section",
+        "FeatureCard"
+      ],
+      "isolated": true
+    },
+    {
+      "id": "ui.infra",
+      "name": "前端基础设施",
+      "level": 0,
+      "parent": null,
+      "kind": "block",
+      "description": "跨业务共享的 HTTP 客户端、流式解析、类型定义与通用工具。",
+      "files": [
+        "frontend/src/api/client.ts",
+        "frontend/src/types/index.ts",
+        "frontend/src/utils/textFormat.ts",
+        "frontend/src/utils/volumeDisplay.ts",
+        "frontend/src/utils/sound.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.api",
+      "name": "HTTP 与流式基础设施",
+      "level": 1,
+      "parent": "ui.infra",
+      "kind": "group",
+      "description": "axios 实例、高峰时段请求拦截与 SSE 流解析。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.api.client",
+      "name": "HTTP 客户端",
+      "level": 2,
+      "parent": "ui.infra.api",
+      "kind": "atomic",
+      "description": "axios 实例（baseURL /api、超时 180s）及 Prompt/PromptTemplate/Config/Backup 等共享接口类型。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "api",
+        "Prompt",
+        "PromptTemplate",
+        "Config",
+        "Backup"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.api.peakGuard",
+      "name": "AI 高峰时段请求拦截",
+      "level": 2,
+      "parent": "ui.infra.api",
+      "kind": "atomic",
+      "description": "按正则识别 AI 生成类端点，请求前经 ensureAIAllowed 门卫；命中高峰则拒绝并给出统一提示。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "isAIGenerationUrl",
+        "ensureAIAllowed",
+        "PEAK_TIME_BLOCKED_ERROR_MESSAGE",
+        "AI_GENERATION_URL_PATTERNS"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.api.streamParse",
+      "name": "SSE 流式响应解析",
+      "level": 2,
+      "parent": "ui.infra.api",
+      "kind": "atomic",
+      "description": "解析 data: 行、content/error/retry_status/进度/结果事件、读空闲超时与完成音。",
+      "files": [
+        "frontend/src/api/client.ts"
+      ],
+      "symbols": [
+        "parseStreamResponse",
+        "parseMemoryStreamResponse",
+        "STREAM_IDLE_TIMEOUT"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.types",
+      "name": "共享类型定义",
+      "level": 1,
+      "parent": "ui.infra",
+      "kind": "group",
+      "description": "贯穿各业务的 TypeScript 类型与默认值。",
+      "files": [
+        "frontend/src/types/index.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.types.models",
+      "name": "领域模型类型",
+      "level": 2,
+      "parent": "ui.infra.types",
+      "kind": "atomic",
+      "description": "Novel/Chapter/AuditResult/AIAuditResponse/Character/defaultCharacter/APIConfig/Volume/MemoryAnalysisResult 等模型与默认角色。",
+      "files": [
+        "frontend/src/types/index.ts"
+      ],
+      "symbols": [
+        "Novel",
+        "Chapter",
+        "AuditResult",
+        "AIAuditResponse",
+        "Character",
+        "defaultCharacter",
+        "APIConfig",
+        "ModelConfig",
+        "Volume",
+        "MemoryAnalysisResult",
+        "Foreshadowing",
+        "TimelineEvent"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.utils",
+      "name": "通用工具",
+      "level": 1,
+      "parent": "ui.infra",
+      "kind": "group",
+      "description": "文本格式化、卷号中文显示与完成提示音。",
+      "files": [
+        "frontend/src/utils/textFormat.ts",
+        "frontend/src/utils/volumeDisplay.ts",
+        "frontend/src/utils/sound.ts"
+      ],
+      "symbols": [],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.utils.textFormat",
+      "name": "文本格式化工具",
+      "level": 2,
+      "parent": "ui.infra.utils",
+      "kind": "atomic",
+      "description": "toTitleCase/splitParagraphs/annotateContent/filterAIResponsePrefix/formatReportTime/tryParseJSONField。",
+      "files": [
+        "frontend/src/utils/textFormat.ts"
+      ],
+      "symbols": [
+        "toTitleCase",
+        "splitParagraphs",
+        "annotateContent",
+        "filterAIResponsePrefix",
+        "formatReportTime",
+        "tryParseJSONField"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.utils.volumeDisplay",
+      "name": "卷号显示工具",
+      "level": 2,
+      "parent": "ui.infra.utils",
+      "kind": "atomic",
+      "description": "阿拉伯数字卷号转中文并保留自定义标题。",
+      "files": [
+        "frontend/src/utils/volumeDisplay.ts"
+      ],
+      "symbols": [
+        "toChineseVolumeName",
+        "displayVolumeTitle"
+      ],
+      "isolated": false
+    },
+    {
+      "id": "ui.infra.utils.sound",
+      "name": "完成提示音",
+      "level": 2,
+      "parent": "ui.infra.utils",
+      "kind": "atomic",
+      "description": "批次深度控制与双音完成提示。",
+      "files": [
+        "frontend/src/utils/sound.ts"
+      ],
+      "symbols": [
+        "startBatch",
+        "endBatch",
+        "playCompletionSound"
+      ],
+      "isolated": false
     }
   ],
   "edges": [
@@ -586,6 +3137,750 @@
       "target": "write.stream",
       "type": "data",
       "label": "章节数据"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.novel.list.page",
+      "type": "navigation",
+      "label": "标签 novels 渲染小说管理页"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.material.library.page",
+      "type": "navigation",
+      "label": "标签 materials 渲染素材管理页"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.write.panel.switch",
+      "type": "navigation",
+      "label": "标签 chapters 渲染正文写作"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.write.stream.wizard",
+      "type": "navigation",
+      "label": "标签 stream-writing 渲染流式写作向导"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.chapter.editor.page",
+      "type": "navigation",
+      "label": "标签 writing 渲染章节管理页"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.audit.panel.page",
+      "type": "navigation",
+      "label": "标签 audit 渲染审核面板"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.memory.analysis.page",
+      "type": "navigation",
+      "label": "标签 memory 渲染记忆系统"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.settings.panel.page",
+      "type": "navigation",
+      "label": "标签 settings 渲染设置"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.experimental.panel.page",
+      "type": "navigation",
+      "label": "标签 experimental 渲染实验功能"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.database.browser.page",
+      "type": "navigation",
+      "label": "标签 database 渲染数据库管理"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.tools.panel.page",
+      "type": "navigation",
+      "label": "标签 tools 渲染工具"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.about.page",
+      "type": "navigation",
+      "label": "标签 about 渲染关于页"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.settings.peakTime.modal",
+      "type": "call",
+      "label": "全局挂载高峰时段弹窗"
+    },
+    {
+      "source": "ui.app.shell.root",
+      "target": "ui.novel.list.store",
+      "type": "call",
+      "label": "启动加载小说/当前小说/全局字体"
+    },
+    {
+      "source": "ui.app.shell.bootstrap",
+      "target": "ui.infra.api.client",
+      "type": "data",
+      "label": "启动读取 general_font_size 配置"
+    },
+    {
+      "source": "ui.app.nav.sidebar",
+      "target": "ui.novel.list.store",
+      "type": "data",
+      "label": "显示当前小说名"
+    },
+    {
+      "source": "ui.novel.list.page",
+      "target": "ui.novel.list.store",
+      "type": "call",
+      "label": "列表/增删改选委托 store"
+    },
+    {
+      "source": "ui.novel.list.store",
+      "target": "ui.novel.transfer.api",
+      "type": "call",
+      "label": "调用 novelApi"
+    },
+    {
+      "source": "ui.novel.list.store",
+      "target": "ui.chapter.import.api",
+      "type": "call",
+      "label": "loadChapters 调用 chapterApi.list"
+    },
+    {
+      "source": "ui.novel.list.store",
+      "target": "ui.settings.panel.configApi",
+      "type": "call",
+      "label": "加载全局字体配置"
+    },
+    {
+      "source": "ui.novel.list.page",
+      "target": "ui.novel.transfer.api",
+      "type": "call",
+      "label": "导出/导入/完结直接调 novelApi"
+    },
+    {
+      "source": "ui.novel.list.page",
+      "target": "ui.write.ai.page",
+      "type": "workflow",
+      "label": "选定当前小说后进入写作"
+    },
+    {
+      "source": "ui.novel.list.page",
+      "target": "ui.material.library.page",
+      "type": "workflow",
+      "label": "选定小说后进入素材设定"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.setup.snowflake",
+      "type": "call",
+      "label": "打开雪花写作法向导"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.setup.generators",
+      "type": "call",
+      "label": "调用各设定流式生成器"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.character.cards",
+      "type": "call",
+      "label": "渲染人物卡编辑器"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.character.status",
+      "type": "call",
+      "label": "渲染人物状态表"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.outline.volumeTree",
+      "type": "call",
+      "label": "渲染卷纲树"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.outline.chapterTree",
+      "type": "call",
+      "label": "渲染章纲树"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.memoryViews.analysis",
+      "type": "call",
+      "label": "渲染记忆四维素材视图"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.memoryViews.timeline",
+      "type": "call",
+      "label": "渲染记忆时间线素材视图"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.script.editor",
+      "type": "call",
+      "label": "渲染剧本分镜编辑器"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.importWizard.dialog",
+      "type": "call",
+      "label": "打开导入向导"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.library.search",
+      "type": "call",
+      "label": "打开素材全文搜索"
+    },
+    {
+      "source": "ui.material.library.page",
+      "target": "ui.material.character.progress",
+      "type": "call",
+      "label": "按章纲更新人物按钮"
+    },
+    {
+      "source": "ui.material.character.cards",
+      "target": "ui.material.character.generate",
+      "type": "call",
+      "label": "生成人物卡/小传/提取角色"
+    },
+    {
+      "source": "ui.material.character.status",
+      "target": "ui.material.character.progress",
+      "type": "call",
+      "label": "按章纲更新人物状态"
+    },
+    {
+      "source": "ui.material.outline.volume",
+      "target": "ui.material.outline.api",
+      "type": "call",
+      "label": "卷纲读写 volumeApi"
+    },
+    {
+      "source": "ui.material.outline.chapter",
+      "target": "ui.material.outline.api",
+      "type": "call",
+      "label": "章纲读写 chapterOutlineApi"
+    },
+    {
+      "source": "ui.material.outline.volumeTree",
+      "target": "ui.material.outline.api",
+      "type": "call",
+      "label": "卷列表/清除"
+    },
+    {
+      "source": "ui.material.outline.chapterTree",
+      "target": "ui.material.outline.api",
+      "type": "call",
+      "label": "章纲增删改与换卷"
+    },
+    {
+      "source": "ui.material.outline.mapping",
+      "target": "ui.chapter.tree.view",
+      "type": "data",
+      "label": "映射变更广播树刷新"
+    },
+    {
+      "source": "ui.material.outline.volume",
+      "target": "ui.material.outline.mapping",
+      "type": "data",
+      "label": "设置总卷数总章数后重建映射"
+    },
+    {
+      "source": "ui.material.service.facade",
+      "target": "ui.write.engine.api",
+      "type": "call",
+      "label": "复用 writingApi 封装"
+    },
+    {
+      "source": "ui.material.library.search",
+      "target": "ui.settings.panel.configApi",
+      "type": "call",
+      "label": "searchMaterials 拉取全部素材"
+    },
+    {
+      "source": "ui.write.panel.switch",
+      "target": "ui.write.ai.page",
+      "type": "call",
+      "label": "AI 写作标签"
+    },
+    {
+      "source": "ui.write.panel.switch",
+      "target": "ui.write.manual.page",
+      "type": "call",
+      "label": "手搓写作标签"
+    },
+    {
+      "source": "ui.write.ai.page",
+      "target": "ui.write.engine.store",
+      "type": "call",
+      "label": "startGeneration 启动批量生成"
+    },
+    {
+      "source": "ui.write.ai.page",
+      "target": "ui.write.customData.selector",
+      "type": "call",
+      "label": "打开自选文件对话框"
+    },
+    {
+      "source": "ui.write.ai.page",
+      "target": "ui.write.context.failureModal",
+      "type": "call",
+      "label": "渲染故障窗口弹窗"
+    },
+    {
+      "source": "ui.write.manual.page",
+      "target": "ui.write.manual.tree",
+      "type": "call",
+      "label": "渲染手搓章节树"
+    },
+    {
+      "source": "ui.write.manual.page",
+      "target": "ui.write.manual.windows",
+      "type": "call",
+      "label": "渲染设定集/人物浮窗"
+    },
+    {
+      "source": "ui.write.manual.page",
+      "target": "ui.write.manual.guidance",
+      "type": "call",
+      "label": "生成指导按钮"
+    },
+    {
+      "source": "ui.write.manual.page",
+      "target": "ui.write.manual.reference",
+      "type": "call",
+      "label": "正文参考按钮"
+    },
+    {
+      "source": "ui.write.manual.reference",
+      "target": "ui.write.engine.api",
+      "type": "call",
+      "label": "流式生成参考正文并审核"
+    },
+    {
+      "source": "ui.write.manual.guidance",
+      "target": "ui.write.engine.api",
+      "type": "call",
+      "label": "streamGenerateGuidance"
+    },
+    {
+      "source": "ui.write.stream.wizard",
+      "target": "ui.write.engine.store",
+      "type": "call",
+      "label": "startStreamGeneration / startCrossVolumeGeneration"
+    },
+    {
+      "source": "ui.write.stream.wizard",
+      "target": "ui.write.stream.results",
+      "type": "call",
+      "label": "分页渲染生成结果"
+    },
+    {
+      "source": "ui.write.stream.wizard",
+      "target": "ui.write.context.section",
+      "type": "call",
+      "label": "用户补充要求与人物身份"
+    },
+    {
+      "source": "ui.write.stream.wizard",
+      "target": "ui.write.customData.selector",
+      "type": "call",
+      "label": "自选文件"
+    },
+    {
+      "source": "ui.write.stream.wizard",
+      "target": "ui.material.setup.generators",
+      "type": "call",
+      "label": "设定集/大纲各步生成"
+    },
+    {
+      "source": "ui.write.stream.wizard",
+      "target": "ui.material.character.generate",
+      "type": "call",
+      "label": "人物卡批量生成"
+    },
+    {
+      "source": "ui.write.stream.wizard",
+      "target": "ui.write.context.failureModal",
+      "type": "call",
+      "label": "渲染故障窗口弹窗"
+    },
+    {
+      "source": "ui.write.engine.store",
+      "target": "ui.write.engine.loop",
+      "type": "call",
+      "label": "委托逐章循环"
+    },
+    {
+      "source": "ui.write.engine.store",
+      "target": "ui.write.engine.memoryEnsure",
+      "type": "call",
+      "label": "生成前补全记忆数据"
+    },
+    {
+      "source": "ui.write.engine.loop",
+      "target": "ui.write.engine.streamChapter",
+      "type": "call",
+      "label": "逐章流式生成"
+    },
+    {
+      "source": "ui.write.engine.loop",
+      "target": "ui.write.engine.auditRewrite",
+      "type": "call",
+      "label": "逐章审核重写"
+    },
+    {
+      "source": "ui.write.engine.loop",
+      "target": "ui.write.engine.failureWindow",
+      "type": "call",
+      "label": "无内容产出时等待故障窗口"
+    },
+    {
+      "source": "ui.write.engine.auditRewrite",
+      "target": "ui.audit.panel.api",
+      "type": "call",
+      "label": "aiAudit 审核"
+    },
+    {
+      "source": "ui.write.engine.loop",
+      "target": "ui.memory.analysis.api",
+      "type": "call",
+      "label": "memoryApi.analyze/extractTimeline"
+    },
+    {
+      "source": "ui.write.engine.loop",
+      "target": "ui.material.character.progress",
+      "type": "call",
+      "label": "每 20 章触发人物状态检查点更新"
+    },
+    {
+      "source": "ui.write.engine.store",
+      "target": "ui.write.engine.api",
+      "type": "call",
+      "label": "调用写作流式接口"
+    },
+    {
+      "source": "ui.write.engine.store",
+      "target": "ui.novel.list.store",
+      "type": "call",
+      "label": "完成后刷新章节与树"
+    },
+    {
+      "source": "ui.write.engine.store",
+      "target": "ui.write.context.failureModal",
+      "type": "data",
+      "label": "failureWindowWait 驱动弹窗倒计时"
+    },
+    {
+      "source": "ui.write.customData.selector",
+      "target": "ui.settings.panel.configApi",
+      "type": "call",
+      "label": "getAvailableData 拉取可选用数据"
+    },
+    {
+      "source": "ui.write.context.section",
+      "target": "ui.material.character.progress",
+      "type": "call",
+      "label": "按章纲追加人物身份"
+    },
+    {
+      "source": "ui.write.engine.api",
+      "target": "ui.infra.api.peakGuard",
+      "type": "call",
+      "label": "流式入口先经高峰门卫"
+    },
+    {
+      "source": "ui.write.engine.api",
+      "target": "ui.infra.api.streamParse",
+      "type": "call",
+      "label": "解析 SSE 流"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.chapter.tree.view",
+      "type": "call",
+      "label": "左侧章节树选择章节"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.chapter.import.dialog",
+      "type": "call",
+      "label": "从本地导入按钮"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.chapter.editor.search",
+      "type": "call",
+      "label": "查找替换/全局搜索"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.chapter.editor.audit",
+      "type": "call",
+      "label": "树右键审核"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.chapter.editor.regenerate",
+      "type": "call",
+      "label": "树右键重写"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.chapter.editor.memory",
+      "type": "call",
+      "label": "树右键提取记忆"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.audit.panel.api",
+      "type": "call",
+      "label": "获取审核状态/报告"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.memory.analysis.api",
+      "type": "call",
+      "label": "查看/提取记忆数据"
+    },
+    {
+      "source": "ui.chapter.editor.page",
+      "target": "ui.chapter.tree.api",
+      "type": "call",
+      "label": "加载总字数树数据"
+    },
+    {
+      "source": "ui.chapter.tree.view",
+      "target": "ui.chapter.import.api",
+      "type": "call",
+      "label": "章节增删改与换卷"
+    },
+    {
+      "source": "ui.chapter.import.dialog",
+      "target": "ui.chapter.import.api",
+      "type": "call",
+      "label": "importFiles 批量导入"
+    },
+    {
+      "source": "ui.audit.panel.page",
+      "target": "ui.chapter.tree.view",
+      "type": "call",
+      "label": "左侧章节树选择"
+    },
+    {
+      "source": "ui.audit.panel.page",
+      "target": "ui.write.context.section",
+      "type": "call",
+      "label": "审核上下文（用户要求/人物身份）"
+    },
+    {
+      "source": "ui.audit.panel.page",
+      "target": "ui.audit.panel.status",
+      "type": "call",
+      "label": "分数与问题级别推导状态"
+    },
+    {
+      "source": "ui.audit.panel.chapter",
+      "target": "ui.audit.panel.api",
+      "type": "call",
+      "label": "aiAudit / 报告读取"
+    },
+    {
+      "source": "ui.audit.panel.volumeOutline",
+      "target": "ui.audit.panel.api",
+      "type": "call",
+      "label": "auditVolumeOutline"
+    },
+    {
+      "source": "ui.audit.panel.chapterOutline",
+      "target": "ui.audit.panel.api",
+      "type": "call",
+      "label": "auditChapterOutline"
+    },
+    {
+      "source": "ui.audit.panel.page",
+      "target": "ui.audit.panel.report",
+      "type": "call",
+      "label": "渲染审核报告"
+    },
+    {
+      "source": "ui.audit.panel.report",
+      "target": "ui.audit.panel.issues",
+      "type": "call",
+      "label": "渲染段落问题"
+    },
+    {
+      "source": "ui.memory.analysis.page",
+      "target": "ui.chapter.tree.view",
+      "type": "call",
+      "label": "左侧章节树选择范围"
+    },
+    {
+      "source": "ui.memory.analysis.page",
+      "target": "ui.memory.analysis.inlineViewer",
+      "type": "call",
+      "label": "已保存数据查看视图"
+    },
+    {
+      "source": "ui.memory.analysis.page",
+      "target": "ui.memory.analysis.dataViewer",
+      "type": "call",
+      "label": "记忆数据查看器"
+    },
+    {
+      "source": "ui.memory.analysis.page",
+      "target": "ui.memory.analysis.api",
+      "type": "call",
+      "label": "streamAnalyze / streamExtractTimeline / saveAnalysis"
+    },
+    {
+      "source": "ui.memory.analysis.page",
+      "target": "ui.infra.utils.sound",
+      "type": "call",
+      "label": "分析完成播放提示音"
+    },
+    {
+      "source": "ui.memory.analysis.api",
+      "target": "ui.infra.api.peakGuard",
+      "type": "call",
+      "label": "记忆分析经高峰门卫"
+    },
+    {
+      "source": "ui.settings.panel.page",
+      "target": "ui.settings.panel.configApi",
+      "type": "call",
+      "label": "读写模型/提示词/配置/素材"
+    },
+    {
+      "source": "ui.settings.panel.page",
+      "target": "ui.settings.panel.backups",
+      "type": "call",
+      "label": "备份恢复区块"
+    },
+    {
+      "source": "ui.settings.panel.page",
+      "target": "ui.database.browser.api",
+      "type": "call",
+      "label": "备份列表复用 databaseApi"
+    },
+    {
+      "source": "ui.settings.panel.page",
+      "target": "ui.settings.peakTime.store",
+      "type": "call",
+      "label": "高峰时段开关"
+    },
+    {
+      "source": "ui.infra.api.peakGuard",
+      "target": "ui.settings.peakTime.store",
+      "type": "call",
+      "label": "请求拦截调用 ensureAIAllowed"
+    },
+    {
+      "source": "ui.settings.peakTime.modal",
+      "target": "ui.settings.peakTime.store",
+      "type": "call",
+      "label": "读取弹窗状态与价格表"
+    },
+    {
+      "source": "ui.experimental.panel.page",
+      "target": "ui.experimental.drama.hook",
+      "type": "call",
+      "label": "挂载 useDrama"
+    },
+    {
+      "source": "ui.experimental.drama.view",
+      "target": "ui.experimental.drama.hook",
+      "type": "data",
+      "label": "接收 useDrama 状态与回调"
+    },
+    {
+      "source": "ui.experimental.drama.hook",
+      "target": "ui.experimental.drama.types",
+      "type": "data",
+      "label": "使用短剧类型"
+    },
+    {
+      "source": "ui.experimental.drama.hook",
+      "target": "ui.infra.api.streamParse",
+      "type": "call",
+      "label": "流式生成剧本/提示词"
+    },
+    {
+      "source": "ui.experimental.drama.hook",
+      "target": "ui.chapter.import.api",
+      "type": "call",
+      "label": "读取章节正文"
+    },
+    {
+      "source": "ui.experimental.chat.page",
+      "target": "ui.write.stream.wizard",
+      "type": "workflow",
+      "label": "导入到流式写作并跳转"
+    },
+    {
+      "source": "ui.experimental.panel.page",
+      "target": "ui.experimental.chat.page",
+      "type": "call",
+      "label": "对话式生成标签"
+    },
+    {
+      "source": "ui.experimental.panel.page",
+      "target": "ui.experimental.shortStory.page",
+      "type": "call",
+      "label": "短篇生成标签"
+    },
+    {
+      "source": "ui.experimental.panel.page",
+      "target": "ui.experimental.gzh.page",
+      "type": "call",
+      "label": "公众号写作标签"
+    },
+    {
+      "source": "ui.experimental.panel.page",
+      "target": "ui.experimental.drama.view",
+      "type": "call",
+      "label": "短剧剧本标签"
+    },
+    {
+      "source": "ui.tools.panel.page",
+      "target": "ui.novel.transfer.api",
+      "type": "call",
+      "label": "重建映射与归档"
+    },
+    {
+      "source": "ui.tools.panel.page",
+      "target": "ui.novel.list.store",
+      "type": "call",
+      "label": "重建后刷新章节与树"
+    },
+    {
+      "source": "ui.database.browser.page",
+      "target": "ui.database.browser.api",
+      "type": "call",
+      "label": "表查询与增删改"
+    },
+    {
+      "source": "ui.about.page",
+      "target": "ui.app.shell.constants",
+      "type": "data",
+      "label": "展示版本与创作者"
+    },
+    {
+      "source": "ui.infra.api.streamParse",
+      "target": "ui.infra.utils.sound",
+      "type": "call",
+      "label": "流结束播放完成音"
     }
   ],
   "ignored": [
@@ -1145,6 +4440,416 @@
     "backend/app/utils/log_manager.py::get_log_size": "统计日志大小",
     "backend/app/utils/log_manager.py::SafeRotatingFileHandler": "安全轮转日志",
     "backend/app/utils/text_utils.py::clean_text_separators": "清洗分隔符",
-    "backend/app/utils/text_utils.py::natural_sort_key": "自然排序键"
+    "backend/app/utils/text_utils.py::natural_sort_key": "自然排序键",
+    "frontend/src/App.tsx::App": "应用根组件（标签页路由）",
+    "frontend/src/main.tsx::bootstrap": "应用启动引导",
+    "frontend/src/constants.ts::APP_VERSION": "应用版本号",
+    "frontend/src/constants.ts::CREATOR_NAME": "创作者名",
+    "frontend/src/utils/uiText.ts::UI_TEXT": "界面文案常量表",
+    "frontend/src/components/Sidebar.tsx::Sidebar": "侧边导航栏",
+    "frontend/src/components/NovelList.tsx::NovelList": "小说管理页",
+    "frontend/src/components/NovelList.tsx::handleCreate": "新建小说",
+    "frontend/src/components/NovelList.tsx::handleRename": "重命名小说",
+    "frontend/src/components/NovelList.tsx::handleDelete": "删除小说（密码校验）",
+    "frontend/src/components/NovelList.tsx::handleExport": "导出小说数据到目录",
+    "frontend/src/components/NovelList.tsx::handleImport": "从目录导入小说数据",
+    "frontend/src/components/NovelList.tsx::handleFinalize": "完结清理中间数据",
+    "frontend/src/components/NovelList.tsx::openImport": "打开导入弹窗",
+    "frontend/src/stores/novelStore.ts::useNovelStore": "小说全局状态仓库",
+    "frontend/src/api/client.ts::novelApi": "小说接口封装",
+    "frontend/src/api/client.ts::streamGenerateOneSentence": "流式生成一句话概括",
+    "frontend/src/api/client.ts::streamGenerateFiveSentences": "流式生成五句话骨架",
+    "frontend/src/api/client.ts::streamGenerateWorldview": "流式生成世界观",
+    "frontend/src/api/client.ts::streamGenerateGodFinger": "流式生成金手指",
+    "frontend/src/api/client.ts::streamGenerateOutline": "流式生成事件链",
+    "frontend/src/api/client.ts::streamGenerateOutlineReverse": "流式反推事件链",
+    "frontend/src/api/client.ts::streamGenerateBookName": "流式生成书名",
+    "frontend/src/api/client.ts::streamGenerateBookSummary": "流式生成简介",
+    "frontend/src/components/MaterialPanel.tsx::MaterialPanel": "素材管理页",
+    "frontend/src/components/MaterialPanel.tsx::loadMaterial": "加载素材内容",
+    "frontend/src/components/MaterialPanel.tsx::loadScriptTreeData": "加载剧本集列表",
+    "frontend/src/components/MaterialPanel.tsx::loadScriptContentFromDB": "加载剧本分镜内容",
+    "frontend/src/components/MaterialPanel.tsx::saveScriptShotPromptsBatch": "批量保存镜头提示词",
+    "frontend/src/components/MaterialPanel.tsx::buildShotPromptArgs": "构建镜头提示词参数",
+    "frontend/src/components/MaterialPanel.tsx::handleInsertShot": "AI 插入镜头",
+    "frontend/src/components/MaterialPanel.tsx::handleDeleteShot": "删除镜头",
+    "frontend/src/components/MaterialPanel.tsx::handleEditShotSave": "保存镜头编辑",
+    "frontend/src/components/MaterialPanel.tsx::handleScriptBatchGenerateAllShots": "批量生成全部镜头提示词",
+    "frontend/src/components/MaterialPanel.tsx::handleScriptBatchGenerateAll": "批量生成单个镜头的全部提示词",
+    "frontend/src/components/MaterialPanel.tsx::handleScriptGenerateShotPrompt": "生成单个镜头帧提示词",
+    "frontend/src/components/MaterialPanel.tsx::handleScriptDelete": "删除剧本（密码校验）",
+    "frontend/src/components/MaterialPanel.tsx::syncScriptShotsToRawJson": "同步镜头到原始 JSON",
+    "frontend/src/components/MaterialPanel.tsx::startResize": "开始缩放剧本弹窗",
+    "frontend/src/components/MaterialPanel.tsx::onResizeMove": "剧本弹窗缩放移动",
+    "frontend/src/components/MaterialPanel.tsx::onResizeEnd": "结束缩放并持久化尺寸",
+    "frontend/src/components/MaterialSearch.tsx::MaterialSearch": "素材全文搜索弹窗",
+    "frontend/src/components/MaterialSearch.tsx::doSearch": "执行素材搜索",
+    "frontend/src/components/SnowflakeWizard.tsx::SnowflakeWizard": "雪花写作法向导",
+    "frontend/src/components/SnowflakeWizard.tsx::handleOneSentenceGenerate": "生成一句话概括",
+    "frontend/src/components/SnowflakeWizard.tsx::handleFiveSentencesGenerate": "生成五句话骨架",
+    "frontend/src/components/SnowflakeWizard.tsx::handleSaveOneSentence": "保存一句话概括与主角",
+    "frontend/src/components/SnowflakeWizard.tsx::handleSaveFiveSentences": "保存五句话骨架",
+    "frontend/src/components/CharacterViews.tsx::CharactersView": "人物卡编辑器",
+    "frontend/src/components/CharacterViews.tsx::getCharacterStatus": "判断人物卡完整度",
+    "frontend/src/components/CharacterViews.tsx::ChapterVolumeMappingTable": "章节-卷映射表组件",
+    "frontend/src/services/materialService.ts::generateCharacterCard": "生成人物卡",
+    "frontend/src/services/materialService.ts::extractCharacterNames": "提取角色名称",
+    "frontend/src/services/materialService.ts::getNewCharactersFromNames": "筛选新角色并建卡",
+    "frontend/src/services/materialService.ts::generateCharacterBiography": "生成人物小传",
+    "frontend/src/services/materialService.ts::cleanAndParseJSON": "容错解析 AI JSON",
+    "frontend/src/services/materialService.ts::parseNamesFromResponse": "从响应解析角色名",
+    "frontend/src/services/materialService.ts::analyzeCharacterProgress": "分析人物进展",
+    "frontend/src/services/materialService.ts::generateVolumeOutline": "生成卷纲",
+    "frontend/src/services/materialService.ts::formatVolumeOutline": "格式化卷纲",
+    "frontend/src/services/materialService.ts::generateChapterOutline": "生成章纲",
+    "frontend/src/services/materialService.ts::generateChapterOutlineStream": "流式生成章纲",
+    "frontend/src/services/materialService.ts::formatChapterOutline": "格式化章纲",
+    "frontend/src/services/materialService.ts::generateOutline": "生成事件链",
+    "frontend/src/services/materialService.ts::generateGodFinger": "生成金手指",
+    "frontend/src/services/materialService.ts::generateWorldview": "生成世界观",
+    "frontend/src/services/materialService.ts::fetchTemplate": "获取提示词模板",
+    "frontend/src/components/CharacterStatusPanel.tsx::CharacterStatusPanel": "人物状态表",
+    "frontend/src/components/CharacterStatusPanel.tsx::loadData": "加载人物状态",
+    "frontend/src/components/CharacterStatusPanel.tsx::handleSave": "保存人物状态",
+    "frontend/src/components/CharacterStatusPanel.tsx::handleGenerate": "AI 生成人物状态表",
+    "frontend/src/components/CharacterProgressButton.tsx::CharacterProgressButton": "按章纲更新人物按钮",
+    "frontend/src/components/VolumeOutlineTree.tsx::VolumeOutlineTree": "卷纲树",
+    "frontend/src/components/ChapterOutlineTree.tsx::ChapterOutlineTree": "章纲树",
+    "frontend/src/components/ChapterOutlineTree.tsx::handleDrop": "章纲拖拽换卷",
+    "frontend/src/components/ChapterOutlineTree.tsx::handleSaveChapterNumber": "保存章号修改",
+    "frontend/src/components/ChapterOutlineTree.tsx::handleSaveVolumeNumber": "保存卷号修改",
+    "frontend/src/components/ChapterOutlineTree.tsx::handleAddChapter": "新建章纲",
+    "frontend/src/components/ChapterOutlineTree.tsx::handleContextDeleteVolume": "删除卷及章纲",
+    "frontend/src/components/material/MemoryViews.tsx::MemoryAnalysisView": "四维记忆素材视图",
+    "frontend/src/components/material/MemoryViews.tsx::MemoryTimelineView": "时间线素材视图",
+    "frontend/src/components/material/MemoryViews.tsx::MemoryRawJson": "记忆原始 JSON 折叠",
+    "frontend/src/components/material/MemoryViews.tsx::AutoHeightTextarea": "自适应高度文本域",
+    "frontend/src/components/ImportWizard.tsx::ImportWizard": "素材导入向导",
+    "frontend/src/components/ImportWizard.tsx::handleImport": "执行导入",
+    "frontend/src/components/ImportWizard.tsx::handleNext": "保存并进入下一步",
+    "frontend/src/components/ImportWizard.tsx::handleReset": "重置导入向导",
+    "frontend/src/api/client.ts::wizardApi": "导入向导接口封装",
+    "frontend/src/api/client.ts::volumeApi": "卷接口封装",
+    "frontend/src/api/client.ts::chapterOutlineApi": "章纲接口封装",
+    "frontend/src/api/client.ts::characterStatusApi": "人物状态接口封装",
+    "frontend/src/components/WritingPanel.tsx::WritingPanel": "写作模式切换面板",
+    "frontend/src/components/AIWriting.tsx::AIWriting": "AI 写作页",
+    "frontend/src/components/AIWriting.tsx::getChaptersToGenerate": "计算待生成章节",
+    "frontend/src/components/AIWriting.tsx::handleGenerate": "启动 AI 生成",
+    "frontend/src/components/AIWriting.tsx::handleViewRawData": "查看原始上下文",
+    "frontend/src/components/AIWriting.tsx::handleViewPromptTemplate": "查看提示词模板",
+    "frontend/src/components/AIWriting.tsx::handleSaveGeneratedContent": "保存生成正文",
+    "frontend/src/components/ManualWriting.tsx::ManualWriting": "手搓写作页",
+    "frontend/src/components/ManualWriting.tsx::handleCreateChapter": "新建章节",
+    "frontend/src/components/ManualWriting.tsx::determineVolumeForNewChapter": "推断新章归属卷",
+    "frontend/src/components/ManualWriting.tsx::loadVolumeOutline": "加载本卷卷纲",
+    "frontend/src/components/ManualWriting.tsx::loadChapterOutline": "加载本章章纲",
+    "frontend/src/components/ManualWriting.tsx::loadCharacters": "加载人物列表",
+    "frontend/src/components/ManualWriting.tsx::handleGenerateGuidance": "生成写作指导",
+    "frontend/src/components/ManualWriting.tsx::handleGenerateReference": "生成正文参考",
+    "frontend/src/components/ManualWriting.tsx::handleCloseReference": "关闭参考内容",
+    "frontend/src/components/ManualWriting.tsx::FloatingContentWindow": "设定集浮动窗口",
+    "frontend/src/components/ManualWriting.tsx::HighlightedText": "关键词高亮文本",
+    "frontend/src/components/ManualWriting.tsx::CharacterDetailWindow": "人物详情浮窗",
+    "frontend/src/components/ManualWriting.tsx::openFloatingWindow": "打开素材浮窗",
+    "frontend/src/components/ManualWriting.tsx::closeFloatingWindow": "关闭素材浮窗",
+    "frontend/src/components/ManualChapterTree.tsx::ManualChapterTree": "手搓写作章节树",
+    "frontend/src/components/ManualChapterTree.tsx::handleDrop": "手搓树拖拽换卷",
+    "frontend/src/components/StreamWritingWizard.tsx::StreamWritingWizard": "流式写作向导页",
+    "frontend/src/components/StreamWritingWizard.tsx::ALL_STEPS": "向导步骤定义",
+    "frontend/src/components/StreamWritingWizard.tsx::loadExistingMaterials": "加载已有素材与配置",
+    "frontend/src/components/StreamWritingWizard.tsx::handleGenerateCharacters": "批量生成人物卡",
+    "frontend/src/components/StreamWritingWizard.tsx::handleGenerateAllBiographies": "批量生成人物小传",
+    "frontend/src/components/StreamWritingWizard.tsx::handleExtractCharacters": "提取角色名",
+    "frontend/src/components/StreamWritingWizard.tsx::goToStep": "跳转到指定步骤",
+    "frontend/src/components/StreamWritingWizard.tsx::handleCreateNovel": "向导内创建小说",
+    "frontend/src/components/stream-write/RenderContentResults.tsx::RenderContentResults": "生成结果分页展示",
+    "frontend/src/stores/generationStore.ts::useGenerationStore": "生成状态仓库",
+    "frontend/src/stores/generationStore.ts::startGeneration": "启动 AI 批量生成",
+    "frontend/src/stores/generationStore.ts::startStreamGeneration": "启动按卷流式生成",
+    "frontend/src/stores/generationStore.ts::startCrossVolumeGeneration": "启动跨卷生成",
+    "frontend/src/stores/generationStore.ts::stopGeneration": "停止生成",
+    "frontend/src/stores/generationStore.ts::syncAndMergeMemory": "合成合并记忆文件",
+    "frontend/src/stores/generationStore.ts::resetStreamState": "重置流式状态",
+    "frontend/src/stores/generationStore.ts::respondToRetry": "响应重试对话框",
+    "frontend/src/stores/generationStore.ts::setImportedChatData": "写入导入的对话数据",
+    "frontend/src/stores/generationStore.ts::clearImportedChatData": "清除导入的对话数据",
+    "frontend/src/stores/generationStore.ts::_runChapterLoop": "逐章生成循环",
+    "frontend/src/stores/generationStore.ts::generateSingleChapter": "生成单章（AI 写作）",
+    "frontend/src/stores/generationStore.ts::trimRecent": "裁剪超龄章节内存",
+    "frontend/src/stores/generationStore.ts::_auditAndRewrite": "审核重写循环",
+    "frontend/src/stores/generationStore.ts::_auditSingleChapter": "单章审核",
+    "frontend/src/stores/generationStore.ts::_buildAuditFeedback": "构建审核反馈文本",
+    "frontend/src/stores/generationStore.ts::waitFailureWindow": "故障窗口等待倒计时",
+    "frontend/src/stores/generationStore.ts::_ensureMemoryData": "生成前补全记忆数据",
+    "frontend/src/stores/generationStore.ts::_runMemoryStream": "流式执行记忆分析/时间线",
+    "frontend/src/stores/generationStore.ts::_streamGenerateChapter": "单章流式生成与保存",
+    "frontend/src/stores/writingConfigStore.ts::useWritingConfigStore": "写作配置仓库",
+    "frontend/src/api/client.ts::writingApi": "写作接口封装",
+    "frontend/src/api/client.ts::chapterContentApi": "章节正文接口封装",
+    "frontend/src/api/client.ts::streamGenerate": "通用流式生成",
+    "frontend/src/api/client.ts::streamGenerateChapterContent": "流式生成章节正文",
+    "frontend/src/api/client.ts::streamRegenerateChapterWithAudit": "流式审核重写正文",
+    "frontend/src/api/client.ts::streamGenerateGuidance": "流式生成写作指导",
+    "frontend/src/components/CustomDataSelector.tsx::CustomDataSelector": "自选文件选择器",
+    "frontend/src/components/CustomDataSelector.tsx::buildCustomDataRequest": "构建自选数据请求",
+    "frontend/src/components/CustomDataSelector.tsx::SectionHeader": "自选数据分组标题",
+    "frontend/src/components/WritingContextSection.tsx::WritingContextSection": "写作上下文区",
+    "frontend/src/components/WritingContextSection.tsx::handleImportFromCharacters": "从人物卡导入身份",
+    "frontend/src/components/FailureWindowModal.tsx::FailureWindowModal": "故障窗口倒计时弹窗",
+    "frontend/src/components/ChapterList.tsx::ChapterList": "章节管理页",
+    "frontend/src/components/ChapterList.tsx::parseTitleFromContent": "从正文解析章节标题",
+    "frontend/src/components/ChapterList.tsx::stripEmptyLines": "去除空行",
+    "frontend/src/components/ChapterList.tsx::addParagraphBreaks": "补齐段落空行",
+    "frontend/src/components/ChapterList.tsx::loadContent": "加载章节正文",
+    "frontend/src/components/ChapterList.tsx::performSave": "执行保存",
+    "frontend/src/components/ChapterList.tsx::handleSave": "保存章节",
+    "frontend/src/components/ChapterList.tsx::handleEditorInput": "编辑器输入同步",
+    "frontend/src/components/ChapterList.tsx::handleEditorPaste": "粘贴纯文本",
+    "frontend/src/components/ChapterList.tsx::loadTotalWordCount": "统计全书字数",
+    "frontend/src/components/ChapterList.tsx::handleSearch": "查找计数",
+    "frontend/src/components/ChapterList.tsx::handleReplace": "替换全部匹配",
+    "frontend/src/components/ChapterList.tsx::handleGlobalSearch": "全书内容搜索",
+    "frontend/src/components/ChapterList.tsx::handleCopy": "复制正文",
+    "frontend/src/components/ChapterList.tsx::handleContextMenuChapterAudit": "章节右键审核",
+    "frontend/src/components/ChapterList.tsx::markChapterResult": "标记审核结果",
+    "frontend/src/components/ChapterList.tsx::reloadAuditReportPane": "刷新审核报告面板",
+    "frontend/src/components/ChapterList.tsx::handleContextMenuRegenerate": "章节右键重写",
+    "frontend/src/components/ChapterList.tsx::handleContextMenuExtractMemory": "章节右键提取记忆",
+    "frontend/src/components/ChapterList.tsx::reloadMemoryPane": "刷新记忆数据面板",
+    "frontend/src/components/ChapterTree.tsx::ChapterTree": "章节树组件",
+    "frontend/src/components/ChapterTree.tsx::loadData": "加载章节树数据",
+    "frontend/src/components/ChapterTree.tsx::buildDisplayState": "构建树显示状态",
+    "frontend/src/components/ChapterTree.tsx::handleChapterClick": "章节点击与多选",
+    "frontend/src/components/ChapterTree.tsx::handleDrop": "章节拖拽换卷",
+    "frontend/src/components/ChapterTree.tsx::handleCreateVolume": "新建卷",
+    "frontend/src/components/ChapterTree.tsx::handleCreateChapter": "新建章节",
+    "frontend/src/components/ChapterTree.tsx::handleDeleteVolume": "删除卷",
+    "frontend/src/components/ChapterTree.tsx::confirmBatchDelete": "确认批量删除章节",
+    "frontend/src/components/ChapterTree.tsx::handleToggleVerificationStart": "切换人工校验起点",
+    "frontend/src/components/ChapterTree.tsx::parseTitleFromContent": "从正文解析章节标题",
+    "frontend/src/components/ChapterTree.tsx::countWords": "统计章节字数",
+    "frontend/src/components/ChapterTree.tsx::loadHiddenState": "读取隐藏节点状态",
+    "frontend/src/components/ChapterTree.tsx::saveHiddenState": "保存隐藏节点状态",
+    "frontend/src/components/ImportFromDirectoryDialog.tsx::ImportFromDirectoryDialog": "目录导入对话框",
+    "frontend/src/components/ImportFromDirectoryDialog.tsx::walkDirectory": "递归遍历目录",
+    "frontend/src/components/ImportFromDirectoryDialog.tsx::handleSelectDir": "选择导入目录",
+    "frontend/src/components/ImportFromDirectoryDialog.tsx::handleFilesSelected": "处理已选文件",
+    "frontend/src/components/ImportFromDirectoryDialog.tsx::handleImport": "执行正文导入",
+    "frontend/src/api/client.ts::chapterApi": "章节接口封装",
+    "frontend/src/api/client.ts::treeApi": "章节树接口封装",
+    "frontend/src/api/client.ts::auditApi": "审核接口封装",
+    "frontend/src/api/client.ts::memoryApi": "记忆接口封装",
+    "frontend/src/api/client.ts::streamAnalyze": "流式四维记忆分析",
+    "frontend/src/api/client.ts::streamExtractTimeline": "流式时间线提取",
+    "frontend/src/api/client.ts::configApi": "配置接口封装",
+    "frontend/src/api/client.ts::databaseApi": "数据库接口封装",
+    "frontend/src/api/client.ts::api": "axios 实例",
+    "frontend/src/api/client.ts::Prompt": "提示词接口类型",
+    "frontend/src/api/client.ts::PromptTemplate": "提示词模板接口类型",
+    "frontend/src/api/client.ts::Config": "配置项接口类型",
+    "frontend/src/api/client.ts::Backup": "备份接口类型",
+    "frontend/src/api/client.ts::isAIGenerationUrl": "判断是否 AI 生成端点",
+    "frontend/src/api/client.ts::ensureAIAllowed": "AI 调用高峰门卫",
+    "frontend/src/api/client.ts::PEAK_TIME_BLOCKED_ERROR_MESSAGE": "高峰拦截提示语",
+    "frontend/src/api/client.ts::AI_GENERATION_URL_PATTERNS": "AI 生成端点正则表",
+    "frontend/src/api/client.ts::parseStreamResponse": "解析通用 SSE 流",
+    "frontend/src/api/client.ts::parseMemoryStreamResponse": "解析记忆 SSE 流",
+    "frontend/src/api/client.ts::STREAM_IDLE_TIMEOUT": "流空闲超时标识",
+    "frontend/src/components/AuditPanel.tsx::AuditPanel": "审核面板页",
+    "frontend/src/components/AuditPanel.tsx::loadContent": "加载待审正文",
+    "frontend/src/components/AuditPanel.tsx::loadVolumeOutline": "加载卷纲内容",
+    "frontend/src/components/AuditPanel.tsx::loadChapterOutlines": "加载章纲内容",
+    "frontend/src/components/AuditPanel.tsx::handleSelectChapter": "选择待审章节",
+    "frontend/src/components/AuditPanel.tsx::handleSelectVolumeOutline": "选择卷纲审核",
+    "frontend/src/components/AuditPanel.tsx::handleSelectChapterOutline": "选择章纲审核",
+    "frontend/src/components/AuditPanel.tsx::fetchAuditReportStatuses": "拉取审核报告状态",
+    "frontend/src/components/AuditPanel.tsx::fetchVolumeOutlineCounts": "统计每卷章纲数",
+    "frontend/src/components/AuditPanel.tsx::markChapterResult": "标记章节审核结果",
+    "frontend/src/components/AuditPanel.tsx::syncAuditToReportPane": "同步报告到展示区",
+    "frontend/src/components/AuditPanel.tsx::handleAudit": "执行审核",
+    "frontend/src/components/AuditPanel.tsx::handleRegenerate": "审核后重写",
+    "frontend/src/components/AuditPanel.tsx::handleContextMenuChapterAudit": "章节右键审核",
+    "frontend/src/components/AuditPanel.tsx::handleContextMenuRegenerate": "章节右键重写",
+    "frontend/src/components/AuditPanel.tsx::handleParagraphChange": "段落内容编辑",
+    "frontend/src/components/AuditPanel.tsx::handleOutlineRegenerate": "卷纲重写",
+    "frontend/src/components/AuditPanel.tsx::runVolumeOutlineAutoRewriteLoop": "卷纲自动重写循环",
+    "frontend/src/components/AuditPanel.tsx::needsVolumeOutlineRewrite": "判断卷纲是否需重写",
+    "frontend/src/components/AuditPanel.tsx::buildVolumeOutlineAuditReport": "构建卷纲审核反馈",
+    "frontend/src/components/AuditPanel.tsx::handleContextMenuVolumeOutlineAudit": "卷纲右键审核",
+    "frontend/src/components/AuditPanel.tsx::handleContextMenuVolumeOutlineAuditMulti": "多卷右键审核",
+    "frontend/src/components/AuditPanel.tsx::handleChapterOutlineRewrite": "整卷章纲重写",
+    "frontend/src/components/AuditPanel.tsx::handleSingleChapterOutlineAudit": "单章章纲审核",
+    "frontend/src/components/AuditPanel.tsx::handleSingleChapterOutlineRewrite": "单章章纲重写",
+    "frontend/src/components/AuditPanel.tsx::handleBatchChapterOutlineAudit": "批量章纲审核",
+    "frontend/src/components/AuditPanel.tsx::handleContextMenuChapterOutlineAudit": "章纲右键审核",
+    "frontend/src/components/AuditPanel.tsx::handleContextMenuChapterOutlineAuditMulti": "多卷章纲右键审核",
+    "frontend/src/components/AuditPanel.tsx::SingleChapterAuditReportView": "单章审核报告视图",
+    "frontend/src/components/AuditPanel.tsx::isValidAuditReport": "判断审核报告是否有效",
+    "frontend/src/components/audit/AuditReportSection.tsx::AuditReportSection": "审核报告展示区",
+    "frontend/src/components/audit/ParagraphIssueList.tsx::ParagraphIssueList": "段落问题列表",
+    "frontend/src/utils/auditStatus.ts::deriveAuditLevel": "推导审核等级",
+    "frontend/src/utils/auditStatus.ts::getAuditStatus": "获取审核状态样式",
+    "frontend/src/utils/auditStatus.ts::AUDIT_LEVEL_TEXT_CLASS": "审核等级文字色表",
+    "frontend/src/components/MemoryPanel.tsx::MemoryPanel": "记忆系统页",
+    "frontend/src/components/MemoryPanel.tsx::handleAnalyze": "执行四维记忆分析",
+    "frontend/src/components/MemoryPanel.tsx::handleExtractTimeline": "执行时间线提取",
+    "frontend/src/components/MemoryPanel.tsx::handleSave": "保存记忆分析",
+    "frontend/src/components/MemoryPanel.tsx::handleSaveTimeline": "保存时间线",
+    "frontend/src/components/MemoryPanel.tsx::loadMemoryStatus": "加载记忆覆盖状态",
+    "frontend/src/components/MemoryPanel.tsx::handleSelectChapter": "选择章节与范围",
+    "frontend/src/components/MemoryPanel.tsx::getVolumeChapterRange": "获取某卷章节范围",
+    "frontend/src/components/MemoryPanel.tsx::renderFourDimensions": "渲染四维记忆汇总",
+    "frontend/src/components/MemoryPanel.tsx::renderTimeline": "渲染时间线总结",
+    "frontend/src/components/MemoryPanel.tsx::renderPerChapter": "渲染逐章分析",
+    "frontend/src/components/MemoryPanel.tsx::formatChapterRanges": "章节号区间格式化",
+    "frontend/src/components/MemoryInlineViewer.tsx::MemoryInlineViewer": "记忆内联查看器",
+    "frontend/src/components/MemoryInlineViewer.tsx::loadData": "加载记忆数据",
+    "frontend/src/components/MemoryInlineViewer.tsx::getChapterData": "获取单章记忆",
+    "frontend/src/components/MemoryInlineViewer.tsx::getChapterTimeline": "获取单章时间线",
+    "frontend/src/components/MemoryDataViewer.tsx::MemoryDataViewer": "记忆数据查看器",
+    "frontend/src/components/MemoryDataViewer.tsx::loadData": "加载记忆查看数据",
+    "frontend/src/components/MemoryDataViewer.tsx::getFilteredData": "按筛选过滤记忆数据",
+    "frontend/src/components/MemoryDataViewer.tsx::renderFourDimensions": "渲染四维汇总",
+    "frontend/src/components/MemoryDataViewer.tsx::renderTimelineSummary": "渲染时间线",
+    "frontend/src/components/MemoryDataViewer.tsx::renderPerChapter": "渲染逐章分析",
+    "frontend/src/components/SettingsPanel.tsx::SettingsPanel": "设置页",
+    "frontend/src/components/SettingsPanel.tsx::handleSaveDefaultAISettings": "保存默认 AI 设置",
+    "frontend/src/components/SettingsPanel.tsx::handleLoadPromptsFromFiles": "从文件加载提示词",
+    "frontend/src/components/SettingsPanel.tsx::handleSaveAPIKey": "保存 API 密钥",
+    "frontend/src/components/SettingsPanel.tsx::handleEditApiKey": "编辑 API 密钥",
+    "frontend/src/components/SettingsPanel.tsx::handleApiKeyChange": "更新密钥输入",
+    "frontend/src/components/SettingsPanel.tsx::handleTestConnection": "测试模型连接",
+    "frontend/src/components/SettingsPanel.tsx::handleAddModel": "新增模型",
+    "frontend/src/components/SettingsPanel.tsx::handlePromptSubmit": "保存提示词",
+    "frontend/src/components/SettingsPanel.tsx::handleDeletePrompt": "删除提示词",
+    "frontend/src/components/SettingsPanel.tsx::handleTemplateSubmit": "保存提示词模板",
+    "frontend/src/components/SettingsPanel.tsx::handleDeleteTemplate": "删除提示词模板",
+    "frontend/src/components/SettingsPanel.tsx::handleConfigSubmit": "保存配置项",
+    "frontend/src/components/SettingsPanel.tsx::handleDeleteConfig": "删除配置项",
+    "frontend/src/components/SettingsPanel.tsx::handleCreateBackup": "创建数据库备份",
+    "frontend/src/components/SettingsPanel.tsx::handleRestoreBackup": "恢复数据库备份",
+    "frontend/src/components/SettingsPanel.tsx::handleDeleteBackup": "删除数据库备份",
+    "frontend/src/components/SettingsPanel.tsx::applyColorScheme": "应用配色方案",
+    "frontend/src/components/SettingsPanel.tsx::applyPreset": "选中预设配色",
+    "frontend/src/components/SettingsPanel.tsx::handleApplyPreset": "应用选中预设",
+    "frontend/src/components/SettingsPanel.tsx::handleOpenNewScheme": "打开新建配色弹窗",
+    "frontend/src/components/SettingsPanel.tsx::handleSaveNewScheme": "保存自定义配色",
+    "frontend/src/components/SettingsPanel.tsx::handleDeleteScheme": "删除自定义配色",
+    "frontend/src/components/SettingsPanel.tsx::handleSavePassword": "保存管理密码",
+    "frontend/src/components/SettingsPanel.tsx::handleToggleExternalApi": "开关外部接口",
+    "frontend/src/components/SettingsPanel.tsx::handleGenerateExternalKey": "生成外部接口密钥",
+    "frontend/src/components/SettingsPanel.tsx::handleClearExternalKey": "清除外部接口密钥",
+    "frontend/src/stores/peakTimeStore.ts::usePeakTimeStore": "高峰时段状态仓库",
+    "frontend/src/stores/peakTimeStore.ts::findMatchingWindow": "匹配当前高峰窗口",
+    "frontend/src/stores/peakTimeStore.ts::windowKey": "生成高峰窗口标识",
+    "frontend/src/stores/peakTimeStore.ts::ensureAIAllowed": "AI 调用高峰门卫",
+    "frontend/src/stores/peakTimeStore.ts::resolveModal": "提交弹窗决策",
+    "frontend/src/stores/peakTimeStore.ts::isPeakTime": "判断是否高峰时段",
+    "frontend/src/components/PeakTimeModal.tsx::PeakTimeModal": "高峰时段弹窗",
+    "frontend/src/components/ExperimentalPanel.tsx::ExperimentalPanel": "实验功能页",
+    "frontend/src/components/ExperimentalPanel.tsx::loadModels": "加载模型列表",
+    "frontend/src/components/ExperimentalPanel.tsx::loadPrompts": "加载实验提示词",
+    "frontend/src/components/ExperimentalPanel.tsx::loadState": "加载实验面板状态",
+    "frontend/src/components/ExperimentalPanel.tsx::handleSelectPrompt": "切换提示词",
+    "frontend/src/components/ExperimentalPanel.tsx::handleOpenNewPrompt": "打开新建提示词",
+    "frontend/src/components/ExperimentalPanel.tsx::handleNewPromptSubmit": "提交新建提示词",
+    "frontend/src/components/ExperimentalPanel.tsx::handleSavePrompt": "打开保存提示词",
+    "frontend/src/components/ExperimentalPanel.tsx::handleOverwritePrompt": "覆盖保存提示词",
+    "frontend/src/components/ExperimentalPanel.tsx::handleDeletePrompt": "删除实验提示词",
+    "frontend/src/components/ExperimentalPanel.tsx::renderShortStory": "渲染短篇生成",
+    "frontend/src/components/ExperimentalPanel.tsx::handleGenerate": "生成短篇",
+    "frontend/src/components/ExperimentalPanel.tsx::handleStop": "停止短篇生成",
+    "frontend/src/components/ExperimentalPanel.tsx::handleSave": "保存短篇状态",
+    "frontend/src/components/ExperimentalPanel.tsx::handleCopy": "复制短篇内容",
+    "frontend/src/components/ExperimentalPanel.tsx::handleClearAll": "清空并备份短篇",
+    "frontend/src/components/ExperimentalPanel.tsx::renderChat": "渲染对话式生成",
+    "frontend/src/components/ExperimentalPanel.tsx::handleChatSend": "发送对话消息",
+    "frontend/src/components/ExperimentalPanel.tsx::handleChatStop": "停止对话生成",
+    "frontend/src/components/ExperimentalPanel.tsx::handleNewChat": "新建对话",
+    "frontend/src/components/ExperimentalPanel.tsx::handleSwitchSession": "切换对话会话",
+    "frontend/src/components/ExperimentalPanel.tsx::handleChatDeleteSession": "删除对话会话",
+    "frontend/src/components/ExperimentalPanel.tsx::handleChatDeleteMessage": "删除对话消息",
+    "frontend/src/components/ExperimentalPanel.tsx::handleChatCopyMessage": "复制对话消息",
+    "frontend/src/components/ExperimentalPanel.tsx::handleRenameSession": "重命名对话",
+    "frontend/src/components/ExperimentalPanel.tsx::handleCopySession": "复制整个对话",
+    "frontend/src/components/ExperimentalPanel.tsx::handleExportSession": "导出对话到文件",
+    "frontend/src/components/ExperimentalPanel.tsx::handleImportToStreamWriting": "导入对话到流式写作",
+    "frontend/src/components/ExperimentalPanel.tsx::handleChatExport": "导出当前对话",
+    "frontend/src/components/ExperimentalPanel.tsx::saveChatSessionToDB": "保存对话会话",
+    "frontend/src/components/ExperimentalPanel.tsx::loadChatSessionsFromDB": "加载对话会话",
+    "frontend/src/components/ExperimentalPanel.tsx::renderGZH": "渲染公众号写作",
+    "frontend/src/components/ExperimentalPanel.tsx::handleGZHGenerate": "生成公众号杂文",
+    "frontend/src/components/ExperimentalPanel.tsx::handleGZHStop": "停止杂文生成",
+    "frontend/src/components/ExperimentalPanel.tsx::handleGZHCopy": "复制杂文",
+    "frontend/src/components/ExperimentalPanel.tsx::handleGZHSave": "保存杂文状态",
+    "frontend/src/components/experimental/useDrama.ts::useDrama": "短剧业务 Hook",
+    "frontend/src/components/experimental/useDrama.ts::loadDramaChapters": "加载短剧章节列表",
+    "frontend/src/components/experimental/useDrama.ts::loadDramaMaterials": "加载短剧素材",
+    "frontend/src/components/experimental/useDrama.ts::loadDramaGenerationLog": "加载短剧生成记录",
+    "frontend/src/components/experimental/useDrama.ts::handleGenerateDraft": "生成分镜草稿",
+    "frontend/src/components/experimental/useDrama.ts::handleRegenerateShot": "重新生成单个镜头",
+    "frontend/src/components/experimental/useDrama.ts::handleConfirmFromDraft": "由草稿确认生成剧本",
+    "frontend/src/components/experimental/useDrama.ts::handleMultiEpisodeGeneration": "多集剧本生成",
+    "frontend/src/components/experimental/useDrama.ts::handleGenerateCharacterPrompts": "生成角色形象提示词",
+    "frontend/src/components/experimental/useDrama.ts::handleGenerateScenePrompts": "生成场景定场提示词",
+    "frontend/src/components/experimental/useDrama.ts::handleGenerateShotPrompt": "生成镜头帧提示词",
+    "frontend/src/components/experimental/useDrama.ts::handleDramaCopy": "复制短剧剧本",
+    "frontend/src/components/experimental/useDrama.ts::handleDramaExport": "导出短剧剧本",
+    "frontend/src/components/experimental/useDrama.ts::tryParseShots": "容错解析分镜数组",
+    "frontend/src/components/experimental/useDrama.ts::tryExtractCharacters": "容错解析角色列表",
+    "frontend/src/components/experimental/useDrama.ts::tryParseDraftShots": "解析草稿分镜并标源章",
+    "frontend/src/components/experimental/useDrama.ts::analyzeDraftDuration": "评估草稿时长与集数",
+    "frontend/src/components/experimental/useDrama.ts::parseComfyUIPrompts": "解析 ComfyUI 提示词卡片",
+    "frontend/src/components/experimental/useDrama.ts::buildMinimalDramaContext": "构建精简短剧上下文",
+    "frontend/src/components/experimental/useDrama.ts::getVolumeOutlineForChapters": "获取章节所属卷纲",
+    "frontend/src/components/experimental/useDrama.ts::initSelectedShotIds": "初始化选中镜头",
+    "frontend/src/components/experimental/useDrama.ts::handleBatchImportConfirm": "确认批量选章",
+    "frontend/src/components/experimental/DramaScriptView.tsx::DramaScriptView": "短剧剧本视图",
+    "frontend/src/components/experimental/types.ts::DramaShot": "短剧镜头类型",
+    "frontend/src/components/experimental/types.ts::DramaEpisode": "短剧单集类型",
+    "frontend/src/components/experimental/types.ts::DramaDraftShot": "分镜草稿类型",
+    "frontend/src/components/experimental/types.ts::DramaEstimate": "时长评估类型",
+    "frontend/src/components/experimental/types.ts::ComfyUIPromptCard": "ComfyUI 提示词卡片类型",
+    "frontend/src/components/experimental/types.ts::ChatMessage": "对话消息类型",
+    "frontend/src/components/experimental/types.ts::ChatSession": "对话会话类型",
+    "frontend/src/components/experimental/constants.ts::CHAT_SYSTEM_PROMPT": "对话系统提示词",
+    "frontend/src/components/experimental/constants.ts::DEFAULT_DRAMA_PROMPT": "短剧剧本总监提示词",
+    "frontend/src/components/experimental/constants.ts::DEFAULT_GZH_PROMPT": "鲁迅风格杂文提示词",
+    "frontend/src/components/DatabasePanel.tsx::DatabasePanel": "数据库管理页",
+    "frontend/src/components/DatabasePanel.tsx::loadDbTables": "加载数据库表结构",
+    "frontend/src/components/DatabasePanel.tsx::loadTableData": "加载表数据",
+    "frontend/src/components/DatabasePanel.tsx::handleSort": "表列排序",
+    "frontend/src/components/DatabasePanel.tsx::handleDbDelete": "删除记录",
+    "frontend/src/components/DatabasePanel.tsx::handleDbEdit": "编辑记录",
+    "frontend/src/components/DatabasePanel.tsx::handleDbNew": "新增记录",
+    "frontend/src/components/DatabasePanel.tsx::handleDbSave": "保存记录",
+    "frontend/src/components/ToolsPanel.tsx::ToolsPanel": "工具页",
+    "frontend/src/components/AboutPanel.tsx::AboutPanel": "关于页",
+    "frontend/src/components/AboutPanel.tsx::Section": "关于页折叠区块",
+    "frontend/src/components/AboutPanel.tsx::FeatureCard": "功能卡片",
+    "frontend/src/types/index.ts::Novel": "小说模型",
+    "frontend/src/types/index.ts::Chapter": "章节模型",
+    "frontend/src/types/index.ts::AuditResult": "审核结果模型",
+    "frontend/src/types/index.ts::AIAuditResponse": "AI 审核响应模型",
+    "frontend/src/types/index.ts::Character": "人物卡模型",
+    "frontend/src/types/index.ts::defaultCharacter": "空白人物卡默认值",
+    "frontend/src/types/index.ts::APIConfig": "API 配置模型",
+    "frontend/src/types/index.ts::ModelConfig": "模型配置模型",
+    "frontend/src/types/index.ts::Volume": "卷模型",
+    "frontend/src/types/index.ts::MemoryAnalysisResult": "记忆分析结果模型",
+    "frontend/src/types/index.ts::Foreshadowing": "伏笔模型",
+    "frontend/src/types/index.ts::TimelineEvent": "时间线事件模型",
+    "frontend/src/utils/textFormat.ts::toTitleCase": "下划线命名转标题",
+    "frontend/src/utils/textFormat.ts::splitParagraphs": "切分段落",
+    "frontend/src/utils/textFormat.ts::annotateContent": "为段落插入定位标记",
+    "frontend/src/utils/textFormat.ts::filterAIResponsePrefix": "去除 AI 套话前缀",
+    "frontend/src/utils/textFormat.ts::formatReportTime": "格式化报告时间",
+    "frontend/src/utils/textFormat.ts::tryParseJSONField": "尝试美化 JSON 字段",
+    "frontend/src/utils/volumeDisplay.ts::toChineseVolumeName": "数字卷号转中文",
+    "frontend/src/utils/volumeDisplay.ts::displayVolumeTitle": "显示卷标题",
+    "frontend/src/utils/sound.ts::startBatch": "开始批次（静音）",
+    "frontend/src/utils/sound.ts::endBatch": "结束批次",
+    "frontend/src/utils/sound.ts::playCompletionSound": "播放完成提示音"
   }
 }

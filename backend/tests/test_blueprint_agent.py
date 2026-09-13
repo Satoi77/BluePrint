@@ -1,4 +1,6 @@
-from app.models.schemas import FileMeta, NodeModel
+from datetime import datetime, timezone
+
+from app.models.schemas import CommitInfo, FileMeta, NodeModel
 from app.scanner.blueprint_agent import (
     build_from_agent_blueprint,
     validate_agent_blueprint,
@@ -116,6 +118,64 @@ def test_symbol_names_used_for_atomic_nodes():
     nodes, _ = build_from_agent_blueprint(blueprint, file_nodes, files)
     atomic = [node for node in nodes if node.level == 2]
     assert any(node.label == "加载正文内容" for node in atomic)
+
+
+def test_non_python_symbols_generate_atomic_nodes():
+    blueprint = {
+        "functions": [
+            {
+                "id": "ui",
+                "name": "前端界面",
+                "level": 0,
+                "parent": None,
+                "kind": "block",
+                "files": ["frontend/src/App.tsx"],
+                "symbols": [],
+            },
+            {
+                "id": "ui.canvas",
+                "name": "画布",
+                "level": 1,
+                "parent": "ui",
+                "kind": "group",
+                "files": ["frontend/src/App.tsx"],
+                "symbols": ["App", "renderCanvas"],
+            },
+        ],
+        "edges": [],
+        "symbol_names": {"frontend/src/App.tsx::App": "应用入口"},
+    }
+    nodes, _ = build_from_agent_blueprint(
+        blueprint, [], None, None, 7, datetime.now(timezone.utc)
+    )
+    atomic = [node for node in nodes if node.level == 2]
+    assert any(node.label == "应用入口" for node in atomic)
+    assert any(node.functions == ["renderCanvas"] for node in atomic)
+
+
+def test_status_from_history_for_non_python():
+    now = datetime(2026, 9, 13, tzinfo=timezone.utc)
+    blueprint = {
+        "functions": [
+            {
+                "id": "ui",
+                "name": "前端",
+                "level": 0,
+                "parent": None,
+                "kind": "block",
+                "files": ["frontend/src/App.tsx"],
+            }
+        ],
+        "edges": [],
+    }
+    history = {
+        "frontend/src/App.tsx": CommitInfo(
+            "abc", "2026-09-12T00:00:00+00:00", "init"
+        )
+    }
+    nodes, _ = build_from_agent_blueprint(blueprint, [], None, history, 7, now)
+    assert nodes[0].status == "recent"
+    assert nodes[0].last_commit_hash == "abc"
 
 
 def test_validate_reports_uncovered_and_bad_parent():
