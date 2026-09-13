@@ -5,8 +5,8 @@ import type { CircleNodeData } from "../components/CircleNode";
 
 export type HierarchyNode = Node<CircleNodeData, "circle">;
 
-const CELL_X = 138;
-const CELL_Y = 116;
+const CELL_X = 172;
+const CELL_Y = 148;
 
 function makeNode(raw: RawNode, x: number, y: number): HierarchyNode {
   return {

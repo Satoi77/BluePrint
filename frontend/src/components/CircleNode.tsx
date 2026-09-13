@@ -30,8 +30,12 @@ const FONT_SIZE: Record<string, string> = {
   atomic: "0.52rem",
 };
 
-const HANDLE_CLASS =
-  "!h-3 !w-3 !border-2 !border-white !bg-blueprint opacity-0 transition-opacity duration-150 group-hover:opacity-100 !cursor-crosshair";
+// 目标接入点：覆盖整个圆圈（可落在圆上任意位置），不可见
+const TARGET_HANDLE_CLASS =
+  "!absolute !top-0 !left-0 !h-full !w-full !translate-x-0 !translate-y-0 !rounded-full !border-0 !bg-transparent !opacity-0";
+// 源接入点：悬停时显示的唯一蓝点
+const SOURCE_HANDLE_CLASS =
+  "!h-3.5 !w-3.5 !border-2 !border-white !bg-blueprint !opacity-0 transition-opacity duration-150 group-hover:!opacity-100 !cursor-crosshair";
 
 export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
   const dim = data.dimmed && !data.highlighted && !data.selected;
@@ -65,7 +69,7 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
         <Handle
           type="target"
           position={Position.Top}
-          className={HANDLE_CLASS}
+          className={TARGET_HANDLE_CLASS}
         />
         <span
           className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border border-black/40"
@@ -80,7 +84,7 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
         <Handle
           type="source"
           position={Position.Bottom}
-          className={HANDLE_CLASS}
+          className={SOURCE_HANDLE_CLASS}
         />
       </div>
     </div>

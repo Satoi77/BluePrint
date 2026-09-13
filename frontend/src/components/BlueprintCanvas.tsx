@@ -6,6 +6,7 @@ import {
   MarkerType,
   ReactFlow,
   type Edge,
+  type EdgeTypes,
   type NodeTypes,
   type ReactFlowInstance,
 } from "@xyflow/react";
@@ -18,6 +19,7 @@ import CircleNode, {
   type CircleNodeData,
   type CircleNodeType,
 } from "./CircleNode";
+import FloatingEdge from "./FloatingEdge";
 import NodeTooltip from "./NodeTooltip";
 import {
   colorForGroup,
@@ -26,6 +28,7 @@ import {
 } from "../utils/groupColor";
 
 const nodeTypes = { circle: CircleNode } as NodeTypes;
+const edgeTypes = { floating: FloatingEdge } as EdgeTypes;
 
 interface HoverState {
   node: RawNode;
@@ -200,7 +203,7 @@ export default function BlueprintCanvas() {
         id,
         source: edge.source,
         target: edge.target,
-        type: "default",
+        type: "floating",
         animated: isHighlighted,
         markerEnd: arrowAtTarget ? marker : undefined,
         markerStart: arrowAtTarget ? undefined : marker,
@@ -224,7 +227,7 @@ export default function BlueprintCanvas() {
         id,
         source: parent,
         target: node.id,
-        type: "default",
+        type: "floating",
         animated: isHighlighted,
         selectable: false,
         focusable: false,
@@ -314,6 +317,7 @@ export default function BlueprintCanvas() {
         nodes={displayNodes}
         edges={displayEdges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         minZoom={0.05}
         maxZoom={2}
         zoomOnScroll
