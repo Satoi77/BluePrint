@@ -43,7 +43,7 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
   return (
     <div
       className="flex flex-col items-center"
-      style={{ opacity: dim ? 0.15 : 1, transition: "opacity 180ms ease" }}
+      style={{ opacity: dim ? 0.42 : 1, transition: "opacity 180ms ease" }}
     >
       <div
         className="relative flex items-center justify-center overflow-hidden rounded-full border-2 border-white bg-panel"

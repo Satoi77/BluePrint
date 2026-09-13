@@ -149,8 +149,9 @@ export default function BlueprintCanvas() {
           animated: isHighlighted,
           style: {
             stroke: isHighlighted ? HIGHLIGHT_COLOR : groupColor,
-            strokeWidth: isHighlighted ? 2.5 : 1.6,
-            opacity: selectedId !== null ? (isHighlighted ? 1 : 0.05) : 0.55,
+            strokeWidth: isHighlighted ? 2.6 : 1.7,
+            strokeLinecap: "round",
+            opacity: selectedId !== null ? (isHighlighted ? 1 : 0.32) : 0.72,
           },
         };
       }),
