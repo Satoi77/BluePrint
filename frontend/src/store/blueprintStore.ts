@@ -18,7 +18,6 @@ import {
   type BpEdge,
   type BpFunction,
   type Project,
-  type RawEdge,
   type ScanResponse,
 } from "../services/api";
 import { downloadText, log } from "../services/logger";
@@ -332,13 +331,17 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
 };
 });
 
-export function computeHighlight(edges: RawEdge[], id: string | null): Highlight {
+export function computeHighlight(
+  edges: { source: string; target: string }[],
+  id: string | null,
+): Highlight {
   const nodes = new Set<string>();
   const edgeKeys = new Set<string>();
   if (!id) return { nodes, edges: edgeKeys };
 
-  const forward = new Map<string, RawEdge[]>();
-  const backward = new Map<string, RawEdge[]>();
+  type EdgeLike = { source: string; target: string };
+  const forward = new Map<string, EdgeLike[]>();
+  const backward = new Map<string, EdgeLike[]>();
   for (const edge of edges) {
     if (!forward.has(edge.source)) forward.set(edge.source, []);
     forward.get(edge.source)!.push(edge);
@@ -346,7 +349,7 @@ export function computeHighlight(edges: RawEdge[], id: string | null): Highlight
     backward.get(edge.target)!.push(edge);
   }
 
-  const walk = (start: string, map: Map<string, RawEdge[]>) => {
+  const walk = (start: string, map: Map<string, EdgeLike[]>) => {
     const queue = [start];
     const seen = new Set<string>([start]);
     while (queue.length > 0) {

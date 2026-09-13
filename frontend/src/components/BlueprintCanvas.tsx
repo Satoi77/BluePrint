@@ -126,16 +126,25 @@ export default function BlueprintCanvas() {
     return map;
   }, [raw]);
 
+  // 高亮同时考虑语义关系边与树结构边（父→子），使选中主功能时能高亮其下级
+  const highlightInput = useMemo(() => {
+    const list: { source: string; target: string }[] = [];
+    for (const edge of raw?.edges ?? []) {
+      if (visibleIds.has(edge.source) && visibleIds.has(edge.target)) {
+        list.push({ source: edge.source, target: edge.target });
+      }
+    }
+    for (const node of displayedRaw) {
+      if (node.parent_id && visibleIds.has(node.parent_id)) {
+        list.push({ source: node.parent_id, target: node.id });
+      }
+    }
+    return list;
+  }, [raw, visibleIds, displayedRaw]);
+
   const highlight = useMemo(
-    () =>
-      computeHighlight(
-        (raw?.edges ?? []).filter(
-          (edge) =>
-            visibleIds.has(edge.source) && visibleIds.has(edge.target),
-        ),
-        selectedId,
-      ),
-    [raw, visibleIds, selectedId],
+    () => computeHighlight(highlightInput, selectedId),
+    [highlightInput, selectedId],
   );
 
   const displayNodes = useMemo(
@@ -210,19 +219,23 @@ export default function BlueprintCanvas() {
       if (!parent || !visibleIds.has(parent)) continue;
       const id = `tree:${parent}->${node.id}`;
       if (result.some((item) => item.id === id)) continue;
+      const isHighlighted = highlight.edges.has(`${parent}->${node.id}`);
       result.push({
         id,
         source: parent,
         target: node.id,
         type: "default",
+        animated: isHighlighted,
         selectable: false,
         focusable: false,
-        style: {
-          stroke: "#5B6472",
-          strokeWidth: 1.1,
-          strokeDasharray: "4 4",
-          opacity: selectedId !== null ? 0.15 : 0.35,
-        },
+        style: isHighlighted
+          ? { stroke: HIGHLIGHT_COLOR, strokeWidth: 2.2, opacity: 1 }
+          : {
+              stroke: "#5B6472",
+              strokeWidth: 1.1,
+              strokeDasharray: "4 4",
+              opacity: selectedId !== null ? 0.15 : 0.35,
+            },
       });
     }
     return result;
