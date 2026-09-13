@@ -44,6 +44,7 @@ export interface ScanResponse {
   warnings: string[];
   project_id: number | null;
   project_name: string | null;
+  positions: Record<string, { x: number; y: number }>;
 }
 
 export interface BpFunction {
@@ -165,6 +166,17 @@ export function getProjectBlueprint(projectId: number): Promise<ScanResponse> {
 export function deleteProject(projectId: number): Promise<{ deleted: number }> {
   return request<{ deleted: number }>(`/api/projects/${projectId}`, {
     method: "DELETE",
+  });
+}
+
+export function savePositions(
+  projectId: number,
+  positions: Record<string, { x: number; y: number }>,
+): Promise<{ saved: number }> {
+  return request<{ saved: number }>(`/api/projects/${projectId}/positions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(positions),
   });
 }
 

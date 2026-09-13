@@ -14,7 +14,12 @@ from app.scanner.git_reader import GitError, read_git_history
 from app.scanner.hierarchy import build_function_hierarchy
 from app.scanner.project_scanner import scan_python_files
 from app.services.logging_db import log
-from app.services.project_store import get_mapping, get_project_id, save_project
+from app.services.project_store import (
+    get_mapping,
+    get_positions,
+    get_project_id,
+    save_project,
+)
 
 
 class ScanError(Exception):
@@ -104,6 +109,7 @@ def scan_project(
     project = save_project(root, response, name)
     response.project_id = project["id"]
     response.project_name = project["name"]
+    response.positions = get_positions(project["id"])
 
     log(
         "info",

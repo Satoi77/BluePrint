@@ -35,6 +35,19 @@ def test_save_list_get_delete(tmp_path, isolated_db):
     assert project_store.delete_project(saved["id"]) is False
 
 
+def test_positions_roundtrip(tmp_path, isolated_db):
+    saved = project_store.save_project(str(tmp_path), _response(str(tmp_path), 1, 0))
+    project_store.save_positions(
+        saved["id"], {"a": {"x": 1.5, "y": 2.5}, "b": {"x": 3, "y": 4}}
+    )
+    positions = project_store.get_positions(saved["id"])
+    assert positions["a"] == {"x": 1.5, "y": 2.5}
+    assert positions["b"] == {"x": 3.0, "y": 4.0}
+
+    project_store.save_positions(saved["id"], {"a": {"x": 9, "y": 9}})
+    assert project_store.get_positions(saved["id"])["a"] == {"x": 9.0, "y": 9.0}
+
+
 def test_upsert_same_root_path(tmp_path, isolated_db):
     first = project_store.save_project(str(tmp_path), _response(str(tmp_path), 2, 1))
     second = project_store.save_project(str(tmp_path), _response(str(tmp_path), 5, 9))

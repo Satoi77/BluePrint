@@ -92,6 +92,7 @@ class ScanResponse(BaseModel):
     warnings: list[str] = []
     project_id: Optional[int] = None
     project_name: Optional[str] = None
+    positions: dict[str, dict[str, float]] = {}
 
 
 class LogExportRequest(BaseModel):

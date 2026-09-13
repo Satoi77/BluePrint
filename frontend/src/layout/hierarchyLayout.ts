@@ -62,6 +62,7 @@ function groupByParent(nodes: RawNode[]): Map<string, RawNode[]> {
 export function layoutHierarchy(
   nodes: RawNode[],
   edges: RawEdge[],
+  positions: Record<string, { x: number; y: number }> = {},
 ): HierarchyNode[] {
   const blocks = nodes.filter((node) => node.level === 0);
   const groups = nodes.filter((node) => node.level === 1);
@@ -108,7 +109,7 @@ export function layoutHierarchy(
   }
 
   return nodes.map((node) => {
-    const position = pos.get(node.id) ?? { x: 0, y: 0 };
+    const position = positions[node.id] ?? pos.get(node.id) ?? { x: 0, y: 0 };
     return makeNode(node, position.x, position.y);
   });
 }

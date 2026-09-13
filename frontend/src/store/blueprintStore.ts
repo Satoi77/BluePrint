@@ -10,6 +10,7 @@ import {
   getBlueprintSource,
   getProjectBlueprint,
   listProjects,
+  savePositions,
   scanProject,
   updateBlueprintFunction,
   type AgentBlueprint,
@@ -61,6 +62,7 @@ interface BlueprintState {
   searchQuery: string;
   visibleLevel: number;
   blueprintSource: AgentBlueprint | null;
+  positions: Record<string, { x: number; y: number }>;
   setVisibleLevel: (level: number) => void;
   init: () => Promise<void>;
   scan: (path: string, name?: string) => Promise<void>;
@@ -70,6 +72,7 @@ interface BlueprintState {
   setSearch: (query: string) => void;
   clearError: () => void;
   loadSource: () => Promise<void>;
+  moveNode: (id: string, x: number, y: number) => void;
   addFunction: (fn: BpFunction) => Promise<void>;
   updateFunction: (fn: BpFunction) => Promise<void>;
   removeFunction: (id: string) => Promise<void>;
@@ -95,7 +98,11 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
   };
 
   const applyEdit = async (data: ScanResponse) => {
-    set({ raw: normalize(data), status: "success" });
+    set({
+      raw: normalize(data),
+      status: "success",
+      positions: data.positions ?? {},
+    });
     await refreshSource(get().activeProjectId);
   };
 
@@ -109,6 +116,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
   searchQuery: "",
   visibleLevel: 0,
   blueprintSource: null,
+  positions: {},
 
   setVisibleLevel: (level) => set({ visibleLevel: level }),
 
@@ -141,6 +149,7 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
         selectedId: null,
         searchQuery: "",
         activeProjectId: data.project_id,
+        positions: data.positions ?? {},
       });
       if (data.project_id) {
         localStorage.setItem(ACTIVE_KEY, String(data.project_id));
@@ -159,7 +168,12 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
     set({ status: "loading", error: null, selectedId: null, searchQuery: "" });
     try {
       const data = normalize(await getProjectBlueprint(id));
-      set({ raw: data, status: "success", activeProjectId: id });
+      set({
+        raw: data,
+        status: "success",
+        activeProjectId: id,
+        positions: data.positions ?? {},
+      });
       localStorage.setItem(ACTIVE_KEY, String(id));
       await refreshSource(id);
       log("info", "store.blueprint", "打开项目", {
@@ -201,6 +215,18 @@ export const useBlueprintStore = create<BlueprintState>((set, get) => {
 
   loadSource: async () => {
     await refreshSource(get().activeProjectId);
+  },
+
+  moveNode: (id, x, y) => {
+    set({ positions: { ...get().positions, [id]: { x, y } } });
+    const projectId = get().activeProjectId;
+    if (projectId) {
+      void savePositions(projectId, { [id]: { x, y } }).catch((error) => {
+        log("warn", "store.blueprint", "保存节点位置失败", {
+          message: msg(error),
+        });
+      });
+    }
   },
 
   addFunction: async (fn) => {

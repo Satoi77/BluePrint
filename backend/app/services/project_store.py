@@ -37,6 +37,15 @@ _CREATE_STATEMENTS = (
         updated_at   TEXT NOT NULL
     )
     """,
+    """
+    CREATE TABLE IF NOT EXISTS node_positions (
+        project_id INTEGER NOT NULL,
+        node_id    TEXT NOT NULL,
+        x          REAL NOT NULL,
+        y          REAL NOT NULL,
+        PRIMARY KEY (project_id, node_id)
+    )
+    """,
 )
 
 
@@ -226,6 +235,46 @@ def get_mapping(project_id: int) -> Optional[dict[str, Any]]:
     return json.loads(row[0])
 
 
+def get_positions(project_id: int) -> dict[str, dict[str, float]]:
+    _ensure()
+    with _lock:
+        conn = _connect()
+        try:
+            rows = conn.execute(
+                "SELECT node_id, x, y FROM node_positions WHERE project_id = ?",
+                (project_id,),
+            ).fetchall()
+        finally:
+            conn.close()
+    return {row[0]: {"x": row[1], "y": row[2]} for row in rows}
+
+
+def save_positions(project_id: int, positions: dict[str, dict]) -> None:
+    _ensure()
+    with _lock:
+        conn = _connect()
+        try:
+            for node_id, position in positions.items():
+                if not isinstance(position, dict):
+                    continue
+                x = position.get("x")
+                y = position.get("y")
+                if x is None or y is None:
+                    continue
+                conn.execute(
+                    """
+                    INSERT INTO node_positions (project_id, node_id, x, y)
+                    VALUES (?, ?, ?, ?)
+                    ON CONFLICT(project_id, node_id) DO UPDATE SET
+                        x = excluded.x, y = excluded.y
+                    """,
+                    (project_id, str(node_id), float(x), float(y)),
+                )
+            conn.commit()
+        finally:
+            conn.close()
+
+
 def delete_project(project_id: int) -> bool:
     _ensure()
     with _lock:
@@ -233,6 +282,7 @@ def delete_project(project_id: int) -> bool:
         try:
             conn.execute("DELETE FROM blueprints WHERE project_id = ?", (project_id,))
             conn.execute("DELETE FROM hierarchies WHERE project_id = ?", (project_id,))
+            conn.execute("DELETE FROM node_positions WHERE project_id = ?", (project_id,))
             cursor = conn.execute("DELETE FROM projects WHERE id = ?", (project_id,))
             conn.commit()
             return cursor.rowcount > 0

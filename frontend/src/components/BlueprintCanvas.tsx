@@ -4,6 +4,7 @@ import {
   BackgroundVariant,
   Controls,
   ReactFlow,
+  ViewportPortal,
   type Edge,
   type NodeTypes,
   type ReactFlowInstance,
@@ -12,7 +13,11 @@ import {
 import type { RawNode } from "../services/api";
 import { computeHighlight, useBlueprintStore } from "../store/blueprintStore";
 import { layoutHierarchy } from "../layout/hierarchyLayout";
-import CircleNode, { type CircleNodeData, type CircleNodeType } from "./CircleNode";
+import CircleNode, {
+  NODE_SIZES,
+  type CircleNodeData,
+  type CircleNodeType,
+} from "./CircleNode";
 import NodeTooltip from "./NodeTooltip";
 import {
   colorForGroup,
@@ -21,11 +26,33 @@ import {
 } from "../utils/groupColor";
 
 const nodeTypes = { circle: CircleNode } as NodeTypes;
+const INTERSECTION_COLOR = "#FF4D6D";
 
 function visibleAt(level: number, visible: number): boolean {
   if (visible <= 0) return level === 0;
   if (visible === 1) return level === 1;
   return level === 1 || level === 2;
+}
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+function centerOf(node: { position: Point; data: CircleNodeData }): Point {
+  const size = NODE_SIZES[node.data.raw.kind] ?? 60;
+  return { x: node.position.x + size / 2, y: node.position.y + size / 2 };
+}
+
+function segmentIntersection(a: Point, b: Point, c: Point, d: Point): Point | null {
+  const denom = (b.x - a.x) * (d.y - c.y) - (b.y - a.y) * (d.x - c.x);
+  if (Math.abs(denom) < 1e-9) return null;
+  const t = ((c.x - a.x) * (d.y - c.y) - (c.y - a.y) * (d.x - c.x)) / denom;
+  const u = ((c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x)) / denom;
+  if (t > 0.08 && t < 0.92 && u > 0.08 && u < 0.92) {
+    return { x: a.x + t * (b.x - a.x), y: a.y + t * (b.y - a.y) };
+  }
+  return null;
 }
 
 interface HoverState {
@@ -41,6 +68,8 @@ export default function BlueprintCanvas() {
   const searchQuery = useBlueprintStore((state) => state.searchQuery);
   const select = useBlueprintStore((state) => state.select);
   const visibleLevel = useBlueprintStore((state) => state.visibleLevel);
+  const positions = useBlueprintStore((state) => state.positions);
+  const moveNode = useBlueprintStore((state) => state.moveNode);
   const addEdge = useBlueprintStore((state) => state.addEdge);
   const removeEdge = useBlueprintStore((state) => state.removeEdge);
   const [hover, setHover] = useState<HoverState | null>(null);
@@ -49,8 +78,8 @@ export default function BlueprintCanvas() {
   );
 
   const allNodes = useMemo(
-    () => (raw ? layoutHierarchy(raw.nodes, raw.edges) : []),
-    [raw],
+    () => (raw ? layoutHierarchy(raw.nodes, raw.edges, positions) : []),
+    [raw, positions],
   );
 
   const edgeLevel = visibleLevel <= 0 ? 0 : 1;
@@ -116,17 +145,55 @@ export default function BlueprintCanvas() {
           id: `${edge.source}->${edge.target}`,
           source: edge.source,
           target: edge.target,
-          type: "smoothstep",
+          type: "default",
           animated: isHighlighted,
           style: {
             stroke: isHighlighted ? HIGHLIGHT_COLOR : groupColor,
-            strokeWidth: isHighlighted ? 2.5 : 1.4,
-            opacity: selectedId !== null ? (isHighlighted ? 1 : 0.05) : 0.5,
+            strokeWidth: isHighlighted ? 2.5 : 1.6,
+            opacity: selectedId !== null ? (isHighlighted ? 1 : 0.05) : 0.55,
           },
         };
       }),
     [levelEdges, highlight, selectedId, groupColors, groupById],
   );
+
+  const intersections = useMemo(() => {
+    const centers = new Map<string, Point>();
+    for (const node of allNodes) {
+      if (visibleAt(node.data.raw.level, visibleLevel)) {
+        centers.set(node.id, centerOf(node));
+      }
+    }
+    const segments = levelEdges
+      .filter((edge) => centers.has(edge.source) && centers.has(edge.target))
+      .map((edge) => ({
+        source: edge.source,
+        target: edge.target,
+        a: centers.get(edge.source)!,
+        b: centers.get(edge.target)!,
+      }));
+    const points: Point[] = [];
+    for (let i = 0; i < segments.length; i += 1) {
+      for (let j = i + 1; j < segments.length; j += 1) {
+        if (
+          segments[i].source === segments[j].source ||
+          segments[i].source === segments[j].target ||
+          segments[i].target === segments[j].source ||
+          segments[i].target === segments[j].target
+        ) {
+          continue;
+        }
+        const point = segmentIntersection(
+          segments[i].a,
+          segments[i].b,
+          segments[j].a,
+          segments[j].b,
+        );
+        if (point) points.push(point);
+      }
+    }
+    return points;
+  }, [allNodes, levelEdges, visibleLevel]);
 
   const fitKey = `${raw?.project_id ?? 0}:${visibleLevel}:${
     raw?.stats.node_count ?? 0
@@ -154,6 +221,7 @@ export default function BlueprintCanvas() {
           instanceRef.current = instance;
         }}
         onNodeClick={(_, node) => select(node.id)}
+        onNodeDragStop={(_, node) => moveNode(node.id, node.position.x, node.position.y)}
         onPaneClick={() => select(null)}
         onConnect={(connection) => {
           if (connection.source && connection.target) {
@@ -186,6 +254,22 @@ export default function BlueprintCanvas() {
           color="#151B26"
         />
         <Controls position="bottom-right" showInteractive={false} />
+        <ViewportPortal>
+          {intersections.map((point, index) => (
+            <div
+              key={`${point.x.toFixed(1)}-${point.y.toFixed(1)}-${index}`}
+              className="pointer-events-none absolute rounded-full border border-black/50"
+              style={{
+                width: 9,
+                height: 9,
+                left: point.x - 4.5,
+                top: point.y - 4.5,
+                background: INTERSECTION_COLOR,
+                boxShadow: `0 0 6px ${INTERSECTION_COLOR}`,
+              }}
+            />
+          ))}
+        </ViewportPortal>
       </ReactFlow>
 
       {status === "idle" && (

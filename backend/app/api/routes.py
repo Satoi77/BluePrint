@@ -15,9 +15,11 @@ from app.services.project_store import (
     delete_project,
     get_blueprint,
     get_mapping,
+    get_positions,
     get_project,
     list_projects,
     save_mapping,
+    save_positions,
 )
 from app.services.scan_service import ScanError, scan_project
 
@@ -52,7 +54,16 @@ def get_project_blueprint(project_id: int) -> dict:
             status_code=404, detail=f"项目不存在或尚未扫描: {project_id}"
         )
     payload["project_id"] = project_id
+    payload["positions"] = get_positions(project_id)
     return payload
+
+
+@router.post("/projects/{project_id}/positions")
+def save_project_positions(project_id: int, positions: dict) -> dict:
+    _require_project(project_id)
+    save_positions(project_id, positions)
+    log("info", "api.routes", "保存节点位置", {"count": len(positions)})
+    return {"saved": len(positions)}
 
 
 @router.post("/projects/{project_id}/blueprint", response_model=ScanResponse)
