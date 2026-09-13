@@ -37,7 +37,6 @@ export default function BlueprintCanvas() {
   const raw = useBlueprintStore((state) => state.raw);
   const status = useBlueprintStore((state) => state.status);
   const selectedId = useBlueprintStore((state) => state.selectedId);
-  const searchQuery = useBlueprintStore((state) => state.searchQuery);
   const select = useBlueprintStore((state) => state.select);
   const focusId = useBlueprintStore((state) => state.focusId);
   const setFocus = useBlueprintStore((state) => state.setFocus);
@@ -126,7 +125,6 @@ export default function BlueprintCanvas() {
     for (const node of raw?.nodes ?? []) map.set(node.id, node.group);
     return map;
   }, [raw]);
-  const query = searchQuery.trim().toLowerCase();
 
   const highlight = useMemo(
     () =>
@@ -143,15 +141,8 @@ export default function BlueprintCanvas() {
   const displayNodes = useMemo(
     () =>
       laidOut.map((node) => {
-        const hit =
-          query.length > 0 &&
-          (node.data.raw.label.toLowerCase().includes(query) ||
-            node.data.raw.files.some((file) =>
-              file.toLowerCase().includes(query),
-            ));
         const related = highlight.nodes.has(node.id);
-        const dimmed =
-          (selectedId !== null && !related) || (query.length > 0 && !hit);
+        const dimmed = selectedId !== null && !related;
         return {
           ...node,
           data: {
@@ -159,13 +150,13 @@ export default function BlueprintCanvas() {
             dimmed,
             highlighted:
               selectedId !== null && related && node.id !== selectedId,
-            searchHit: hit,
+            searchHit: false,
             selected: node.id === selectedId,
             groupColor: colorForGroup(groupColors, node.data.raw.group),
           },
         };
       }),
-    [laidOut, selectedId, query, groupColors, highlight],
+    [laidOut, selectedId, groupColors, highlight],
   );
 
   const displayEdges = useMemo<Edge[]>(() => {
