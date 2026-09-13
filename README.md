@@ -14,16 +14,41 @@ frontend/   React + TypeScript + React Flow 前端
 docs/       设计与实施文档
 ```
 
-## 启动（规划）
+## 启动
 
-```bash
-# 后端
+### 首次：安装依赖
+
+```bat
 cd backend
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
 
-# 前端
+cd ..\frontend
+npm install --registry=https://registry.npmmirror.com
+```
+
+### 一键启动（推荐）
+
+双击项目根目录的 **`start.bat`**：自动启动后端(8000)与前端(5173)并打开浏览器。关闭弹出的两个命令行窗口即停止服务。
+
+### 手动启动（两个终端）
+
+```bat
+:: 终端 1 — 后端
+cd backend
+python -m uvicorn app.main:app --port 8000
+
+:: 终端 2 — 前端
 cd frontend
-npm install
 npm run dev
 ```
+
+浏览器打开 **http://localhost:5173/**。
+
+### 使用
+
+1. 顶部输入项目目录（含 `.git` 的 Python 项目），点「扫描」。
+2. 顶部切换「大功能块 / 子功能 / 原子功能」查看分层。
+3. 点节点 → 右侧编辑面板可改名称/描述/层级/文件，新增或删除节点；拖圆点手动连线；点连线删除。
+4. 「导出说明」下载 `blueprint_spec.md`，交给 AI Agent 修改代码。
+
+> 首次扫描会落到本地数据库 `backend/data/blueprint.db`，下次打开自动恢复上次项目。
