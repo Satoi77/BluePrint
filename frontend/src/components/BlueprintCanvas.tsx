@@ -92,9 +92,18 @@ export default function BlueprintCanvas() {
     return nodes.filter((node) => ids.has(node.id));
   }, [raw, focusId, designMode, childrenOf, showAllAtomics, maxLevel]);
 
+  const degree = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const edge of raw?.edges ?? []) {
+      map.set(edge.source, (map.get(edge.source) ?? 0) + 1);
+      map.set(edge.target, (map.get(edge.target) ?? 0) + 1);
+    }
+    return map;
+  }, [raw]);
+
   const laidOut = useMemo(
-    () => compactLayout(displayedRaw, positions),
-    [displayedRaw, positions],
+    () => compactLayout(displayedRaw, positions, degree),
+    [displayedRaw, positions, degree],
   );
 
   const visibleIds = useMemo(

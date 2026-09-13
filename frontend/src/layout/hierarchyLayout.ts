@@ -26,28 +26,46 @@ function makeNode(raw: RawNode, x: number, y: number): HierarchyNode {
 }
 
 /**
- * 紧凑网格布局：仅对**当前可见**的节点排布。
- * 按 (层级, 父, id) 排序，使同级同父相邻；单元格紧凑，一屏可见大量节点。
- * 已保存的用户位置优先。
+ * 按信息密度（连接度）排列的紧凑网格：
+ * - 低连接度的节点靠近中心，高连接度的枢纽（如数据库访问）排到**最外围**，
+ *   使大量连线朝外汇聚，减少中心交叉。
+ * - 用户拖动过的位置优先。
  */
 export function compactLayout(
   nodes: RawNode[],
   positions: Record<string, { x: number; y: number }> = {},
+  degree?: Map<string, number>,
 ): HierarchyNode[] {
   const sorted = [...nodes].sort((a, b) => {
+    const da = degree?.get(a.id) ?? 0;
+    const db = degree?.get(b.id) ?? 0;
+    if (da !== db) return da - db;
     if (a.level !== b.level) return a.level - b.level;
     const pa = a.parent_id ?? "";
     const pb = b.parent_id ?? "";
     if (pa !== pb) return pa.localeCompare(pb);
     return a.id.localeCompare(b.id);
   });
-  const cols = Math.max(1, Math.ceil(Math.sqrt(sorted.length)));
+
+  const count = sorted.length;
+  const cols = Math.max(1, Math.ceil(Math.sqrt(count)));
+  const rows = Math.max(1, Math.ceil(count / cols));
+  const centerX = (cols - 1) / 2;
+  const centerY = (rows - 1) / 2;
+
+  const cells: { c: number; r: number; d: number }[] = [];
+  for (let r = 0; r < rows; r += 1) {
+    for (let c = 0; c < cols; c += 1) {
+      cells.push({ c, r, d: (c - centerX) ** 2 + (r - centerY) ** 2 });
+    }
+  }
+  // 由内向外分配：低连接度 → 中心，高连接度 → 外围
+  cells.sort((a, b) => a.d - b.d);
+
   return sorted.map((raw, index) => {
     const saved = positions[raw.id];
-    const position = saved ?? {
-      x: (index % cols) * CELL_X,
-      y: Math.floor(index / cols) * CELL_Y,
-    };
+    const cell = cells[index];
+    const position = saved ?? { x: cell.c * CELL_X, y: cell.r * CELL_Y };
     return makeNode(raw, position.x, position.y);
   });
 }
