@@ -208,7 +208,8 @@ export default function BlueprintCanvas() {
           stroke,
           strokeWidth: isHighlighted ? 2.6 : 1.7,
           strokeLinecap: "round",
-          opacity: selectedId !== null ? (isHighlighted ? 1 : 0.32) : 0.75,
+          // 默认暗线；激活节点后仅高亮其链路，其余更暗
+          opacity: selectedId !== null ? (isHighlighted ? 1 : 0.1) : 0.26,
           animationDirection: arrowAtTarget ? "reverse" : "normal",
         },
       });
@@ -229,7 +230,7 @@ export default function BlueprintCanvas() {
           stroke: "#5B6472",
           strokeWidth: 1.1,
           strokeDasharray: "4 4",
-          opacity: selectedId !== null ? 0.25 : 0.6,
+          opacity: selectedId !== null ? 0.15 : 0.35,
         },
       });
     }
