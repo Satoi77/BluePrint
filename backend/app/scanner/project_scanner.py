@@ -3,7 +3,7 @@ from pathlib import Path
 
 from app.config import IGNORE_DIRS
 from app.models.schemas import FileMeta
-from app.scanner.python_parser import parse_python
+from app.scanner.python_parser import extract_calls, parse_python
 
 
 def compute_module_dotted(rel_posix: str) -> tuple[str, bool]:
@@ -44,6 +44,7 @@ def scan_python_files(root: Path) -> tuple[list[FileMeta], int, list[str]]:
             try:
                 source = abs_path.read_bytes()
                 imports, functions, classes = parse_python(source, rel_path)
+                calls = extract_calls(source)
             except (SyntaxError, ValueError, UnicodeDecodeError, OSError) as exc:
                 skipped += 1
                 message = f"跳过无法解析的文件 {rel_path}: {type(exc).__name__}: {exc}"
@@ -59,6 +60,7 @@ def scan_python_files(root: Path) -> tuple[list[FileMeta], int, list[str]]:
                     imports=imports,
                     functions=functions,
                     classes=classes,
+                    calls=calls,
                 )
             )
 

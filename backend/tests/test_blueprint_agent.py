@@ -80,6 +80,44 @@ def test_build_from_agent_blueprint():
     assert edges[0].label == "调用"
 
 
+def test_symbol_names_used_for_atomic_nodes():
+    files = [
+        FileMeta(
+            rel_path="pkg/a.py",
+            abs_path="/abs/pkg/a.py",
+            module_dotted="pkg.a",
+            is_package=False,
+            functions=["load_chapters"],
+        )
+    ]
+    file_nodes = [make_node("pkg/a.py")]
+    blueprint = {
+        "functions": [
+            {
+                "id": "write",
+                "name": "写正文",
+                "level": 0,
+                "parent": None,
+                "kind": "block",
+                "files": ["pkg/a.py"],
+            },
+            {
+                "id": "write.sub",
+                "name": "章节",
+                "level": 1,
+                "parent": "write",
+                "kind": "group",
+                "files": ["pkg/a.py"],
+            },
+        ],
+        "edges": [],
+        "symbol_names": {"pkg/a.py::load_chapters": "加载正文内容"},
+    }
+    nodes, _ = build_from_agent_blueprint(blueprint, file_nodes, files)
+    atomic = [node for node in nodes if node.level == 2]
+    assert any(node.label == "加载正文内容" for node in atomic)
+
+
 def test_validate_reports_uncovered_and_bad_parent():
     files = [make_file("a.py"), make_file("c.py")]
     blueprint = {

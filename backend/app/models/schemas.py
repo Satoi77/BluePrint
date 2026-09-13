@@ -11,6 +11,7 @@ class ImportRef:
     names: list[str]
     level: int
     lineno: int
+    asnames: list[Optional[str]] = field(default_factory=list)
 
 
 @dataclass
@@ -22,6 +23,7 @@ class FileMeta:
     imports: list[ImportRef] = field(default_factory=list)
     functions: list[str] = field(default_factory=list)
     classes: list[str] = field(default_factory=list)
+    calls: dict[str, list[tuple[Optional[str], str]]] = field(default_factory=dict)
 
 
 @dataclass

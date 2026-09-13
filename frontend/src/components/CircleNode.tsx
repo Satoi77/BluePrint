@@ -10,6 +10,7 @@ export interface CircleNodeData {
   searchHit: boolean;
   selected: boolean;
   lod: "L0" | "L1" | "L2";
+  groupColor: string;
   [key: string]: unknown;
 }
 
@@ -19,19 +20,24 @@ export const NODE_SIZES: Record<string, number> = {
   block: 96,
   group: 74,
   file: 60,
-  atomic: 50,
+  atomic: 52,
 };
 
 const FONT_SIZE: Record<string, string> = {
   block: "0.68rem",
   group: "0.6rem",
   file: "0.56rem",
-  atomic: "0.5rem",
+  atomic: "0.52rem",
 };
+
+const HANDLE_CLASS =
+  "!h-3 !w-3 !border-2 !border-white !bg-blueprint opacity-0 transition-opacity duration-150 group-hover:opacity-100 !cursor-crosshair";
 
 export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
   const dim = data.dimmed && !data.highlighted && !data.selected;
   const size = NODE_SIZES[data.raw.kind] ?? 60;
+  const isAtomic = data.raw.kind === "atomic";
+  const background = isAtomic ? `${data.groupColor}40` : "#0E1116";
   const ring = data.selected
     ? "0 0 0 3px rgba(255,255,255,0.55), 0 0 22px rgba(255,255,255,0.55)"
     : data.highlighted
@@ -42,14 +48,15 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
 
   return (
     <div
-      className="flex flex-col items-center"
+      className="group flex flex-col items-center"
       style={{ opacity: dim ? 0.42 : 1, transition: "opacity 180ms ease" }}
     >
       <div
-        className="relative flex items-center justify-center overflow-hidden rounded-full border-2 border-white bg-panel"
+        className="relative flex items-center justify-center overflow-visible rounded-full border-2 border-white"
         style={{
           width: size,
           height: size,
+          background,
           boxShadow: ring,
           transition: "box-shadow 180ms ease",
         }}
@@ -58,7 +65,7 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
         <Handle
           type="target"
           position={Position.Top}
-          className="!h-1.5 !w-1.5 !border-0 !bg-muted"
+          className={HANDLE_CLASS}
         />
         <span
           className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border border-black/40"
@@ -73,7 +80,7 @@ export default function CircleNode({ data }: NodeProps<CircleNodeType>) {
         <Handle
           type="source"
           position={Position.Bottom}
-          className="!h-1.5 !w-1.5 !border-0 !bg-muted"
+          className={HANDLE_CLASS}
         />
       </div>
     </div>

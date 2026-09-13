@@ -3,14 +3,17 @@ import {
   Background,
   BackgroundVariant,
   Controls,
+  MarkerType,
+  Position,
   ReactFlow,
   ViewportPortal,
+  getBezierPath,
   type Edge,
   type NodeTypes,
   type ReactFlowInstance,
 } from "@xyflow/react";
 
-import type { RawNode } from "../services/api";
+import type { RawEdge, RawNode } from "../services/api";
 import { computeHighlight, useBlueprintStore } from "../store/blueprintStore";
 import { layoutHierarchy } from "../layout/hierarchyLayout";
 import CircleNode, {
@@ -39,20 +42,86 @@ interface Point {
   y: number;
 }
 
+function sizeOf(node: RawNode): number {
+  return NODE_SIZES[node.kind] ?? 60;
+}
+
 function centerOf(node: { position: Point; data: CircleNodeData }): Point {
-  const size = NODE_SIZES[node.data.raw.kind] ?? 60;
+  const size = sizeOf(node.data.raw);
   return { x: node.position.x + size / 2, y: node.position.y + size / 2 };
 }
 
-function segmentIntersection(a: Point, b: Point, c: Point, d: Point): Point | null {
+/** 用 React Flow 的贝塞尔路径采样出折线点，保证交点落在真实曲线上。 */
+function sampleEdge(
+  source: { center: Point; size: number },
+  target: { center: Point; size: number },
+): Point[] {
+  const sourceX = source.center.x;
+  const sourceY = source.center.y + source.size / 2;
+  const targetX = target.center.x;
+  const targetY = target.center.y - target.size / 2;
+  const [path] = getBezierPath({
+    sourceX,
+    sourceY,
+    sourcePosition: Position.Bottom,
+    targetX,
+    targetY,
+    targetPosition: Position.Top,
+  });
+  const numbers = (path.match(/-?\d+(\.\d+)?/g) || []).map(Number);
+  if (numbers.length < 8) {
+    return [
+      { x: sourceX, y: sourceY },
+      { x: targetX, y: targetY },
+    ];
+  }
+  const [x0, y0, c1x, c1y, c2x, c2y, x1, y1] = numbers;
+  const points: Point[] = [];
+  const steps = 14;
+  for (let i = 0; i <= steps; i += 1) {
+    const t = i / steps;
+    const mt = 1 - t;
+    points.push({
+      x:
+        mt * mt * mt * x0 +
+        3 * mt * mt * t * c1x +
+        3 * mt * t * t * c2x +
+        t * t * t * x1,
+      y:
+        mt * mt * mt * y0 +
+        3 * mt * mt * t * c1y +
+        3 * mt * t * t * c2y +
+        t * t * t * y1,
+    });
+  }
+  return points;
+}
+
+function segmentIntersection(
+  a: Point,
+  b: Point,
+  c: Point,
+  d: Point,
+): Point | null {
   const denom = (b.x - a.x) * (d.y - c.y) - (b.y - a.y) * (d.x - c.x);
   if (Math.abs(denom) < 1e-9) return null;
   const t = ((c.x - a.x) * (d.y - c.y) - (c.y - a.y) * (d.x - c.x)) / denom;
   const u = ((c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x)) / denom;
-  if (t > 0.08 && t < 0.92 && u > 0.08 && u < 0.92) {
+  if (t > 0 && t < 1 && u > 0 && u < 1) {
     return { x: a.x + t * (b.x - a.x), y: a.y + t * (b.y - a.y) };
   }
   return null;
+}
+
+function polylineIntersections(p: Point[], q: Point[]): Point[] {
+  const result: Point[] = [];
+  for (let i = 0; i < p.length - 1; i += 1) {
+    for (let j = 0; j < q.length - 1; j += 1) {
+      const point = segmentIntersection(p[i], p[i + 1], q[j], q[j + 1]);
+      if (point) result.push(point);
+    }
+  }
+  return result;
 }
 
 interface HoverState {
@@ -82,14 +151,32 @@ export default function BlueprintCanvas() {
     [raw, positions],
   );
 
-  const edgeLevel = visibleLevel <= 0 ? 0 : 1;
-  const levelEdges = useMemo(
-    () => (raw?.edges ?? []).filter((edge) => edge.level === edgeLevel),
-    [raw, edgeLevel],
-  );
+  const levelOf = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const node of raw?.nodes ?? []) map.set(node.id, node.level);
+    return map;
+  }, [raw]);
+
+  const activeEdges = useMemo<RawEdge[]>(() => {
+    const edges = raw?.edges ?? [];
+    const base =
+      visibleLevel <= 0
+        ? edges.filter((edge) => edge.level === 0)
+        : edges.filter((edge) => edge.level === 1);
+    if (visibleLevel === 2 && selectedId) {
+      const atomic = edges.filter(
+        (edge) =>
+          edge.level === 2 &&
+          (edge.source === selectedId || edge.target === selectedId),
+      );
+      return [...base, ...atomic];
+    }
+    return base;
+  }, [raw, visibleLevel, selectedId]);
+
   const highlight = useMemo(
-    () => computeHighlight(levelEdges, selectedId),
-    [levelEdges, selectedId],
+    () => computeHighlight(activeEdges, selectedId),
+    [activeEdges, selectedId],
   );
   const groupColors = useMemo(
     () => buildGroupColorMap((raw?.nodes ?? []).map((node) => node.group)),
@@ -125,15 +212,19 @@ export default function BlueprintCanvas() {
                 selectedId !== null && related && node.id !== selectedId,
               searchHit: hit,
               selected: node.id === selectedId,
+              groupColor: colorForGroup(
+                groupColors,
+                node.data.raw.group,
+              ),
             },
           };
         }),
-    [allNodes, visibleLevel, highlight, selectedId, query],
+    [allNodes, visibleLevel, highlight, selectedId, query, groupColors],
   );
 
   const displayEdges = useMemo<Edge[]>(
     () =>
-      levelEdges.map((edge) => {
+      activeEdges.map((edge) => {
         const isHighlighted = highlight.edges.has(
           `${edge.source}->${edge.target}`,
         );
@@ -141,60 +232,77 @@ export default function BlueprintCanvas() {
           groupColors,
           groupById.get(edge.source) ?? "",
         );
+        const stroke = isHighlighted ? HIGHLIGHT_COLOR : groupColor;
+        // 方向：下级功能（层级更深）指向上级功能
+        const sourceLevel = levelOf.get(edge.source) ?? 1;
+        const targetLevel = levelOf.get(edge.target) ?? 1;
+        const arrowAtTarget = sourceLevel >= targetLevel;
+        const marker = {
+          type: MarkerType.ArrowClosed,
+          color: stroke,
+          width: 15,
+          height: 15,
+        };
         return {
           id: `${edge.source}->${edge.target}`,
           source: edge.source,
           target: edge.target,
           type: "default",
           animated: isHighlighted,
+          markerEnd: arrowAtTarget ? marker : undefined,
+          markerStart: arrowAtTarget ? undefined : marker,
           style: {
-            stroke: isHighlighted ? HIGHLIGHT_COLOR : groupColor,
+            stroke,
             strokeWidth: isHighlighted ? 2.6 : 1.7,
             strokeLinecap: "round",
             opacity: selectedId !== null ? (isHighlighted ? 1 : 0.32) : 0.72,
+            animationDirection: arrowAtTarget ? "reverse" : "normal",
           },
         };
       }),
-    [levelEdges, highlight, selectedId, groupColors, groupById],
+    [activeEdges, highlight, selectedId, groupColors, groupById, levelOf],
   );
 
   const intersections = useMemo(() => {
-    const centers = new Map<string, Point>();
+    const geometry = new Map<string, { center: Point; size: number }>();
     for (const node of allNodes) {
       if (visibleAt(node.data.raw.level, visibleLevel)) {
-        centers.set(node.id, centerOf(node));
+        geometry.set(node.id, {
+          center: centerOf(node),
+          size: sizeOf(node.data.raw),
+        });
       }
     }
-    const segments = levelEdges
-      .filter((edge) => centers.has(edge.source) && centers.has(edge.target))
+    const polylines = activeEdges
+      .filter(
+        (edge) => geometry.has(edge.source) && geometry.has(edge.target),
+      )
       .map((edge) => ({
         source: edge.source,
         target: edge.target,
-        a: centers.get(edge.source)!,
-        b: centers.get(edge.target)!,
+        points: sampleEdge(
+          geometry.get(edge.source)!,
+          geometry.get(edge.target)!,
+        ),
       }));
     const points: Point[] = [];
-    for (let i = 0; i < segments.length; i += 1) {
-      for (let j = i + 1; j < segments.length; j += 1) {
+    for (let i = 0; i < polylines.length; i += 1) {
+      for (let j = i + 1; j < polylines.length; j += 1) {
+        const a = polylines[i];
+        const b = polylines[j];
         if (
-          segments[i].source === segments[j].source ||
-          segments[i].source === segments[j].target ||
-          segments[i].target === segments[j].source ||
-          segments[i].target === segments[j].target
+          a.source === b.source ||
+          a.source === b.target ||
+          a.target === b.source ||
+          a.target === b.target
         ) {
           continue;
         }
-        const point = segmentIntersection(
-          segments[i].a,
-          segments[i].b,
-          segments[j].a,
-          segments[j].b,
-        );
-        if (point) points.push(point);
+        points.push(...polylineIntersections(a.points, b.points));
       }
     }
     return points;
-  }, [allNodes, levelEdges, visibleLevel]);
+  }, [allNodes, activeEdges, visibleLevel]);
 
   const fitKey = `${raw?.project_id ?? 0}:${visibleLevel}:${
     raw?.stats.node_count ?? 0
@@ -222,7 +330,9 @@ export default function BlueprintCanvas() {
           instanceRef.current = instance;
         }}
         onNodeClick={(_, node) => select(node.id)}
-        onNodeDragStop={(_, node) => moveNode(node.id, node.position.x, node.position.y)}
+        onNodeDragStop={(_, node) =>
+          moveNode(node.id, node.position.x, node.position.y)
+        }
         onPaneClick={() => select(null)}
         onConnect={(connection) => {
           if (connection.source && connection.target) {

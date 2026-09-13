@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from app.models.schemas import EdgeModel, FileMeta, NodeModel
+from app.scanner.call_graph import build_call_edges
 
 _LEVEL_KIND = {0: "block", 1: "group", 2: "atomic"}
 
@@ -98,11 +99,14 @@ def validate_agent_blueprint(
 
 
 def build_from_agent_blueprint(
-    blueprint: dict, file_nodes: list[NodeModel]
+    blueprint: dict,
+    file_nodes: list[NodeModel],
+    files: Optional[list[FileMeta]] = None,
 ) -> tuple[list[NodeModel], list[EdgeModel]]:
     """把 Agent 产出的功能蓝图转换为可渲染的节点/边，并用 Git 数据增强状态。"""
     file_map = {node.file_path: node for node in file_nodes}
     functions = blueprint.get("functions") or []
+    symbol_names = blueprint.get("symbol_names") or {}
 
     nodes: list[NodeModel] = []
     level_of: dict[str, int] = {}
@@ -163,6 +167,12 @@ def build_from_agent_blueprint(
 
     # 机械补齐 L2 原子功能：Agent 只做语义分组（L0/L1），
     # 原子功能由软件从 L1 功能的文件里列出函数/类。Agent 显式给出 L2 时不覆盖。
+    symbols_by_file: dict[str, list[str]] = {}
+    if files:
+        symbols_by_file = {
+            meta.rel_path: list(meta.functions) + list(meta.classes)
+            for meta in files
+        }
     if not any(node.level == 2 for node in nodes):
         for node in list(nodes):
             if node.level != 1:
@@ -172,7 +182,8 @@ def build_from_agent_blueprint(
                 file_node = file_map.get(path)
                 if file_node is None:
                     continue
-                for symbol in file_node.functions:
+                symbols = symbols_by_file.get(path) or list(file_node.functions)
+                for symbol in symbols:
                     key = f"{node.id}::{path}::{symbol}"
                     if key in seen_symbols:
                         continue
@@ -180,7 +191,9 @@ def build_from_agent_blueprint(
                     nodes.append(
                         NodeModel(
                             id=key,
-                            label=symbol,
+                            label=symbol_names.get(f"{path}::{symbol}")
+                            or symbol_names.get(symbol)
+                            or symbol,
                             file_path=path,
                             absolute_path=file_node.absolute_path,
                             last_commit_time=file_node.last_commit_time,
@@ -190,7 +203,7 @@ def build_from_agent_blueprint(
                             module_name=file_node.module_name,
                             functions=[symbol],
                             is_isolated=False,
-                            group=node.group,
+                            group=node.id,
                             files=[path],
                             level=2,
                             parent_id=node.id,
@@ -198,6 +211,35 @@ def build_from_agent_blueprint(
                             member_count=1,
                         )
                     )
+
+    # 原子级调用边（机械分析：同文件调用 / 导入符号调用 / 模块.函数 调用）
+    if files:
+        symbol_node: dict[tuple[str, str], str] = {}
+        for node in nodes:
+            if node.level == 2 and node.files and node.functions:
+                symbol_node.setdefault(
+                    (node.files[0], node.functions[0]), node.id
+                )
+        if symbol_node:
+            for caller_file, caller_symbol, target_file, target_symbol in (
+                build_call_edges(files)
+            ):
+                source = symbol_node.get((caller_file, caller_symbol))
+                target = symbol_node.get((target_file, target_symbol))
+                if not source or not target or source == target:
+                    continue
+                if (source, target) in seen:
+                    continue
+                seen.add((source, target))
+                edges.append(
+                    EdgeModel(
+                        source=source,
+                        target=target,
+                        relation="call",
+                        level=2,
+                        weight=1,
+                    )
+                )
 
     # 无任何边且未显式标注者，也视为孤立
     degree: dict[str, int] = {}

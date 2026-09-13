@@ -18,6 +18,7 @@ function makeNode(raw: RawNode, x: number, y: number): HierarchyNode {
       searchHit: false,
       selected: false,
       lod: "L2",
+      groupColor: "#8A93A3",
     },
   };
 }
