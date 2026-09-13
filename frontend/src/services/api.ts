@@ -23,7 +23,7 @@ export interface RawNode {
 export interface RawEdge {
   source: string;
   target: string;
-  relation: "import";
+  relation: string;
   level: number;
   weight: number;
 }

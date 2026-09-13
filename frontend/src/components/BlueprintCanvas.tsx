@@ -174,9 +174,13 @@ export default function BlueprintCanvas() {
       const stroke = isHighlighted ? HIGHLIGHT_COLOR : groupColor;
       const sourceLevel = levelOf.get(edge.source) ?? 1;
       const targetLevel = levelOf.get(edge.target) ?? 1;
-      const arrowAtTarget = designMode
-        ? sourceLevel <= targetLevel
-        : sourceLevel >= targetLevel;
+      // 调用关系边按真实调用方向（调用者→被调用者）显示箭头；其余按层级/模式
+      const arrowAtTarget =
+        edge.relation === "call"
+          ? true
+          : designMode
+            ? sourceLevel <= targetLevel
+            : sourceLevel >= targetLevel;
       const marker = {
         type: MarkerType.ArrowClosed,
         color: stroke,
